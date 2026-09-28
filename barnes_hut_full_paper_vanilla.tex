@@ -1,0 +1,1186 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\E}{\mathbb E}\newcommand{\Pp}{\mathbb P}
+\newcommand{\Var}{\operatorname {Var}}\newcommand{\Cov}{\operatorname {Cov}}
+\newcommand{\1}{\mathbf 1}\newcommand{\cD}{\mathcal D}
+\newcommand{\cF}{\mathcal F}\newcommand{\cG}{\mathcal G}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dist}{\operatorname {dist}}
+\allowdisplaybreaks
+\begin{document}\linespread{1.60}\selectfont\emergencystretch=2em
+\title{Gaussian Fluctuations and an Arithmetic Phase Transition\\for the One-Dimensional Barnes--Hut Cost}
+\author{}\date{}\maketitle
+\begin{abstract}
+We determine the mean, variance, and Gaussian fluctuations of the corrected
+one-dimensional Barnes--Hut cost.  For independent input from a strictly
+positive $C^1$ density, we prove the universal nonresonant theorem for every
+fixed opening parameter $0<\theta<1$ outside an explicit countable set.
+For uniform input we determine every parameter, including the resonant regime.  A canonical doubling-map martingale component $d_\theta$
+defines a continuous coefficient $c(\theta)=\norm{d_\theta}_2^2$.  Its zero
+set is exactly $\{2/Q:Q\ge3\}$.  At these resonant parameters the variance
+is linear, with a positive continuous log-periodic coefficient; at every
+other parameter it is asymptotic to $c(\theta)n\log_2n$.  Both regimes have
+central limit theorems with true-variance normalization.  Moreover
+$c(\theta)$ has a linear cusp at $2/Q$, with slope $3Q^2/2$ for odd $Q$ and
+$Q^2/2$ for even $Q$.  The nonuniform leading coefficient is independent of the density.  The proof combines an exact root-toll calculation,
+a Gordin decomposition and odd-frequency classification, a last-active-bit
+Walsh martingale, trie activity estimates, and an arithmetic-free guarded
+transfer from the stopped model to the adaptive algorithm.
+\end{abstract}
+
+\section{Introduction}
+The Barnes--Hut method replaces sufficiently remote groups of particles by
+a representative source \cite{BH}.  Its running cost is random when the
+particles are random, and its fluctuations depend on the discontinuous
+accept/open decisions made by the adaptive tree.  We study the exact count
+of accepted sources in one dimension for independent uniform particles.
+The model below uses full cell width, accepts equality, preserves one-child
+chains, and deletes self-interaction.  These conventions matter.
+
+The answer contains an arithmetic phase transition.  Write $T_{\theta,n}$
+for the corrected total cost.  At the countable parameters $\theta=2/Q$,
+$Q\ge3$, its variance has order $n$; at every other fixed parameter it has
+order $n\log n$.  The exceptional set is not inserted by hand.  It is
+exactly the set on which the centered ideal root toll is a coboundary for
+the doubling map.
+
+\begin{theorem}[Phase theorem]\label{thm:intro}
+For every fixed $0<\theta<1$ there is a continuous nonnegative function
+\begin{equation}c(\theta)=\norm{d_\theta}_2^2,\qquad
+ \{\theta:c(\theta)=0\}=\{2/Q:Q=3,4,\ldots\}.\label{eq:intro-c}
+\end{equation}
+If $\theta=2/Q$, then, whenever $\{\log_2n\}\to t$,
+\begin{equation}
+ \Var(T_{\theta,n})/n\longrightarrow\tau_Q^2(t),\qquad
+ {T_{\theta,n}-\E T_{\theta,n}\over\sqrt{\Var(T_{\theta,n})}}
+ \Longrightarrow N(0,1),                                      \label{eq:intro-res}
+\end{equation}
+where $\tau_Q^2$ is continuous, one-periodic, and bounded away from zero.
+If $\theta\ne2/Q$ for all $Q\ge3$, then
+\begin{equation}
+ \Var(T_{\theta,n})\sim c(\theta)n\log_2n,qquad
+ {T_{\theta,n}-\E T_{\theta,n}\over
+ \sqrt{c(\theta)n\log_2n}}\Longrightarrow N(0,1).             \label{eq:intro-non}
+\end{equation}
+The latter limit is unchanged under true-variance normalization.  At every
+resonance,
+\begin{equation}
+ c(\theta)=A_Q|\theta-2/Q|+o(|\theta-2/Q|),\quad
+ A_Q=\begin{cases}3Q^2/2,&Q\text{ odd},\\Q^2/2,&Q\text{ even}.
+ \end{cases}                                                   \label{eq:intro-cusp}
+\end{equation}
+\end{theorem}
+
+The proof has two probabilistic scales.  Strict stopping in a binary trie
+repeats a nonzero canonical innovation through $\log_2n+O(1)$ active levels,
+which produces $n\log n$.  At resonance the innovation vanishes and an
+endpoint coboundary telescopes, leaving order $n$.  The adaptive finite-tree
+error always has variance $O_\theta(n)$, so it changes the resonant linear
+phase but is negligible off resonance.  All assertions are pointwise in
+fixed $\theta$; no uniform crossover theorem is claimed.
+
+\clearpage
+\section{The corrected adaptive model}\label{sec:model}
+Represent $X_1,\ldots,X_n$ by independent fair infinite binary strings,
+ignoring the null set with two binary expansions.  A depth-$r$ dyadic cell
+is half open, has width $2^{-r}$, and is represented by its midpoint.  The
+occupied trie retains a cell until its occupancy is at most one.
+
+For a target $x=X_i$, traverse from the root.  An empty source contributes
+zero.  A singleton source not equal to $x$ contributes one; the singleton
+containing $x$ contributes zero.  A nonsingleton containing $x$ is opened.
+A disjoint nonsingleton of width $w$ and midpoint distance $D$ is accepted
+and contributes one precisely when
+\begin{equation}w/D\le\theta;                                      \label{eq:accept}
+\end{equation}
+equality is therefore accepted.  Otherwise both children are visited,
+even if only one is occupied.  Let $C_\theta(x;X_1,\ldots,X_n)$ be the
+result and define
+\begin{equation}T_{\theta,n}=\sum_{i=1}^nC_\theta(X_i;X_1,\ldots,X_n),
+ \qquad T_{\theta,0}=T_{\theta,1}=0.                         \label{eq:Tdef}
+\end{equation}
+Distinct continuous points separate almost surely, so this is finite.
+The preceding paragraph is also a definition on every one-child chain.
+
+Let $T x=2x\pmod1$ be the doubling map.  The isolation depth
+\begin{equation}\tau_i=\min\{r:\ X_i\text{ is alone in its depth-$r$ cell}\}
+                                                                  \label{eq:isolation}
+\end{equation}
+is a strict stopping depth: level $r$ is paid exactly for $r<\tau_i$.
+The external path length is $L_n=\sum_i\tau_i$.
+
+\clearpage
+\section{The ideal root toll and strict-stopped LISTER}\label{sec:toll}
+Put
+\begin{equation}\alpha=\theta^{-1},\quad b=\alpha-\tfrac12,
+ \quad z=|2x-1|,quad J=\lceil b\rceil,
+ \quad \ell_j=\lceil\log_2(j+1)\rceil.                        \label{eq:parameters}
+\end{equation}
+Since $0<\theta<1$, $b>1/2$ and $J\ge1$.
+
+\begin{proposition}[Exact root toll]\label{prop:toll}
+The filled opposite-half frontier seen from $x$ is
+\begin{equation}
+ F_\theta(x)=1+\sum_{j=0}^{J-1}\sum_{d\ge\ell_j}
+ \1\{z<(b-j)2^{-d}\}.                                      \label{eq:Ftoll}
+\end{equation}
+Moreover $F_\theta\in L^p[0,1]$ for every finite $p$ and
+\begin{equation}\E F_\theta=2/\theta.                         \label{eq:Fmean}
+\end{equation}
+\end{proposition}
+\begin{proof}
+By reflection take $x<1/2$.  The offset-$j$ cell in the opposite half at
+local depth $d$ has $D/w=j+1/2+2^dz$.  It is opened iff $D/w<1/\theta$,
+which is exactly $2^dz<b-j$.  Strictness follows from acceptance of equality.
+The cell exists iff $j<2^d$, equivalently $d\ge\ell_j$; only $j<b$ can be
+opened.  Starting from one frontier cell, each opening adds one, proving
+\eqref{eq:Ftoll}.
+
+The variable $z$ is uniform on $[0,1]$.  Tonelli gives
+\begin{equation}
+ \E F_\theta=1+\sum_{j<J}\sum_{d\ge\ell_j}
+ \min\{1,(b-j)2^{-d}\}.                                    \label{eq:mean-sum}
+\end{equation}
+To evaluate it, note that for $a>0$ and $\ell=\lceil\log_2(j+1)\rceil$,
+the inner sum is the integral over $z\in(0,1)$ of the number of leaves
+created in the offset row.  Summing the rows partitions the interval
+$(1/2,\alpha+1/2)$ into unit translates, with its two end half-cells each
+counted once; its total length contribution is $2\alpha-1$.  Hence
+\eqref{eq:mean-sum} is $2\alpha$.  Equivalently, split each $b-j$ at the
+first $r$ for which $(b-j)2^{-r}\le1$ and sum the two finite geometric
+series; adjacent ceiling terms cancel, leaving $1+2b=2/\theta$.
+Finally there are finitely many rows and
+$F_\theta(x)\le C_\theta(1+\log_+(1/z))$, which proves every finite moment.
+\end{proof}
+
+The strict-stopped LISTER functional is
+\begin{equation}
+ V_{\theta,n}=\sum_{i=1}^n\sum_{0\le r<\tau_i}F_\theta(T^rX_i).
+                                                                  \label{eq:Vdef}
+\end{equation}
+No toll is charged at a unique leaf; in particular $V_{\theta,1}=0$.
+
+\clearpage
+\section{Gordin decomposition and the canonical coefficient}\label{sec:gordin}
+Let $P$ be the Perron operator
+\begin{equation}P\phi(y)=\tfrac12\{\phi(y/2)+\phi((y+1)/2)\}.   \label{eq:P}
+\end{equation}
+Set $f_\theta=F_\theta-2/\theta$.  For $0<c\le1$ put
+$R_c(x)=\1_{x<c}+\1_{x>1-c}$ (overlaps counted twice) and
+$\bar R_c=R_c-2c$.  Define
+\begin{equation}
+ r_j=\max\{\ell_j,\lceil\log_2(b-j)\rceil\},\quad
+ c_j=(b-j)2^{-r_j},\quad H_\theta^0=\sum_{j<J}\bar R_{c_j}.     \label{eq:endpoints}
+\end{equation}
+Direct inverse-branch calculation yields
+\begin{equation}P\bar R_c=\tfrac12\bar R_{\{2c\}}.             \label{eq:PR}
+\end{equation}
+Consequently the uniformly convergent bounded-step series
+\begin{equation}
+ k_\theta=\sum_{j<J}\sum_{s\ge1}2^{-s}\bar R_{\{2^sc_j\}},
+ \qquad d_\theta=H_\theta^0+k_\theta-k_\theta\circ T           \label{eq:ddef}
+\end{equation}
+satisfies $Pd_\theta=0$.  Row telescoping also gives a function
+$h_\theta\in L^p$ for every finite $p$ such that
+\begin{equation}f_\theta=d_\theta+h_\theta\circ T-h_\theta.   \label{eq:Gordin}
+\end{equation}
+For completeness, one may take the endpoint-logarithmic tail
+$A_\theta=\sum_{j<J}\sum_{d\ge r_j}R_{(b-j)2^{-d}}$ and combine
+$A_\theta-\E A_\theta$ with $k_\theta$; the identity
+$R_c\circ T=\1_{\{|2x-1|<c\}}+R_{c/2}$ makes all terms telescope.
+
+\begin{definition}
+The canonical variance coefficient is
+\begin{equation}c(\theta)=\norm{d_\theta}_2^2.                  \label{eq:ctheta}
+\end{equation}
+\end{definition}
+The construction is canonical: if $f=d+h\circ T-h$ with $Pd=0$ and the
+usual summable Perron orbit, then $d$ agrees with \eqref{eq:ddef} in $L^2$.
+It follows either from applying $P^r$ and summing, or from orthogonality of
+$\ker P$ to coboundary differences.
+
+Summing \eqref{eq:Gordin} over stopped paths is finite algebra, not optional
+stopping:
+\begin{equation}
+ V_{\theta,n}={2\over\theta}L_n+M_{\theta,n}+H_{\theta,n},
+\quad M_{\theta,n}=\sum_i\sum_{r<\tau_i}d_\theta(T^rX_i),
+\quad H_{\theta,n}=\sum_i\{h_\theta(Y_i)-h_\theta(X_i)\},       \label{eq:stopped-decomp}
+\end{equation}
+where $Y_i=T^{\tau_i}X_i$.
+
+\clearpage
+\section{Exact resonance classification}\label{sec:zeros}
+Use Fourier convention $\widehat q(m)=\int_0^1q(x)e^{-2\pi imx}\,dx$ and put
+\begin{equation}\Psi_u(t)=\sum_{r\ge0}2^{-r}\sin(2\pi2^ru t). \label{eq:Psi}
+\end{equation}
+
+\begin{lemma}[Endpoint collapse]\label{lem:collapse}
+For every positive odd $u$,
+\begin{equation}\sum_{j<J}\Psi_u(c_j)=\Psi_u(\{b\}).            \label{eq:collapse}
+\end{equation}
+\end{lemma}
+\begin{proof}
+The splitting identity
+$\Psi_u(t/2)+\Psi_u((t+1)/2)=\Psi_u(t)$ follows by shifting the series and
+using oddness of $u$.  Start with the node $\{b\}$ and split it into inverse
+doubling children until the leaf indexed by $j$ first satisfies both
+$2^r\ge j+1$ and $2^r\ge b-j$.  Its depth is $r_j$ and label $c_j$.
+These leaves form a finite prefix tree: adjoining the next translate splits
+the unique leaf violating one of the two inequalities.  Repeated use of the
+splitting identity proves \eqref{eq:collapse}.  A terminal equality remains
+a leaf, exactly matching the strict opening convention.
+\end{proof}
+
+\begin{lemma}[Simultaneous odd chains]\label{lem:oddchain}
+For $0\le t<1$, $\Psi_u(t)=0$ for every positive odd $u$ if and only if
+$t\in\{0,1/2\}$.
+\end{lemma}
+\begin{proof}
+Let $q_t$ denote the odd Fourier projection of $\bar R_t$.  In $L^2$,
+$D_t:=\sum_{r\ge0}2^{-r}q_{\{2^rt\}}$ has odd coefficients
+$\Psi_u(t)/(\pi u)$ and no even coefficients.  If all vanish, $D_t=0$.
+On the smallest endpoint interval adjacent to zero on which the first
+non-dyadic endpoint of the orbit occurs, the jump of the earliest summand
+cannot be canceled by later summands: their total coefficient is strictly
+smaller unless the orbit hits $0$, while at a hit the finite backward
+recursion forces $t=0$ or $1/2$.  If the orbit never hits $0$, apply this
+argument to successive closest orbit endpoints; compactness gives an
+uncanceled jump.  Conversely $t=0$ is immediate, and at $t=1/2$ the first
+term is zero while every doubled endpoint is zero.  Thus precisely the two
+values vanish.  This jump proof is equivalent to uniqueness in the binary
+prefix-tree recursion and is unaffected by dyadic representatives.
+\end{proof}
+
+From \eqref{eq:ddef}, \eqref{eq:PR}, and the elementary coefficient
+$\widehat{\bar R_c}(m)=\sin(2\pi mc)/(\pi m)$ for $m\ne0$, all even
+coefficients of $d_\theta$ vanish and
+\begin{equation}
+ \widehat d_\theta(u)={\Psi_u(\{b\})\over\pi u},\qquad u\text{ odd}.
+                                                                  \label{eq:dhat}
+\end{equation}
+(The negative coefficients are conjugates.)  Lemmas
+\ref{lem:collapse}--\ref{lem:oddchain} therefore prove:
+\begin{theorem}[Coboundary classification]\label{thm:zero}
+For $0<\theta<1$,
+\begin{equation}d_\theta=0\quad\Longleftrightarrow\quad
+ b\in\tfrac12\mathbb Z\quad\Longleftrightarrow\quad
+ \theta=2/Q\text{ for an integer }Q\ge3.                       \label{eq:zeros}
+\end{equation}
+These and only these centered root tolls are $L^2$ coboundaries.
+\end{theorem}
+
+\clearpage
+\section{Continuity and the resonance cusps}\label{sec:cusp}
+Parseval applied to \eqref{eq:dhat} gives the essential factor two:
+\begin{equation}
+ c(t)={2\over\pi^2}\sum_{\substack{u\ge1\\u\ \mathrm{odd}}}
+ {\Psi_u(t)^2\over u^2},\qquad t=\{b\}.                       \label{eq:cFourier}
+\end{equation}
+The odd cosine series and $2\sin A\sin B=\cos(A-B)-\cos(A+B)$ give
+\begin{equation}
+ c(t)=\frac12\sum_{r,s\ge0}2^{-r-s}
+ \left(\norm{(2^r+2^s)t}_{\mathbb Z}-
+       \norm{(2^r-2^s)t}_{\mathbb Z}\right),                 \label{eq:kernel}
+\end{equation}
+where $\norm{x}_{\mathbb Z}=\dist(x,\mathbb Z)$.  Absolute convergence is
+uniform, since the double weights have mass four and the distance is at most
+$1/2$.  Thus $c$ is continuous.
+
+\begin{proposition}[Local profiles]\label{prop:cusp}
+As $\varepsilon\to0$,
+\begin{align}
+ c(\varepsilon)&=6|\varepsilon|+o(|\varepsilon|),              \label{eq:intprofile}\\
+ c(1/2+\varepsilon)&=2|\varepsilon|+o(|\varepsilon|).           \label{eq:halfprofile}
+\end{align}
+\end{proposition}
+\begin{proof}
+For fixed $(r,s)$, \eqref{eq:kernel} divided by $|\varepsilon|$ tends to
+$2^{-\max(r,s)}$.  Truncate at $r,s<K$; the Lipschitz property of distance,
+followed by a split at $2^j|\varepsilon|=1$, bounds the discarded normalized
+tail by $O(K2^{-K})+O(|\varepsilon|\log(1/|\varepsilon|))$.  Hence the limit
+may be summed.  The diagonal contributes $2$ and the two strict triangles
+contribute $4$, proving \eqref{eq:intprofile}.
+
+At $1/2+\varepsilon$, separate $(0,0)$, pairs with exactly one zero index,
+and $r,s\ge1$.  Their contributions are respectively
+$|\varepsilon|$, $-2|\varepsilon|+o(|\varepsilon|)$, and
+$\frac14c(2\varepsilon)=3|\varepsilon|+o(|\varepsilon|)$.  This proves
+\eqref{eq:halfprofile}.  Reflection gives both one-sided limits.
+\end{proof}
+
+At $\theta_0=2/Q$, $b_0=(Q-1)/2$ and
+$b-b_0=-(Q^2/4)(\theta-\theta_0)+o(|\theta-\theta_0|)$.  Integer $b_0$
+corresponds to odd $Q$, and half-integer $b_0$ to even $Q$.  Proposition
+\ref{prop:cusp} now proves \eqref{eq:intro-cusp}.
+
+\clearpage
+\section{Resonant stopped theory}\label{sec:resstop}
+Suppose $\theta=2/Q$.  With the notation in \eqref{eq:endpoints}, define
+\begin{equation}
+ A_Q=\sum_{j<J}\sum_{d\ge r_j}R_{(b-j)2^{-d}},\qquad
+ K_Q=\sum_{j<J}\sum_{s\ge1}2^{-s}\bar R_{\{2^sc_j\}},
+ \qquad g_Q=-(A_Q-\E A_Q)-K_Q.                           \label{eq:gQ}
+\end{equation}
+Because $b$ is half-integral, the endpoint orbit in $K_Q$ terminates; the
+first series has only a logarithmic endpoint singularity.  Thus $g_Q$ is
+centered and belongs to every finite $L^p$.  The row telescope and endpoint
+collapse give
+\begin{equation}F_{2/Q}-Q=g_Q-g_Q\circ T.                    \label{eq:cobQ}
+\end{equation}
+Consequently
+\begin{equation}
+ V_{2/Q,n}=QL_n+\sum_{i=1}^n\{g_Q(X_i)-g_Q(Y_i)\}.             \label{eq:VQ}
+\end{equation}
+
+Conditionally on the stopped-prefix sigma field, the terminal suffixes
+$Y_i$ are independent uniforms and independent of that field.  Standard
+binary-trie renewal (proved in Appendix~\ref{app:trie}) and conditional
+Lyapunov therefore yield, along $\{\log_2n\}\to t$,
+\begin{equation}
+ {V_{2/Q,n}-\E V_{2/Q,n}\over\sqrt n}\Longrightarrow
+ N(0,Q^2v_L(t)+2\Var(g_Q)),                                \label{eq:resVclt}
+\end{equation}
+with convergence of second moments.  Here $v_L$ is the continuous
+one-periodic external-path variance phase.  The two endpoint copies give
+$2\Var(g_Q)$; their covariance and their covariance with the centered path
+length vanish in the stopped-suffix limit.  Appendix~\ref{app:resonant}
+records the adaptive joint extension needed later.
+
+\clearpage
+\section{The exact nonresonant martingale variance}\label{sec:Mvar}
+No forward optional-stopping argument is valid for $d_\theta$: it generally
+depends on an infinite suffix.  The exact result comes instead from the
+symmetric first-bit recursion.
+
+Put
+\begin{equation}S_m=\sum_{r\ge0}\{1-(1-2^{-r})^m\}.             \label{eq:Sm}
+\end{equation}
+\begin{proposition}[Variance identity]\label{prop:Mvar}
+For every $n$,
+\begin{equation}\Var(M_{\theta,n})=c(\theta)nS_{n-1},          \label{eq:Mvar}
+\end{equation}
+and $S_m=\log_2m+O(1)$.
+\end{proposition}
+\begin{proof}
+Split at the first bit.  If $B_n\sim\mathrm{Bin}(n,1/2)$ is the left
+occupancy, then the variance $v_n$ obeys
+\begin{equation}v_n=2\E v_{B_n}+nc(\theta)+2\E\{p_0(B_n)+p_1(n-B_n)\}.
+                                                                  \label{eq:vrec}
+\end{equation}
+Here $p_a(k)$ is the covariance of the branch-$a$ root innovation with its
+$k$-suffix descendant.  The identity $Pd=0$ says $d_1=-d_0$, so
+$p_1(k)=-p_0(k)$; binomial symmetry cancels the expectation in
+\eqref{eq:vrec}.  The expected external path length satisfies the same
+recursion with toll $n$ and the same boundary values.  A fixed label is
+active at depth $r$ with probability $1-(1-2^{-r})^{n-1}$, proving
+\eqref{eq:Mvar}.  Splitting \eqref{eq:Sm} at $\lfloor\log_2m\rfloor$ and
+using $1-(1-x)^m\le\min(1,mx)$ gives the stated estimate (and the reverse
+bound follows from $1-x\le e^{-x}$).
+\end{proof}
+
+\clearpage
+\section{Walsh approximation and a valid forward filtration}\label{sec:walsh}
+Let $\cD_m$ be generated by the first $m$ binary digits and set
+\begin{equation}d^{(m)}=\E(d_\theta\mid\cD_m).                  \label{eq:dm}
+\end{equation}
+Pairing cells with the same last $m-1$ digits shows $Pd^{(m)}=0$ exactly.
+Since \eqref{eq:ddef} is of bounded variation,
+\begin{equation}
+ \norm{d_\theta-d^{(m)}}_p=O_\theta(2^{-m/p}),\qquad
+ \norm{d^{(m)}}_2^2\uparrow c(\theta).                         \label{eq:approx}
+\end{equation}
+Indeed, on each dyadic cell $I$, integrate
+$|f-f_I|^p\le\operatorname {osc}_I(f)^p$ and use that the sum of
+oscillations is bounded by total variation.
+
+Write $\epsilon_s=(-1)^{\text{bit }s}$.  The finite Walsh expansion is
+\begin{equation}d^{(m)}=\sum_{S\subseteq\{1,\ldots,m\}}a_S
+ \prod_{s\in S}\epsilon_s,\qquad a_S\ne0\Rightarrow1\in S.    \label{eq:Walsh}
+\end{equation}
+Assign a shifted character to its last active bit $t=r+\max S$.  With all
+bits through time $t$ revealed, its sum has the form
+\begin{equation}\Delta_{n,t}=\sum_{i=1}^n\epsilon_{i,t}C_{i,t-1},
+ \qquad \E(\Delta_{n,t}\mid\cF_{t-1})=0,                       \label{eq:increment}
+\end{equation}
+where activity $\1_{\{\tau_i>t-\max S\}}$ and all other bits in
+$C_{i,t-1}$ are predictable.  This is the forward martingale that the
+infinite-suffix observable itself does not provide.
+
+\clearpage
+\section{Trie activity moments}\label{sec:activity}
+Let $I_{i,r}=\1_{\{\tau_i>r\}}$ and $A_r=\sum_iI_{i,r}$.  Put $q_r=2^{-r}$.
+For $i\ne j$ and $r\ge1$, conditioning on whether the two depth-$r$ cells
+coincide gives
+\begin{equation}
+ \Pp(I_{i,r}=I_{j,r}=1)=q_r+(1-q_r)
+ \{1-2(1-q_r)^{n-2}+(1-2q_r)^{n-2}\}.                         \label{eq:pair}
+\end{equation}
+At $r=0$ the probability is one for $n\ge2$.  The distinct-cell term needs
+two different witnesses and hence is at most $(n-2)(n-3)q_r^2$.  Therefore
+\begin{align}
+ \E A_r&=n\{1-(1-q_r)^{n-1}\},                                \label{eq:EA}\\
+ \sum_{r\ge0}\E A_r^2&=O(n^2\log(n+1)).                       \label{eq:A2}
+\end{align}
+To see \eqref{eq:A2}, use $A_r\le n$ through
+$R=\lceil\log_2n\rceil$ and sum the $q_r,q_r^2$ bounds afterward.  This
+explicitly retains both the same-cell companion and the two distinct-cell
+witnesses.
+
+\clearpage
+\section{Bracket concentration and Lindeberg}\label{sec:bracket}
+Fix $m$ and put $K_m=\sum_S|a_S|$.  The predictable bracket of the
+martingale in \eqref{eq:increment} is
+\begin{equation}Q_n=\sum_tB_t,qquad B_t=\sum_iC_{i,t-1}^2.      \label{eq:bracket}
+\end{equation}
+Weighted Cauchy--Schwarz and the finitely many shifts give
+\begin{equation}B_t\le K_m^2\sum_{j=1}^mA_{t-j}.                \label{eq:Bbound}
+\end{equation}
+
+\begin{proposition}[Bracket and fourth moments]\label{prop:bracket}
+For fixed $m$ with $\sigma_m^2=\norm{d^{(m)}}_2^2>0$,
+\begin{align}
+ \E Q_n&=\sigma_m^2nS_{n-1},                                  \label{eq:EQ}\\
+ \Var(Q_n)&=O_m(n\log^2(n+1)),                                \label{eq:VarQ}\\
+ \sum_t\E B_t^2&=O_m(n^2\log(n+1)),                           \label{eq:B2}\\
+ \sum_t\E\Delta_{n,t}^4&=o((n\log n)^2).                     \label{eq:D4}
+\end{align}
+\end{proposition}
+\begin{proof}
+Isometry and Proposition~\ref{prop:Mvar}, applied to $d^{(m)}$, prove
+\eqref{eq:EQ}.  Replace one input string by an independent copy and let
+$H$ be one plus the largest common-prefix length among any pair in the old
+and augmented samples.  Deletion changes another activity only along a
+cell containing exactly two labels; nestedness supplies one companion.
+Insertion similarly supplies one companion along cells formerly containing
+one label.  Each affected bit enters only $m$ shifts.  Thus
+\begin{equation}|Q_n-Q_n^{(i)}|\le D_m(H+m).                    \label{eq:influence}
+\end{equation}
+The union bound $\Pp(H>h)\le{n+1\choose2}2^{-h}$ gives
+$\E(H+m)^2=O_m(\log^2(n+1))$.  Efron--Stein proves \eqref{eq:VarQ}.
+
+Squaring \eqref{eq:Bbound}, using $(\sum_{j=1}^mx_j)^2\le
+m\sum_jx_j^2$, and applying \eqref{eq:A2} proves \eqref{eq:B2}.  Conditional
+on $\cF_{t-1}$, the fresh signs are independent Rademachers, so
+\begin{equation}\E(\Delta_{n,t}^4\mid\cF_{t-1})
+ \le3B_t^2+K_m^2B_t.                                         \label{eq:Rademacher4}
+\end{equation}
+Sum this inequality and use \eqref{eq:EQ}--\eqref{eq:B2}; the result is
+$O_m(n^2\log n)=o((n\log n)^2)$.
+\end{proof}
+
+Chebyshev and \eqref{eq:VarQ} give bracket convergence.  Equation
+\eqref{eq:D4} and $x^2\1_{|x|>a}\le x^4/a^2$ give conditional Lindeberg in
+probability.  Truncating time at $4\log_2(n+1)+m$ loses $o(1)$ in $L^2$.
+The martingale array CLT therefore yields
+\begin{equation}{M_{\theta,n}^{(m)}\over
+ \sqrt{\sigma_m^2nS_{n-1}}}\Longrightarrow N(0,1).             \label{eq:fixedmCLT}
+\end{equation}
+
+\clearpage
+\section{The nonresonant stopped theorem}\label{sec:nonstop}
+Because $P(d-d^{(m)})=0$, the same exact variance identity gives
+\begin{equation}
+ \Var(M_{\theta,n}-M_{\theta,n}^{(m)})
+ =\norm{d_\theta-d^{(m)}}_2^2nS_{n-1}.                         \label{eq:errorvar}
+\end{equation}
+Let first $n\to\infty$ in \eqref{eq:fixedmCLT}, then $m\to\infty$ in
+\eqref{eq:errorvar}.  Converging together proves
+\begin{equation}{M_{\theta,n}\over\sqrt{c(\theta)nS_{n-1}}}
+ \Longrightarrow N(0,1)\qquad(c(\theta)>0).                   \label{eq:Mclt}
+\end{equation}
+
+The stopped suffix property and $h_\theta\in L^p$ imply
+$\Var(H_{\theta,n})=O_\theta(n)$.  Binary-trie renewal gives
+$\Var(L_n)=O(n)$, while Cauchy--Schwarz bounds either covariance with
+$M_{\theta,n}$ by $O(n\sqrt{\log n})=o(n\log n)$.  From
+\eqref{eq:stopped-decomp}, \eqref{eq:Mvar}, and \eqref{eq:Mclt} we obtain:
+\begin{theorem}[Nonresonant strict-stopped CLT]\label{thm:nonstop}
+If $c(\theta)>0$, then
+\begin{equation}
+ \Var(V_{\theta,n})\sim c(\theta)n\log_2n,qquad
+ {V_{\theta,n}-\E V_{\theta,n}\over
+ \sqrt{c(\theta)n\log_2n}}\Longrightarrow N(0,1).             \label{eq:Vnon}
+\end{equation}
+\end{theorem}
+
+\clearpage
+\section{The adaptive discrepancy}\label{sec:disc}
+Define pathwise
+\begin{equation}\Delta_{\theta,n}=T_{\theta,n}-V_{\theta,n}.   \label{eq:Deltadef}
+\end{equation}
+Partition interactions by their least common dyadic ancestor.  If $X_u$ is
+the sample in node $u$, let $Y_\theta(X_u)$ be its actual cross-child cost
+and set
+\begin{equation}
+ D_\theta(X_u)=Y_\theta(X_u)-\sum_{x\in X_u}F_\theta(x),qquad
+ \bar D_\theta(X_u)=\1_{\{|X_u|\ge2\}}D_\theta(X_u).          \label{eq:rootdefect}
+\end{equation}
+Then the finite-tree identities are
+\begin{align}
+ \Delta_{\theta,n}&=\sum_{u:|X_u|\ge2}\bar D_\theta(X_u),     \label{eq:finite-tree}\\
+ \Delta_{\theta,n}&=\Delta^{(0)}_{\theta,J}+
+ \Delta^{(1)}_{\theta,n-J}+\bar D_{\theta,n},                 \label{eq:Drec}
+\end{align}
+where $J\sim\mathrm{Bin}(n,1/2)$.  These equations include singleton
+termination, empty children, clipping, and one-child chains; there is no
+unlisted boundary correction.
+
+\clearpage
+\section{An arithmetic-free guard theorem}\label{sec:guard}
+The frontier calculation behind \eqref{eq:Ftoll} says
+\begin{equation}2^d|2x-1|<b-j,qquad 0\le j<b,                 \label{eq:frontier}
+\end{equation}
+so only finitely many offsets occur for every fixed real $\theta$.
+Define the dyadic integer
+\begin{equation}
+ G(\theta)=2^{\max\{2,\lceil\log_2\max(1,4/\theta-2)\rceil\}}. \label{eq:guard}
+\end{equation}
+Let $\cG_n$ be the event that all $G(\theta)$ cells at that depth are
+occupied.  Every exterior cell has midpoint distance at least
+$1/4+1/(2G)$, and
+\begin{equation}1/4+1/(2G)\ge\alpha/G.                         \label{eq:guardineq}
+\end{equation}
+Thus it is accepted; occupancy prevents premature stopping above this level.
+
+Let $J_*=[1/4,3/4)$, $K_n=N(J_*)$, and $\sigma(x)=2x-1/2$.  This map doubles
+both widths and midpoint distances and preserves containment, acceptance
+including equality, multiplicity, and singleton termination.  Hence:
+\begin{theorem}[Coefficient-one inward copy]\label{thm:guard}
+On $\cG_n$,
+\begin{equation}D_{\theta,n}=D^{\rm in}_{\theta,K_n},           \label{eq:copy}
+\end{equation}
+with coefficient one and no boundary toll.  Conditional on $K_n=k$, the
+rescaled inward sample is canonical, and
+\begin{equation}\Pp(\cG_n^c)\le G(1-1/G)^n.                   \label{eq:guardbad}
+\end{equation}
+\end{theorem}
+No arithmetic property of $\theta$ enters this proof.
+
+\clearpage
+\section{Linear discrepancy variance}\label{sec:Dvar}
+All fixed moments of $D_{\theta,n}$ are uniformly bounded.  Indeed, on the
+guard event \eqref{eq:copy} is a strictly smaller binomial inward copy; off
+the guard, \eqref{eq:guardbad}, Cauchy--Schwarz, and the deterministic
+quadratic bound absorb the error.  Iteration gives the moment assertion.
+
+Write $d(n)=\E D_{\theta,n}$ and $a(n)=\E\Delta_{\theta,n}$.  Removing the
+guard only in the exponentially small error gives
+\begin{equation}d(n)=\E d(K_n)+\rho_n,qquad K_n\sim\mathrm{Bin}(n,1/2),
+ \quad |\rho_n|\le C_\theta r_\theta^n.                        \label{eq:dmean}
+\end{equation}
+A weighted binomial coupling, with the atom $K_n=n$ moved to the left,
+proves for every $\beta<1$
+\begin{equation}|d(n+1)-d(n)|\le C_{\theta,\beta}(n+1)^{-\beta}.
+                                                                  \label{eq:dregular}
+\end{equation}
+Taking means in \eqref{eq:Drec} and applying the binary smoothing lemma in
+Appendix~\ref{app:smoothing} yields
+\begin{equation}
+ \sup_n|\nabla a(n)|<\infty,qquad
+ |\nabla a(u)-\nabla a(v)|\le C_{\theta,\beta}|u-v|
+ (1+\min(u,v))^{-\beta}.                                      \label{eq:aregular}
+\end{equation}
+This is second-difference regularity; no decay of $\nabla a$ is asserted.
+
+Let $q(n)=\Var(\Delta_{\theta,n})$ and
+$S_n=\Delta^{(0)}_{\theta,J}+\Delta^{(1)}_{\theta,n-J}$.  Total variance,
+without discarding a sign, gives
+\begin{align}
+ q(n)&=2\E q(B_n)+r(n),                                       \label{eq:qrec}\\
+ r(n)&=\Var\{a(B_n)+a(n-B_n)\}+\Var(\bar D_{\theta,n})
+       +2\Cov(S_n,\bar D_{\theta,n}).                         \label{eq:forcing}
+\end{align}
+Midpoint pairing and \eqref{eq:aregular} give the first variance as
+$O_{\theta,\varepsilon}(n^\varepsilon)$.  Cauchy--Schwarz, retaining the
+mixed covariance, gives
+\begin{equation}|r(n)|\le Cn^\varepsilon+C
+ \sqrt{2\E q(B_n)+O(n^\varepsilon)}.                           \label{eq:rbound}
+\end{equation}
+A weighted induction in \eqref{eq:qrec}, again moving the self-atom left,
+first gives $q(n)=O(n^{1+\varepsilon})$.  Substitution into
+\eqref{eq:rbound} with a smaller exponent gives
+$r(n)=O(n^{1/2+\varepsilon})$.  Choosing $\varepsilon<1/2$, the binary
+renewal lemma of Appendix~\ref{app:smoothing} yields the key estimate
+\begin{equation}\boxed{\Var(\Delta_{\theta,n})=O_\theta(n).}   \label{eq:Dlinear}
+\end{equation}
+
+\clearpage
+\section{Full nonresonant Barnes--Hut CLT}\label{sec:fullnon}
+If $c(\theta)>0$, \eqref{eq:Dlinear} implies
+\begin{equation}{\Delta_{\theta,n}-\E\Delta_{\theta,n}\over
+ \sqrt{n\log n}}\longrightarrow0\quad\hbox{in }L^2.           \label{eq:Dnegligible}
+\end{equation}
+Since $T=V+\Delta$, Theorem~\ref{thm:nonstop} and Slutsky prove
+\begin{equation}{T_{\theta,n}-\E T_{\theta,n}\over
+ \sqrt{c(\theta)n\log_2n}}\Longrightarrow N(0,1).             \label{eq:TnonCLT}
+\end{equation}
+Furthermore
+$|\Cov(V,\Delta)|\le O(\sqrt{n\log n}\sqrt n)=o(n\log n)$, so
+\begin{equation}\Var(T_{\theta,n})\sim c(\theta)n\log_2n.     \label{eq:TnonVar}
+\end{equation}
+This proves true-variance normalization as well.
+
+\clearpage
+\section{The full resonant adaptive theorem}\label{sec:fullres}
+At $\theta=2/Q$, the discrepancy is no longer negligible at scale $\sqrt n$.
+The guarded root recursion, half-log block decomposition, and signed mixed
+renewal give continuous one-periodic functions $\gamma_Q$ and $\kappa_Q$
+such that, along phase $t$,
+\begin{equation}
+ {1\over\sqrt n}\binom{V_{2/Q,n}-\E V_{2/Q,n}}
+ {\Delta_{2/Q,n}-\E\Delta_{2/Q,n}}\Longrightarrow
+ N_2\left(0,\begin{pmatrix}
+ Q^2v_L(t)+2\Var(g_Q)&\kappa_Q(t)\\
+ \kappa_Q(t)&\gamma_Q(t)
+ \end{pmatrix}\right).                                      \label{eq:jointres}
+\end{equation}
+Appendix~\ref{app:resonant} supplies the proof ingredients for both parities.
+Thus
+\begin{equation}
+ \tau_Q^2(t)=Q^2v_L(t)+2\Var(g_Q)+\gamma_Q(t)+2\kappa_Q(t).    \label{eq:tau}
+\end{equation}
+A guarded three-point source has two open configurations with different
+local costs, while all exterior decisions agree.  Replicating it in
+$\Theta(n)$ disjoint guarded cells and taking conditional variance gives
+\begin{equation}\Var(T_{2/Q,n})\ge\eta_Qn                       \label{eq:lower}
+\end{equation}
+for large $n$.  Hence $\inf_t\tau_Q^2(t)>0$.  Applying $(1,1)$ to
+\eqref{eq:jointres}, dividing by the actual variance, and using compactness
+of the phase circle proves the full-sequence true-variance CLT in
+\eqref{eq:intro-res}.
+
+\clearpage
+\section{Completion of the phase theorem}\label{sec:completion}
+Theorem~\ref{thm:zero} identifies the zero set, Proposition~\ref{prop:cusp}
+identifies the local slopes, Sections~\ref{sec:fullnon} and
+\ref{sec:fullres} prove the two variance laws and both CLTs.  This proves
+Theorem~\ref{thm:intro}.  The phase transition is arithmetic in the exact
+sense that the order drops precisely when the root toll is a doubling-map
+coboundary.  It is a fixed-parameter theorem: the constants in
+\eqref{eq:Dlinear} and the approximation limits need not be uniform when
+$\theta$ approaches a resonance.
+
+\clearpage
+\section{Smooth nonuniform input and the generic theorem}\label{sec:nonuniform}
+We now let $X_1,\ldots,X_n$ be independent with density $f$ on $[0,1]$.
+Throughout the nonuniform part the hypotheses are exactly
+\begin{equation}
+ f\in C^1([0,1]),\qquad 0<m_f\le f(x)\le M_f<\infty.       \label{eq:fhyp}
+\end{equation}
+The tree and algorithm remain those of Section~\ref{sec:model}; in particular,
+physical cells are still dyadic and are not quantile cells.  Expectations,
+variances, and probabilities under this law carry a subscript $f$.
+
+\begin{theorem}[Generic nonresonant Barnes--Hut theorem]\label{thm:generic}
+Assume \eqref{eq:fhyp}, fix $0<\theta<1$, and suppose
+$\theta\notin\{2/Q:Q=3,4,\ldots\}$.  Then
+\begin{align}
+ \E_fT_{\theta,n}&={2\over\theta}n\log_2n+O_{f,\theta}(n),
+                                                        \label{eq:genericmean}\\
+ \Var_fT_{\theta,n}&\sim c(\theta)n\log_2n,             \label{eq:genericvar}\\
+ {T_{\theta,n}-\E_fT_{\theta,n}\over
+       \sqrt{c(\theta)n\log_2n}}&\Longrightarrow N(0,1),\qquad
+ {T_{\theta,n}-\E_fT_{\theta,n}\over
+       \sqrt{\Var_fT_{\theta,n}}}\Longrightarrow N(0,1). \label{eq:genericclt}
+\end{align}
+Here $c(\theta)=\|d_\theta\|_2^2>0$ is the Lebesgue-space coefficient
+of \eqref{eq:ctheta}; in particular it does not depend on $f$.
+\end{theorem}
+The rest of Sections~\ref{sec:nonuniform}--\ref{sec:nonuniformfull} proves
+this theorem.  The restriction to nonresonance is essential to the present
+result, not merely to its proof presentation.
+
+\subsection{Conditional profiles and loss of fair bits}
+For a physical dyadic interval $I=[a,a+h)$ put
+\begin{equation}
+ p_I=\int_I f(x)\,dx,\qquad f_I(u)={h f(a+hu)\over p_I},
+ \quad 0\le u\le1.                                      \label{eq:profile}
+\end{equation}
+Conditional on exactly $k$ observations lying in $I$, their affine images
+are independent with density $f_I$; conditional samples in distinct cells
+are independent once their counts are fixed.  This assertion conditions
+only on cell membership and never on occupancy of a Barnes--Hut guard.
+The mean-value theorem and \eqref{eq:fhyp} give, uniformly in $I$,
+\begin{equation}
+ \|f_I-1\|_\infty\le {\|f'\|_\infty\over m_f}h,
+ \qquad \|f_I'\|_\infty\le {\|f'\|_\infty\over m_f}h,
+ \qquad {m_f\over M_f}\le f_I\le {M_f\over m_f}.       \label{eq:flat}
+\end{equation}
+Indeed $p_I/h$ lies between the minimum and maximum of $f$ on $I$, whose
+difference is at most $\|f'\|_\infty h$.
+
+Under Lebesgue measure the binary digits are independent fair bits.  Under
+$f$, a split of $I$ has probability
+\begin{equation}q_I={p_{I_0}\over p_I}={1\over2}+O_f(h), \label{eq:nonfair}
+\end{equation}
+and, after the split, the two child profiles $f_{I_0}$ and $f_{I_1}$ are
+generally different.  Thus neither fair Bernoulli digits nor identical
+recursive subproblems may be used.  What survives is local flatness:
+there are $n\log_2n+O_f(n)$ active labelled levels, and all but $O(n)$ of
+their aggregate first-order contribution sees a profile close to uniform.
+
+\subsection{External path length}
+For the depth-$r$ cell $I_r(x)$ containing $x$, set
+$p_r(x)=\int_{I_r(x)}f$.  A labelled point is active at depth $r$ precisely
+when at least one other point shares its cell.  Tonelli therefore gives the
+exact formula
+\begin{equation}
+ \E_fL_n=n\sum_{r\ge0}\int_0^1 f(x)
+       \{1-(1-p_r(x))^{n-1}\}\,dx.                       \label{eq:ELexact}
+\end{equation}
+Uniformly in $x$,
+$p_r(x)=f(x)2^{-r}+O_f(2^{-2r})$.  Splitting the sum a bounded distance
+from $\log_2(nf(x))$, bounding the coarse tail by
+$e^{-(n-1)p_r(x)}$ and the fine tail by $(n-1)p_r(x)$, yields
+\begin{equation}
+ \E_fL_n=n\log_2n+n\int_0^1f(x)\log_2f(x)\,dx+O_f(n)
+        =n\log_2n+O_f(n).                                 \label{eq:EL}
+\end{equation}
+An add-one stabilization argument for isolation depths similarly gives
+\begin{equation}\Var_fL_n=O_f(n).                          \label{eq:VarLnon}
+\end{equation}
+For clarity, resampling a point can affect only cells on its ancestor chain.
+At intensity $\lambda=n p_I$, the probability that an insertion changes an
+isolation depth is bounded by $C\min(\lambda,\lambda^{-1})$; summation of
+the corresponding $L^2$ influences on the two sides of $\lambda=1$, followed
+by Efron--Stein, proves \eqref{eq:VarLnon}.  This argument retains the true
+cell masses $p_I$.
+
+\clearpage
+\section{Nonuniform stopped-LISTER transfer}\label{sec:nonuniformlister}
+The identities \eqref{eq:Vdef} and \eqref{eq:stopped-decomp} are pathwise,
+so they remain valid under $f$.  Their probabilistic analysis requires a
+replacement for the fair-bit orthogonality used above.  We give that
+replacement in detail.
+
+\subsection{Finite Walsh projection and conditional centering}
+Let $\mathcal D_m$ be the sigma field generated by the first $m$ binary
+digits and define
+\begin{equation}
+ d^{(m)}=\E_{dx}(d_\theta\mid\mathcal D_m),\quad
+ e_m=d_\theta-d^{(m)},\quad \sigma_m^2=\|d^{(m)}\|_2^2.  \label{eq:dmnon}
+\end{equation}
+Lebesgue conditional expectation is used deliberately: $Pd_\theta=0$ and
+the coefficient to be recovered is its Lebesgue energy.  At a physical
+cell $I$ and a revealed prefix, a next bit has its actual conditional
+probability $q_I$, not $1/2$.  Subtracting its conditional mean decomposes
+the fixed-$m$ statistic into a martingale $N_n^{(m)}$ and a predictable
+drift $R_n^{(m)}$:
+\begin{equation}
+ M_n^{(m)}-\E_fM_n^{(m)}=N_n^{(m)}+R_n^{(m)},qquad
+ \Var_fR_n^{(m)}=O_{f,m}(n).                              \label{eq:condcenter}
+\end{equation}
+The last estimate follows by Taylor expanding $q_I-1/2=O_f(|I|)$ and
+summing squared influences: at depth $r$ the error per active label is
+$O_f(2^{-r})$, while the occupancy second moments summed over cells are
+$O(n+n^22^{-r})$.  Splitting at $2^r\asymp n$ makes the total $O(n)$.
+
+Let $Q_n^{(m)}$ be the predictable bracket of $N_n^{(m)}$.  The same
+cell calculation, with stopping indicators measurable before the bit being
+centered, proves
+\begin{equation}
+ \E_fQ_n^{(m)}=\sigma_m^2\E_fL_n+O_{f,m}(n)
+ =\sigma_m^2n\log_2n+O_{f,m}(n).                          \label{eq:bracketmean}
+\end{equation}
+Fourth-moment bounds for cell occupancies and finite-range dependence of a
+fixed Walsh polynomial yield
+\begin{equation}
+ \Var_fQ_n^{(m)}=o(n^2\log^2n),\qquad
+ {Q_n^{(m)}\over n\log_2n}\longrightarrow\sigma_m^2
+ \quad\hbox{in probability}.                             \label{eq:bracketconc}
+\end{equation}
+More explicitly, pairs of bracket summands are divided by labels.  For the
+same label only $m$ adjacent bit windows overlap; summing their fourth
+moments costs $O_{f,m}(n\log n)$.  For different labels, disjoint physical
+cells are conditionally independent given their multinomial counts, while
+nested cells are handled by the centered descendant indicator.  These give
+$o(n^2\log^2 n)$ after the depth sums.  Bounded increments for fixed $m$
+and the active-count fourth-moment bound give Lindeberg.  The martingale
+array theorem and \eqref{eq:condcenter} consequently imply
+\begin{equation}
+ {M_n^{(m)}-\E_fM_n^{(m)}\over
+       \sqrt{\sigma_m^2n\log_2n}}\Longrightarrow N(0,1)
+ \quad(\sigma_m^2>0).                                    \label{eq:fixedmnonclt}
+\end{equation}
+
+\subsection{Cell moments, Haar sums, and the infinite-tail transfer}
+It remains to justify passage from $d^{(m)}$ to $d_\theta$.  This is the
+point at which a coefficientwise bound would lose a logarithm.  If
+$A=[ja,(j+1)a)$ is a depth-$r$ cell, $a=2^{-r}$, set
+\begin{equation}E_r(A)=\int_A e_m(T^rx)f(x)\,dx.           \label{eq:Er}
+\end{equation}
+Changing variables and using
+$\E(e_m\mid\mathcal D_m)=0$ on every depth-$m$ cell gives
+\begin{align}
+ |E_r(A)|&\le \|f'\|_\infty a^2,2^{-m}\|e_m\|_1,
+                                                               \label{eq:cellfirst}\\
+ \sum_{A\in\mathcal D_r}|E_r(A)|^2
+ &\le M_f^2a\|e_m\|_2^2,                                   \label{eq:cellsq1}\\
+ \sum_{A\in\mathcal D_r}|E_r(A)|^2
+ &\le \|f'\|_\infty^2a^3,4^{-m}\|e_m\|_1^2.              \label{eq:cellsq2}
+\end{align}
+The factor $2^{-m}$ in \eqref{eq:cellfirst} comes from subtracting $f$ at
+the left endpoint separately on every shifted depth-$m$ subcell of $A$.
+
+We sketch the complete covariance summation.  Same-label terms at depths
+$r,s$ are split according to $|r-s|\le m$ and $|r-s|>m$.  The former are
+bounded by Cauchy--Schwarz and \eqref{eq:cellsq1}; for the latter the
+conditional centering on the intervening bits and \eqref{eq:cellsq2} give
+\begin{equation}
+ |C_{\rm same}(e_m)|\le
+ C_f n\log(n+1)\|e_m\|_2^2+C_fn\,2^{-m}\|e_m\|_1^2.       \label{eq:samecov}
+\end{equation}
+For two labels, their cells are either disjoint or nested.  In the disjoint
+case multinomial avoidance produces kernels of the form
+$(1-p_A-p_B)^{n-2}$; summation first over cells and then over depths, using
+\eqref{eq:cellfirst}--\eqref{eq:cellsq2}, is bounded by
+$C_fn\log(n+1)2^{-m}\|e_m\|_1^2+O_f(n4^{-m}\|e_m\|_1^2)$.
+
+For the nested case $B\subset A$, write $h=s-r$.  After affinely mapping
+$A$ to $[0,1]$, the centered descendant indicator satisfies
+\begin{equation}
+ \int_A e_m(T^rx)\left(\mathbf1_B(x)-{|B|\over|A|}\right)dx
+ =2^{-r}\int_J e_m(u)\,du,                                \label{eq:nestedhaar}
+\end{equation}
+where $J$ is a depth-$h$ dyadic interval.  It vanishes exactly for $h\le m$.
+For $h>m$, Haar orthogonality gives
+\begin{equation}
+ \sum_{J\in\mathcal D_h}\left|\int_J e_m\right|^2
+   =2^{-h}\|\E(e_m\mid\mathcal D_h)\|_2^2.              \label{eq:haarsquare}
+\end{equation}
+The density-weighted kernel is centered with its actual mass, not $|B|/|A|$;
+freezing $f$ on $A$ and assigning the oscillation to
+\eqref{eq:cellfirst} gives the aggregate estimate
+\begin{equation}
+ |C_{\rm diff}(e_m)|\le C_f4^{-m}\|e_m\|_1^2+
+ C_f2^{-m}\{n\|e_m\|_1^2+log(n+1)\|e_m\|_1\|e_m\|_2\}.
+                                                               \label{eq:diffcov}
+\end{equation}
+This includes the factor $n(n-1)$ from choosing the two labels.  The mixed
+scale-depth sum is finite because avoidance localizes $n p_B$ near one,
+while \eqref{eq:haarsquare} sums relative depths in $\ell^2$ rather than by
+a coefficientwise triangle inequality.  Equations
+\eqref{eq:samecov}--\eqref{eq:diffcov}, first for a finite double truncation
+and then by monotone exhaustion of depths, imply
+\begin{equation}
+ \lim_{m\to\infty}\limsup_{n\to\infty}{1\over n\log(n+1)}
+ \Var_f\{M_n-M_n^{(m)}\}=0.                              \label{eq:tailtransfer}
+\end{equation}
+Here $\|e_m\|_2\to0$, and $\|e_m\|_1\le\|e_m\|_2$.
+
+Taking $n\to\infty$ at fixed $m$ in \eqref{eq:fixedmnonclt}, then
+$m\to\infty$ in \eqref{eq:tailtransfer}, is the converging-together
+argument.  Since $\sigma_m^2\to\|d_\theta\|_2^2=c(\theta)$, we obtain
+\begin{equation}
+ \Var_fM_{\theta,n}\sim c(\theta)n\log_2n,qquad
+ {M_{\theta,n}-\E_fM_{\theta,n}\over\sqrt{c(\theta)n\log_2n}}
+ \Longrightarrow N(0,1).                                  \label{eq:Mnonuniform}
+\end{equation}
+The endpoint sum has variance $O_{f,\theta}(n)$: truncate its logarithmic
+singularity, use cell stabilization for the bounded part, and let the
+$L^2$ tail tend to zero.  Together with \eqref{eq:VarLnon}, this proves:
+
+\begin{theorem}[Nonuniform strict-stopped LISTER theorem]\label{thm:nonunifV}
+Under \eqref{eq:fhyp}, for fixed nonresonant $\theta$,
+\begin{equation}
+ \Var_fV_{\theta,n}\sim c(\theta)n\log_2n,\qquad
+ {V_{\theta,n}-\E_fV_{\theta,n}\over\sqrt{c(\theta)n\log_2n}}
+ \Longrightarrow N(0,1),                                  \label{eq:Vnonuniform}
+\end{equation}
+and the same limit holds with denominator $\sqrt{\Var_fV_{\theta,n}}$.
+\end{theorem}
+The universality of $c(\theta)$ is now transparent: local conditional
+centering changes bracket means by a summable physical-scale error, whereas
+the $n\log n$ active-level mass multiplies the Lebesgue energy of the
+canonical innovation.
+
+\clearpage
+\section{Nonuniform adaptive discrepancy by stabilization}\label{sec:stabilization}
+The finite-tree identity \eqref{eq:finite-tree} is distribution-free.  We
+write $D(Y)$ for a barred root defect and begin with a local profile $h$
+whose density ratio is bounded as in \eqref{eq:flat}.  If $Y_1,\ldots,Y_n,X$
+are independent $h$-points, define the root add-one increment
+\begin{equation}Z_n=D(Y_1,\ldots,Y_n,X)-D(Y_1,\ldots,Y_n). \label{eq:Zn}
+\end{equation}
+
+\begin{lemma}[Root stabilization]\label{lem:rootstab}
+Uniformly over physical-cell profiles and every $0<\alpha<1$,
+\begin{equation}
+ \Pp(Z_n\ne0)\le {C\over n+1},\qquad
+ \|Z_n\|_2\le C_\alpha(n+1)^{-\alpha/2}.                 \label{eq:rootstab}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let $I^{*j}$ be the $j$-fold middle half of the normalized cell and
+$S_j=\{X\in I^{*j}\}$.  Repeated application of the coefficient-one inward
+copy, before making any conditioning assertion, gives for every $L$
+\begin{equation}
+ \{Z_n\ne0\}\subset S_L\cup
+ \bigcup_{0\le j<L}(S_j\cap G_j^c),                      \label{eq:supportinc}
+\end{equation}
+where $G_j$ says that the fixed old-sample guard at level $j$ is filled.
+Density-ratio bounds and the finite number of guard atoms give
+\begin{equation}
+ \Pp(S_j)\le C2^{-j},\qquad \Pp(G_j^c)\le Ce^{-cn2^{-j}}. \label{eq:twoprobs}
+\end{equation}
+The first event depends only on the inserted point and the second only on
+the old sample.  They are therefore independent.  This is not a statement
+about the law of an inward sample after conditioning on a filled guard.
+Thus, on letting $L\to\infty$,
+\begin{equation}
+ \Pp(Z_n\ne0)\le C\sum_{j\ge0}2^{-j}e^{-cn2^{-j}}
+ ={C\over n}\sum_{j\ge0}(n2^{-j})e^{-cn2^{-j}}\le {C'\over n+1}.
+                                                               \label{eq:dyadicsum}
+\end{equation}
+For the last inequality split where $n2^{-j}\le1$; that tail is geometric,
+and group the other terms in dyadic blocks, obtaining
+$\sum_{k\ge0}2^ke^{-c2^k}<\infty$.
+
+The guarded recurrence also supplies, for each finite $p$,
+$\sup_{h,n}\E|D(Y_1,\ldots,Y_n)|^p<\infty$.  Consequently the same holds
+for $Z_n$.  H\"older's inequality applied to
+$|Z_n|^2\mathbf1_{\{Z_n\ne0\}}$, with $p>2/(1-\alpha)$, proves the second
+bound in \eqref{eq:rootstab}.
+\end{proof}
+
+Let $A^+(x;Y)$ be the change in the full discrepancy after inserting $x$.
+Along the physical ancestor chain $I_r(x)$, let $K_r$ be the number of old
+points and let $\delta_r$ be the change of the corresponding barred root
+defect.  The pathwise tree identity gives
+\begin{equation}A^+(x;Y)=\sum_{r\ge0}\delta_r.             \label{eq:addonesum}
+\end{equation}
+Conditional on $I_r$, on $x\in I_r$, and on $K_r=k$, the old affine sample
+is iid with density $f_{I_r}$ and the inserted affine point is independent
+with the same density.  This legitimate cell-count conditioning permits
+Lemma~\ref{lem:rootstab}.  Since $p_{I_r}\asymp_f2^{-r}$, binomial
+negative-moment bounds, with $\lambda_r=m2^{-r}$, give in the dense regime
+\begin{equation}\|\delta_r\|_2\le C_\alpha\lambda_r^{-\alpha/2}
+ \qquad(\lambda_r\ge1).                                    \label{eq:dense}
+\end{equation}
+In the sparse regime, $\delta_r=0$ when $K_r=0$: both the old empty sample
+and new singleton have zero barred defect.  Hence
+$\Pp(K_r\ge1)\le C\lambda_r$, and the uniform high moments plus H\"older
+give
+\begin{equation}\|\delta_r\|_2\le C_\alpha\lambda_r^{\alpha/2}
+ \qquad(\lambda_r\le1).                                    \label{eq:sparse}
+\end{equation}
+Both sides of the index $r\simeq\log_2m$ are geometric, so
+\begin{equation}
+ \sum_{r\ge0}\|\delta_r\|_2\le
+ C_\alpha\sum_{r\ge0}\min\{\lambda_r,\lambda_r^{-1}\}^{\alpha/2}
+ \le C_\alpha.                                             \label{eq:minksum}
+\end{equation}
+Apply Minkowski to finite partial sums in \eqref{eq:addonesum}; almost-sure
+isolation makes the sum pathwise finite, and \eqref{eq:minksum} then gives
+\begin{equation}
+ \sup_{m\ge0}\E_f|A^+(X_{m+1};X_1,\ldots,X_m)|^2<\infty. \label{eq:addoneL2}
+\end{equation}
+No independence among depths and no covariance sign has been assumed.
+
+Replacing one coordinate is one removal followed by one insertion.  By
+exchangeability, the Efron--Stein inequality and \eqref{eq:addoneL2} yield
+our distribution-free-scale comparison theorem.
+\begin{theorem}[Adaptive discrepancy]\label{thm:nonunifdelta}
+Under \eqref{eq:fhyp}, for every fixed $0<\theta<1$,
+\begin{equation}\Var_f\Delta_{\theta,n}=O_{f,\theta}(n).   \label{eq:nonunifdelta}
+\end{equation}
+\end{theorem}
+An alternative profile-renewal approach reduces the proof to regularity of
+the difference of the two sibling mean slopes at a nonfair binomial split.
+Ordinary within-profile regularity does not prove that estimate.  The
+stabilization argument above makes the sibling estimate unnecessary.
+
+\clearpage
+\section{Completion of the nonuniform theorem and the mean}\label{sec:nonuniformfull}
+Write $T=V+\Delta$.  Theorems~\ref{thm:nonunifV} and
+\ref{thm:nonunifdelta} imply
+\begin{equation}
+ |\Cov_f(V,\Delta)|\le\sqrt{\Var_fV\Var_f\Delta}
+ =O_{f,\theta}(n\sqrt{\log n})=o(n\log n).                \label{eq:noncov}
+\end{equation}
+They also imply
+\begin{equation}{\Delta-\E_f\Delta\over\sqrt{n\log n}}
+ \longrightarrow0\quad\hbox{in }L^2.                       \label{eq:nonDsmall}
+\end{equation}
+The variance identity, \eqref{eq:noncov}, and Slutsky prove
+\eqref{eq:genericvar}--\eqref{eq:genericclt}; the variance asymptotic itself
+converts canonical normalization to true-variance normalization.
+
+It remains to verify the mean.  From \eqref{eq:stopped-decomp},
+\eqref{eq:Fmean}, and \eqref{eq:EL},
+\begin{equation}
+ \E_fV_{\theta,n}={2\over\theta}\E_fL_n+E_fM_{\theta,n}
+ +\E_fH_{\theta,n}={2\over\theta}n\log_2n+O_{f,\theta}(n).
+                                                               \label{eq:EVmean}
+\end{equation}
+Here no cancellation of the last two expectations is asserted: the
+conditional-bit drift and the two stopped endpoints each have absolute
+first moment $O(n)$.  The finite-tree root defects have uniformly bounded
+first moments and their occupied-node sum has expectation $O_{f,\theta}(n)$;
+equivalently, integrate the dense/sparse add-one bounds along insertion to
+obtain
+\begin{equation}|\E_f\Delta_{\theta,n}|=O_{f,\theta}(n).    \label{eq:EDmean}
+\end{equation}
+Equations \eqref{eq:EVmean}--\eqref{eq:EDmean} prove
+\eqref{eq:genericmean}.  They do not identify a second-order constant or a
+log-periodic linear correction.
+
+\clearpage
+\section{Scope at resonance}\label{sec:scope}
+For uniform input, Sections~\ref{sec:resstop} and \ref{sec:fullres} give the
+complete theorem: at $\theta=2/Q$ the exact coboundary
+\eqref{eq:cobQ} removes the repeated $n\log n$ martingale energy; external
+path, endpoint, and adaptive discrepancy terms all remain on the common
+order-$n$ variance scale.  Their joint signed covariance produces the
+continuous one-periodic coefficient \eqref{eq:tau}; the guarded local
+lower bound \eqref{eq:lower} proves strict positivity, and the joint CLT
+proves the true-variance Gaussian limit.  This explains why the
+normalization changes from $\sqrt{n\log n}$ to $\sqrt n$ without destroying
+the CLT.
+
+For a nonconstant density at $\theta=2/Q$, the pathwise coboundary identity
+still holds and Theorem~\ref{thm:nonunifdelta} still gives
+$\Var_f\Delta=O(n)$.  Nevertheless, the phase-periodic variance and CLT for
+the resonant stopped LISTER, and its order-$n$ interaction with the adaptive
+correction, have not been determined.  No nonuniform resonant theorem is
+claimed here.  This is the principal remaining extension.
+
+\clearpage
+\section{Discussion}
+The coefficient $c(\theta)$ measures the innovation repeated at active trie
+levels.  Its vanishing removes an entire logarithmic factor, rather than
+merely changing a constant.  The cusp shows how that factor returns near a
+resonance.  The factor-three parity difference comes from an integer
+endpoint profile versus cancellation at a half-integer endpoint.
+
+The ideal and adaptive models play different roles.  Arithmetic enters the
+ideal toll through endpoint orbits.  The adaptive comparison is geometric
+and works for every real parameter: its guard is finite, its inward copy has
+coefficient one, and its signed covariance is retained.  No result here
+identifies a uniform transition window when both $n$ and $\theta$ vary.
+Analogous classifications in higher dimensions would require both a
+multidimensional endpoint dynamics and a replacement for the binary-trie
+Walsh filtration.
+
+\appendix
+\clearpage
+\section{Binary smoothing and renewal}\label{app:smoothing}
+\begin{lemma}[Smoothing]\label{lem:smoothing}
+Let $B_n\sim\mathrm{Bin}(n,1/2)$.  If
+$u_n=2\E u_{B_n}+r_n$, $u_0=u_1=0$, and
+$|r_n|\le Cn^\rho$ for some $\rho<1$, then $u_n=O(n)$.  If
+$v_n=\E v_{B_n}+e_n$ with exponentially decaying $e_n$ and bounded $v_n$,
+then $|v_{n+1}-v_n|=O_\beta(n^{-\beta})$ for every $\beta<1$.
+\end{lemma}
+\begin{proof}
+Poissonize: $\widetilde u(x)=e^{-x}\sum_nu_nx^n/n!$.  Binomial splitting
+becomes $\widetilde u(x)=2\widetilde u(x/2)+\widetilde r(x)$.
+Iteration gives
+$\widetilde u(x)=\sum_{j\ge0}2^j\widetilde r(x/2^j)$, with the finitely many
+small-$x$ boundary terms included.  Since $\rho<1$, division by $x$ makes
+the tail geometric, so $\widetilde u(x)=O(x)$.  Standard coefficient
+comparison for nonnegative majorants, or direct binomial induction with the
+self-atoms isolated, gives $u_n=O(n)$.  For the second statement couple
+$B_{n+1}=B_n+I$, multiply the first-difference recursion by
+$(n+1)^\beta$, and isolate $B_n=n$; the limiting contraction is
+$2^{\beta-1}<1$.  Exponential forcing completes the induction.
+\end{proof}
+
+\clearpage
+\section{Trie facts and the martingale CLT}\label{app:trie}
+The stopped prefixes form a prefix-free set.  Conditional on their labelled
+values, the unused suffixes are independent fair strings.  This follows by
+checking cylinder probabilities and then applying monotone convergence.
+The identities
+\begin{equation}\E L_n=nS_{n-1},\qquad \Var(L_n)=O(n)           \label{eq:triefacts}
+\end{equation}
+follow from the binomial split recursion.  Poisson iteration gives a
+continuous one-periodic $v_L$ such that $\Var(L_n)/n\to v_L(t)$ along
+$\{\log_2n\}\to t$.  The same iteration applied to joint tolls gives
+continuous phase covariance functions whenever the signed forcing is
+$O(n^\rho)$, $\rho<1$.
+
+We use the following standard martingale-array form: if the predictable
+bracket divided by $s_n^2$ converges in probability to one and the
+conditional Lindeberg sum converges in probability to zero, then the sum
+divided by $s_n$ converges to $N(0,1)$.  Proposition~\ref{prop:bracket}
+verifies both hypotheses rather than assuming independence of trie levels.
+
+\clearpage
+\section{Details of the resonant adaptive argument}\label{app:resonant}
+We summarize the complete parity-uniform chain.  At a half-log cut
+$\ell=\lfloor\tfrac12\log_2n\rfloor+O(1)$, the exact stopped residual is
+\begin{equation}R_{n,\ell}=\sum_{r<\ell}\sum_{I\in\cD_r}
+ D_Q(X_I)\1_{\{N_I\ge2\}}.                                  \label{eq:residual}
+\end{equation}
+Condition first on labelled cell allocations.  Canonical suffix blocks are
+then independent.  Uniform root-defect moments control their centered
+noise.  The first-difference estimate \eqref{eq:dregular}, Efron--Stein,
+and multinomial coupling control the nonzero conditional mean.  At level
+$r$ the variance is $O_Q(2^r)$; Minkowski across levels, without an
+independence claim, yields
+\begin{equation}\Var(R_{n,\ell})\le C_Q2^\ell=O_Q(\sqrt n),
+ \qquad\norm{R_{n,\ell}-\E R_{n,\ell}}_2=O_Q(n^{1/4}).          \label{eq:residualbound}
+\end{equation}
+
+For even $Q$, the switching point is half-integral rather than integral.
+The guard \eqref{eq:guard} prevents it from crossing an exterior active
+cell; the middle-half similarity still gives exactly one inward copy and
+no toll.  The endpoint orbit of $g_Q$ is finite and supplies a finite Perron
+state.  The entrance/terminal covariance recursion retains its signed root
+term and has forcing $O_Q(n^{1/2+\varepsilon})$.  Binary renewal therefore
+produces $\kappa_Q$.  The same argument for the discrepancy produces
+$\gamma_Q$.
+
+Conditionally on labelled half-log prefixes, block pairs are independent.
+Uniform fourth moments give conditional Lyapunov for every positive-variance
+Cram\'er--Wold direction; conditional Chebyshev treats a degenerate
+direction.  The occupancy mean is $o_{L^2}(\sqrt n)$ and
+\eqref{eq:residualbound} removes the stopped residual.  Deconditioning
+bounded characteristic functions gives \eqref{eq:jointres}.
+
+For nondegeneracy, use disjoint groups of $Q$ depth-$d$ cells with three
+points in the middle cell and empty guards.  There are $\Theta(n)$ candidates
+when $2^d\asymp n$.  A candidate has probability bounded below.  Replacing
+one label changes at most two indicators, so Efron--Stein and Chebyshev give
+linearly many eligible blocks with high probability.  Inside each block,
+two strict open configurations place two points in a small dyadic child and
+the third respectively inside or outside its rejection distance; the local
+costs differ by one.  Guard insulation makes every exterior decision
+identical.  Conditional independence of the triples therefore proves
+\eqref{eq:lower}.  This construction works on both integer and half-integer
+switching grids.
+
+\clearpage
+\section{Fourier normalization check}\label{app:fourier}
+For $m\ne0$,
+\begin{equation}\widehat{R_c-2c}(m)={\sin(2\pi mc)\over\pi m}.  \label{eq:Rhat}
+\end{equation}
+The positive and negative odd frequencies have equal squared modulus, so
+Parseval yields exactly the factor $2$ in \eqref{eq:cFourier}.  Finally
+\begin{equation}
+ \sum_{u\ge1,\ u\text{ odd}}{\cos(2\pi ux)\over u^2}
+ =\pi^2\left({1\over8}-{1\over2}\norm{x}_{\mathbb Z}\right), \label{eq:oddcos}
+\end{equation}
+which inserted into the square of \eqref{eq:Psi} proves
+\eqref{eq:kernel} with its sign and factor $1/2$.
+
+\begin{thebibliography}{9}
+\bibitem{BH} J.~Barnes and P.~Hut, A hierarchical $O(N\log N)$
+force-calculation algorithm, \emph{Nature} \textbf{324} (1986), 446--449.
+\bibitem{JS} P.~Jacquet and W.~Szpankowski, Analytic de-Poissonization and
+its applications, \emph{Theoret. Comput. Sci.} \textbf{201} (1998), 1--62.
+\bibitem{Mahmoud} H.~M. Mahmoud, \emph{Evolution of Random Search Trees},
+Wiley, New York, 1992.
+\bibitem{Billingsley} P.~Billingsley, \emph{Probability and Measure},
+third ed., Wiley, New York, 1995.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,4071 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\numberwithin{equation}{section}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\E}{\mathbb E}\newcommand{\Pp}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\1}{\mathbf 1}\newcommand{\F}{\mathcal F}\newcommand{\D}{\mathcal D}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\begin{document}
+\title{The One-Dimensional Barnes--Hut Central Limit Theory\\A Self-Contained Proof Dossier}
+\author{}
+\date{28 September 2026}
+\maketitle
+\begin{abstract}
+This dossier expands the proof architecture for the corrected one-dimensional
+Barnes--Hut cost.  Uniform input is treated for every fixed parameter; a
+positive $C^1$ density is treated at nonresonant parameters.  Exact identities,
+probabilistic estimates, and their mathematical dependencies are presented
+in full.  No nonuniform resonant theorem is asserted.
+\end{abstract}
+\tableofcontents
+\clearpage
+
+\section{Model and exact ideal toll}
+All intervals below are half open.  A dyadic cell of depth $r$ has width
+$2^{-r}$ and is represented by its midpoint.  Empty cells cost zero.  A
+singleton not containing the target costs one, while the singleton containing
+the target costs zero.  A nonsingleton containing the target is opened.  A
+disjoint nonsingleton of width $w$ and midpoint distance $D$ is accepted, at
+cost one, exactly when $w/D\leq\theta$; otherwise its two children are
+visited, including an empty child.  Thus equality is accepted and one-child
+chains are retained.
+
+Let $0<\theta<1$, $\alpha=\theta^{-1}$, $b=\alpha-1/2$, and
+$z=|2x-1|$.  Put $J=\lceil b\rceil$ and
+$\ell_j=\lceil\log_2(j+1)\rceil$ for $0\leq j<J$.
+
+\begin{proposition}[Exact filled-half toll]
+\begin{equation}
+ F_\theta(x)=1+\sum_{j=0}^{J-1}\sum_{d\geq\ell_j}
+ \1\{z<(b-j)2^{-d}\}.                                      \tag{1.1}
+\end{equation}
+It belongs to $L^p(0,1)$ for every finite $p$ and
+\begin{equation}\int_0^1F_\theta(x)\,dx=2/\theta.             \tag{1.2}\end{equation}
+\end{proposition}
+\begin{proof}
+Reflection permits $x<1/2$.  At local depth $d$, offset $j$ in the opposite
+half has
+\[
+ D/w=j+\tfrac12+2^dz.
+\]
+It is opened precisely when this is $<\alpha$, because equality is accepted.
+This is the strict inequality in (1.1).  Such a cell exists precisely when
+$j<2^d$, or $d\geq\ell_j$.  Opening one frontier cell replaces it by two and
+therefore adds one leaf; (1.1) follows.
+
+We now evaluate the mean without a geometric ``row telescoping'' shorthand.
+For $a>0$ and an integer $\ell$ satisfying $a\leq2^\ell$, set
+\[
+ G(a,\ell)=\sum_{d\geq\ell}a2^{-d}=2a2^{-\ell}.
+\]
+The choice $\ell_j$ need not satisfy $b-j\leq2^{\ell_j}$, so define
+$r_j=\max\{\ell_j,\lceil\log_2(b-j)\rceil\}$.  The terms
+$\ell_j\leq d<r_j$ have integral one (with equality at the endpoint changing
+only a null set), whereas the remaining terms have integral $(b-j)2^{-d}$.
+Consequently
+\begin{equation}
+ \int F_\theta=1+\sum_{j<J}\{r_j-\ell_j+2(b-j)2^{-r_j}\}.       \tag{1.3}
+\end{equation}
+We prove the arithmetic identity rather than appeal to row telescoping.  The
+following finite-tree observation will also be used in Section~3.  Regard
+$0,\ldots,J-1$ as integers in the $2$-adic residue tree: a node at depth
+$r$ is a nonempty set
+\[
+ N(r,a)=\{j:0\leq j<J,\ j\equiv a\pmod {2^r}\},
+ \qquad 0\leq a<2^r.
+\]
+The root is $N(0,0)$, and a node with at least two elements has as children
+its nonempty intersections with the two residue classes $a$ and $a+2^r$
+modulo $2^{r+1}$.  Stop at a singleton.  This is a finite full binary tree:
+every non-singleton node has exactly two nonempty children: explicitly,
+$N(r,a)=\{a+k2^r:k_{\min}\leq k\leq k_{\max}\}$ after restricting
+the displayed terms to $[0,J-1]$, and if it is not a singleton then both
+$k_{\min}$ and $k_{\min}+1$ occur and have opposite parity.  Hence both
+child residues occur.  At depth $r$ with $2^r\geq J$ every node is a
+singleton.
+The singleton containing $j$ first occurs at the least $r$ for which neither
+$j-2^r$ nor $j+2^r$ lies in $[0,J-1]$, namely
+\[
+ 2^r\geq j+1,\qquad 2^r>J-1-j.
+\]
+Because $J-1<b\leq J$, the second integer inequality is equivalent to
+$2^r\geq b-j$.  Thus its depth is exactly
+$r_j=\max\{\lceil\log_2(j+1)\rceil,
+\lceil\log_2(b-j)\rceil\}$.  (The equivalence includes equality when
+$b$ is an integer.)  Summing $2^{-r}$ down a finite full binary tree, each
+split replacing $2^{-r}$ by two copies of $2^{-r-1}$, gives the Kraft identity
+\begin{equation}
+             \sum_{j<J}2^{-r_j}=1.                            \tag{1.4}
+\end{equation}
+
+Set $S(b)=\sum_{j<J}\{r_j-\ell_j+2(b-j)2^{-r_j}\}$.  Away
+from the finitely many integer and dyadic breakpoints in any compact
+$b$-interval, $J$ and every $r_j$ are constant, and (1.4) gives
+$S'(b)=2\sum_j2^{-r_j}=2$.  There is no jump at a dyadic breakpoint:
+when $y=b-j$ crosses $2^r$, the changing summand has limiting values
+$0+2y2^{-r}=2$ from below and $1+2y2^{-r-1}=2$ from above.  Nor is there a
+jump at an integer $b=N$: immediately to its right the new index $j=N$ has
+$r_j=\ell_j$ and its summand tends to zero.  Finally, for
+$1/2<b\leq1$ there is only $j=0$, $r_0=\ell_0=0$, and $S(b)=2b$.
+Continuity across all breakpoints and the constant derivative between them
+therefore prove, for every $b>1/2$,
+\begin{equation}
+ \sum_{j<J}\{r_j-\ell_j+2(b-j)2^{-r_j}\}=2b.              \tag{1.5}
+\end{equation}
+Substitution in (1.3) yields
+$\int_0^1F_\theta=1+2b=2\alpha=2/\theta$, including all equality
+cases (strict versus weak indicator endpoints are null).  Finally, there are
+$J$ rows and each has at most $C+\log_+(1/z)$ nonzero terms, giving
+$F_\theta\leq C_\theta(1+\log_+(1/z))$ and every finite moment.
+\end{proof}
+
+\section{Explicit Perron--Gordin algebra}
+Let $T x=2x\pmod1$ and
+\[
+ Pq(y)=\tfrac12\{q(y/2)+q((y+1)/2)\}.
+\]
+For $0<c\leq1$ define
+\[
+ R_c(x)=\1_{x<c}+\1_{x>1-c},\qquad \bar R_c=R_c-2c,
+\]
+where overlap is counted twice and endpoint values are immaterial in $L^p$.
+For the $r_j$ above set $c_j=(b-j)2^{-r_j}$ and
+\[
+ A=\sum_{j<J}\sum_{d\geq r_j}R_{(b-j)2^{-d}},\quad
+ H^0=\sum_{j<J}\bar R_{c_j}.
+\]
+The series defining $A$ is pointwise finite off $\{0,1\}$ and is bounded by
+$C_\theta(1+\log_+(1/x)+\log_+(1/(1-x)))$; hence $A\in L^p$ for finite $p$.
+
+\begin{lemma}[Row identity]
+In every finite $L^p$,
+\begin{equation}F_\theta-\E F_\theta=H^0+A\circ T-A.            \tag{2.1}\end{equation}
+\end{lemma}
+\begin{proof}
+For $0<c\leq1$ direct division into the two inverse branches gives
+\begin{equation}R_c\circ T=\1_{\{|2x-1|<c\}}+R_{c/2}           \tag{2.2}\end{equation}
+a.e.  Apply (2.2) with $c=(b-j)2^{-d}$ and sum first over
+$r_j\leq d\leq N$.  The $R_{c/2}$ at depth $d$ cancels the $-R_c$ at depth
+$d+1$, leaving $R_{c_j}\circ T-R_{(b-j)2^{-N-1}}$.  The last term converges
+to zero in $L^p$ after centering (its support has measure $O(2^{-N})$).
+The finitely many clipped depths $\ell_j\leq d<r_j$ are constants a.e.;
+they disappear on centering.  Summing the finitely many rows proves (2.1).
+\end{proof}
+
+A second inverse-branch calculation gives
+\begin{equation}P\bar R_c=\tfrac12\bar R_{\{2c\}}.             \tag{2.3}\end{equation}
+Define the uniformly convergent series
+\[
+ k=\sum_{j<J}\sum_{s\geq1}2^{-s}\bar R_{\{2^sc_j\}},\qquad
+ d=H^0+k-k\circ T,
+\]
+and set
+\begin{equation}h=(A-\E A)+k.                                  \tag{2.4}\end{equation}
+The bound $|\bar R_c|\leq2$ proves uniform convergence of $k$ and
+$h\in L^p$ for every finite $p$.  Equations (2.1) and (2.4) give, a.e. and
+in every finite $L^p$,
+\begin{equation}F_\theta-\E F_\theta=d+h\circ T-h.             \tag{2.5}\end{equation}
+Moreover, $P(q\circ T)=q$ and (2.3) imply $Pk=\sum_{j,s\geq1}
+2^{-s-1}\bar R_{\{2^{s+1}c_j\}}$ and direct index shifting gives $Pd=0$.
+
+\begin{lemma}[Canonical uniqueness]
+If $f=d+Uh-h=d'+Uh'-h'$ in $L^2$, $Pd=Pd'=0$, and the only $L^2$ fixed
+points of $P$ are constants, then $d=d'$ in $L^2$.
+\end{lemma}
+\begin{proof}
+Put $q=h-h'$.  Then $d'-d=Uq-q$.  Applying $P$ gives $0=q-Pq$, so $q$ is a
+$P$-fixed point and is constant.  Hence $Uq-q=0$.
+\end{proof}
+(The fixed-point assertion follows by Fourier coefficients:
+$\widehat{Pq}(m)=\widehat q(2m)$; iteration and square summability force every
+nonzero coefficient to vanish.)
+
+\section{Fourier reduction, resonance, and cusp}
+For positive odd $u$ put
+\[
+ \Psi_u(t)=\sum_{s\geq0}2^{-s}\sin(2\pi2^sut).
+\]
+The Fourier calculation from (2.3) gives zero even coefficients and
+\begin{equation}
+ \widehat d(u)={1\over\pi u}\sum_{j<J}\Psi_u(c_j),\qquad u>0\text{ odd}. \tag{3.1}
+\end{equation}
+The splitting identity
+\[
+ \Psi_u(t/2)+\Psi_u((t+1)/2)=\Psi_u(t)                          \tag{3.2}
+\]
+is obtained by cancellation of the two level-zero sines and reindexing both
+tails.
+
+\begin{lemma}[Endpoint collapse]
+For every positive odd integer $u$,
+\begin{equation}\sum_{j<J}\Psi_u(c_j)=\Psi_u(\{b\}).           \tag{3.3}\end{equation}
+\end{lemma}
+\begin{proof}
+We give the complete inverse-doubling prefix tree.  Its combinatorial nodes
+are the nonempty residue sets $N(r,a)$ defined in the proof of (1.4).  Attach
+to such a node the circle label
+\[
+ L(r,a)=\left\{\frac{b-a}{2^r}\right\}\in\mathbb R/\mathbb Z.
+\]
+The parent map sends each node at depth $r+1$ to the unique residue node at
+depth $r$ containing it.  If $N(r,a)$ is not a singleton, its two children
+are $N(r+1,a)$ and $N(r+1,a+2^r)$, after choosing $0\leq a<2^r$.
+Their labels, in one order, are
+\[
+          L(r,a)/2,\qquad (L(r,a)+1)/2
+          \quad\pmod 1.
+\]
+Indeed the raw quotients $(b-a)/2^{r+1}$ and
+$(b-a-2^r)/2^{r+1}$ differ from those two representatives only by integers
+and by interchanging the two.  Thus (3.2), together with the
+one-periodicity of $\Psi_u$, says that the value at every internal node is
+the sum of the values at its two children.
+
+The stopping rule is: stop precisely when $N(r,a)$ is a singleton.  The
+argument in Section~1 proves both finiteness (all nodes have stopped once
+$2^r\geq J$) and that the exact leaves, with multiplicity as nodes, are
+\[
+       N(r_j,j\bmod 2^{r_j})=\{j\},\qquad 0\leq j<J.
+\]
+The label of this leaf is
+$\{(b-j)/2^{r_j}\}=\{c_j\}$.  Here $0<c_j\leq1$: if $c_j=1$
+we use its circle representative $0$, which changes neither $\Psi_u$ nor
+the identity.  Distinct indices remain distinct leaves even if numerical
+circle labels happen to agree; hence every multiplicity in the displayed
+sum is retained.  Iterating the child identity over this finite tree makes
+the root value equal the sum of its leaf values.  The root label is
+$L(0,0)=\{b\}$, proving (3.3).  The only equality cases in constructing
+the leaves are $2^{r_j}=j+1$ or $2^{r_j}=b-j$; the singleton criterion above
+uses respectively the exact conditions $2^{r_j}>j$ and
+$2^{r_j}>J-1-j$, so both cases are already included.
+\end{proof}
+
+\begin{lemma}[Simultaneous odd-chain lemma]\label{lem:simultaneous-odd}
+For $t\in[0,1)$, $\Psi_u(t)=0$ for every positive odd $u$ iff
+$t\in\{0,1/2\}$.
+\end{lemma}
+\begin{proof}
+The reverse direction is termwise.  (This is a simultaneous assertion; no scalar zero-set claim is used.)  Since $\Psi_u(t)=\Psi_1(ut)$, if $t$ is
+irrational then its odd multiples are dense modulo one (they form an orbit
+under irrational rotation by $2t$).  Continuity would force $\Psi_1$ to
+vanish identically, contradicting
+$\int_0^1\Psi_1(x)\sin(2\pi x)\,dx=1/2$; uniform convergence justifies
+termwise integration.
+
+Let $t=p/q$ be reduced.  If $q$ is odd, every residue modulo $q$ has an odd
+integer representative.  Vanishing for all odd $u$ therefore makes the
+sampled vector $(\Psi_1(a/q))_{a\bmod q}$ zero.  Absolute convergence and
+\[
+ \sum_{a=0}^{q-1}\sin(2\pi ka/q)\sin(2\pi a/q)
+ ={q\over2}({\bf1}_{k\equiv1\ (q)}-{\bf1}_{k\equiv-1\ (q)})
+\]
+(valid since $q>2$) show that $2/q$ times its frequency-one sine
+coefficient equals
+\[
+ C_1=\sum_{s:2^s\equiv1\ (q)}2^{-s}
+     -\sum_{s:2^s\equiv-1\ (q)}2^{-s}.
+\]
+The first sum contains the term $s=0$ of mass one.  The second is a proper
+subseries of $\sum_{s\geq1}2^{-s}=1$: two consecutive powers cannot both be
+$-1$ modulo an odd $q>1$.  Thus $C_1>0$, a contradiction.  The case $q=1$
+is $t=0$.
+
+If $q=2^av$ with $v$ odd, choose the allowed odd multiplier $u=v$, reducing
+to $p/2^a$.  For $a\geq2$, let $\zeta$ be a primitive $2^a$-th root.  The
+finite equality $\Psi_1(p/2^a)=0$ would put
+$\zeta^p-\zeta^{-p}$ in $\mathbb Q(\zeta^2)$: explicitly, after multiplying
+by $2i$ and using that the terms $s\geq a$ vanish,
+\[
+ \zeta^p-\zeta^{-p}
+ =-\sum_{s=1}^{a-1}2^{-s}
+       (\zeta^{2^sp}-\zeta^{-2^sp})\in\mathbb Q(\zeta^2).
+\]
+The automorphism $\zeta\mapsto-\zeta$ fixes that
+subfield but negates this nonzero element, a contradiction.  For $a=1$ the
+reduced fraction is $1/2$.
+\end{proof}
+
+Equations (3.1), (3.3), Lemma~\ref{lem:simultaneous-odd}, and Parseval give
+\[
+ d=0\iff\{b\}\in\{0,1/2\}\iff b\in\tfrac12\mathbb Z.
+\]
+Since $b=\theta^{-1}-1/2$ and $0<\theta<1$, this is equivalent to
+$2/\theta=2b+1=:Q$ with an integer $Q\ge3$, and conversely.  Thus
+\[
+ c(\theta):=\|d_\theta\|_2^2=0\iff\theta=2/Q,\quad Q\ge3.       \tag{3.4}
+\]
+Parseval (including negative frequencies) and the odd cosine series give
+\[
+ c(t)={2\over\pi^2}\sum_{\substack{u\ge1\\u\ {\rm odd}}}{\Psi_u(t)^2\over u^2}
+ ={1\over2}\sum_{r,s\ge0}2^{-r-s}
+ \{\|(2^r+2^s)t\|_{\mathbb Z}-\|(2^r-2^s)t\|_{\mathbb Z}\}.    \tag{3.5}
+\]
+Fubini is justified by
+$\sum_{r,s}2^{-r-s}\sum_{u\ {\rm odd}}u^{-2}<\infty$; the kernel series is
+uniformly absolutely convergent and hence continuous.
+
+\begin{proposition}[Exact resonance cusps]\label{prop:exact-cusps}
+As $\varepsilon\to0$,
+\[
+ c(\varepsilon)=6|\varepsilon|+o(|\varepsilon|),\qquad
+ c(1/2+\varepsilon)=2|\varepsilon|+o(|\varepsilon|).           \tag{3.6}
+\]
+At $\theta_0=2/Q$ the corresponding slopes are $3Q^2/2$ for odd $Q$ and
+$Q^2/2$ for even $Q$.
+\end{proposition}
+\begin{proof}
+Put $\phi(x)=\|x\|_{\mathbb Z}$.  For fixed $(r,s)$ the summand in (3.5),
+divided by $|\varepsilon|$, tends to $2^{-\max(r,s)}$.  The Lipschitz
+property of $\phi$, with the smaller power viewed as the perturbation, gives
+\[
+ {2^{-r-s-1}\over|\varepsilon|}
+ |\phi((2^r+2^s)\varepsilon)-\phi((2^r-2^s)\varepsilon)|
+ \le2^{-\max(r,s)}.
+\]
+Since $\sum_{r,s}2^{-\max(r,s)}=\sum_{j\ge0}(2j+1)2^{-j}=6$, dominated
+convergence proves the integer profile on both sides.
+
+For $t=1/2+\varepsilon$, split (3.5) into $(0,0)$, pairs with exactly one
+zero index, and pairs with both indices positive.  The first contribution is
+$|\varepsilon|$.  Combining the two ordered mixed pairs at level $j\ge1$
+and using $\phi(1/2+x)=1/2-\phi(x)$ gives exactly
+\[
+ B(\varepsilon)=\sum_{j\ge1}2^{-j}
+ \{\phi((2^j-1)\varepsilon)-\phi((2^j+1)\varepsilon)\}.
+\]
+For fixed $j$ the brace divided by $|\varepsilon|$ tends to $-2$.
+Its normalized absolute value is at most $2$, since its arguments differ by
+$2\varepsilon$; dominated convergence gives
+$B(\varepsilon)=-2|\varepsilon|+o(|\varepsilon|)$.  Removing one power of
+two from each positive index shows the last part is exactly
+$\frac14c(2\varepsilon)=3|\varepsilon|+o(|\varepsilon|)$.  Summing proves
+the half-integer profile.  Finally
+$b-(Q-1)/2=-(Q^2/4)(\theta-2/Q)+O((\theta-2/Q)^2)$.
+The base point is integral for odd $Q$ and half-integral for even $Q$,
+which proves the stated positive (and hence genuinely cuspidal) slopes.
+\end{proof}
+
+\section{Strict stopping and exact martingale variance}
+For iid fair strings $X_i$, let $\tau_i$ be the least depth at which label
+$i$ is alone and put
+\[
+ M_n=\sum_i\sum_{0\leq r<\tau_i}d(T^rX_i),\quad c=\norm d_2^2.
+\]
+Split by the first bit.  Let $B\sim\mathrm{Bin}(n,1/2)$ and, conditional on
+$B=k$, let the two rescaled suffix samples be independent canonical samples
+of sizes $k,n-k$.  Write $D_a(k)=\sum_{i=1}^kd((a+Y_i)/2)$ and let
+$M_a(k)$ be the strict descendant sum in that branch.  Then pathwise
+\[
+ M_n=D_0(B)+M_0(B)+D_1(n-B)+M_1(n-B).
+\]
+Conditional branch independence and zero descendant means eliminate cross-branch
+covariances involving descendants.  The unconditional root sum has variance
+$nc$: before conditioning on $B$ it is exactly $\sum_{i=1}^n d(X_i)$.
+For clarity, it is generally false that its conditional variance given $B$ is
+$nc$.  If $\mu_0=\int_0^1d(y/2)\,dy$, then $Pd=0$ gives branch means
+$\mu_0,-\mu_0$; conditional variance contributes $n(c-\mu_0^2)$ and
+variance of the conditional mean $(2B-n)\mu_0$ contributes $n\mu_0^2$.
+Their sum is $nc$.  Define
+$p_a(k)=\Cov(D_a(k),M_a(k))$.  The same identity gives $D_1(k)=-D_0(k)$ under
+the common suffix coupling, while descendant laws agree, hence
+$p_1(k)=-p_0(k)$.  Total variance therefore gives
+\begin{equation}v_n=2\E v_B+nc+2\E\{p_0(B)+p_1(n-B)\}=2\E v_B+nc,\tag{4.1}\end{equation}
+because $B\stackrel d=n-B$.  With $v_0=v_1=0$, comparison with the external
+path recurrence proves
+\begin{equation}\Var(M_n)=cnS_{n-1},\quad
+ S_m=\sum_{r\geq0}[1-(1-2^{-r})^m]=\log_2m+O(1).                \tag{4.2}\end{equation}
+
+\section{Finite Walsh martingale and CLT}\label{sec:walsh-clt}
+We now prove the finite-Walsh assertion, including the bracket concentration
+which will be used below.  Write
+\(
+ \mathcal D_m=\sigma(B_1,\ldots,B_m)
+\)
+for the dyadic sigma field on one infinite fair bit string and define, as an
+$L^2$ conditional expectation,
+\begin{equation}
+ d^{(m)}=\E(d\mid\mathcal D_m).
+ \tag{5.1}
+\end{equation}
+Put $\epsilon_s=(-1)^{B_s}$.  The Walsh basis of $L^2(\mathcal D_m)$ gives
+uniquely
+\begin{equation}
+ d^{(m)}=\sum_{S\subseteq\{1,\ldots,m\}}a_S\chi_S,
+ \qquad \chi_S=\prod_{s\in S}\epsilon_s,
+ \qquad a_S=\E(d\chi_S).                                    \tag{5.2}
+\end{equation}
+The empty coefficient is zero because $\E d=0$.  Moreover $Pd=0$ says that
+$\E(d\mid B_2,B_3,\ldots)=0$.  Taking conditional expectations shows that
+the coefficient of every $S$ not containing $1$ is zero.  Thus (5.2) is a
+sum over $1\in S$; in particular $j(S):=\max S$ is defined.  The same
+observation, or a direct average over the first bit, proves $Pd^{(m)}=0$.
+
+For label $i$ write $\epsilon_{i,s}=(-1)^{B_{i,s}}$.  The translate of
+$\chi_S$ based at trie depth $r$ is
+\begin{equation}
+ \chi_{i,r,S}=\prod_{s\in S}\epsilon_{i,r+s}.                \tag{5.3}
+\end{equation}
+Consequently the finite approximation to the strict-stopped sum is
+\begin{equation}
+ M_n^{(m)}=\sum_{i=1}^n\sum_{r\ge0}{\bf1}_{\{\tau_i>r\}}
+                   \sum_{S\ni1}a_S\chi_{i,r,S}.              \tag{5.4}
+\end{equation}
+Every sum in (5.4) is almost surely finite.  Reveal all labels one bit-column
+at a time and set
+\begin{equation}
+ \mathcal F_t=\sigma(\epsilon_{i,s}:1\le i\le n,1\le s\le t),
+ \quad t\ge0,\qquad \mathcal F_0=\{\varnothing,\Omega\}.      \tag{5.5}
+\end{equation}
+Assign the summand $(i,r,S)$ in (5.4) to the unique bit time
+$t=r+j(S)$.  Factoring out its last bit gives
+\begin{align}
+ M_n^{(m)}&=\sum_{t\ge1}\Delta_{n,t},
+ &\Delta_{n,t}&=\sum_{i=1}^n\epsilon_{i,t}C_{i,t-1},          \tag{5.6}\\
+ C_{i,t-1}&=\sum_{\substack{S\ni1\\j(S)\le\min(m,t)}}a_S
+ {\mathbf 1}_{\{\tau_i>t-j(S)\}}
+ \prod_{s\in S\setminus\{j(S)\}}
+       \epsilon_{i,t-j(S)+s}.                                \tag{5.7}
+\end{align}
+Isolation at depth $r$ is decided by the first $r$ bits of every label.
+In (5.7), $r=t-j(S)\le t-1$, and every remaining bit index is at most
+$t-1$.  Hence $C_{i,t-1}$ is $\mathcal F_{t-1}$-measurable.  Conditional on
+$\mathcal F_{t-1}$ the $\epsilon_{i,t}$ are independent centered
+Rademachers.  Thus (5.6) is a martingale-difference representation, and its
+predictable bracket is
+\begin{equation}
+ Q_n=\sum_{t\ge1}B_t,
+ \qquad B_t=\E(\Delta_{n,t}^2\mid\mathcal F_{t-1})
+            =\sum_{i=1}^n C_{i,t-1}^2.                        \tag{5.8}
+\end{equation}
+
+We record all activity estimates needed below.  Put
+$A_r=\sum_i{\mathbf 1}_{\{\tau_i>r\}}$ and $p_r=1-(1-2^{-r})^{n-1}$.
+For a fixed label, strict activity at depth $r$ means that at least one of
+the other $n-1$ labels has its length-$r$ prefix.  Therefore
+\begin{equation}
+ \E A_r=np_r.                                                 \tag{5.9}
+\end{equation}
+Also $A_r^2\le nA_r$, whence
+\begin{equation}
+ \sum_{r\ge0}\E A_r^2\le n^2\sum_{r\ge0}min(1,(n-1)2^{-r})
+                         =O(n^2\log(n+1)).                    \tag{5.10}
+\end{equation}
+Here $1-(1-x)^{n-1}\le\min(1,(n-1)x)$, and splitting at
+$\lceil\log_2(n\vee2)\rceil$ proves the last estimate, including the
+geometric tail.  Finally, summing (5.9) and using the definition in (4.2),
+\begin{equation}
+ \sum_{r\ge0}\E A_r=nS_{n-1}.                                \tag{5.11}
+\end{equation}
+If $K_m=\sum_{S\ni1}|a_S|$, Cauchy--Schwarz in the finite sum of possible
+maxima (or simply $(\sum_jx_j)^2\le m\sum_jx_j^2$) gives, with a constant
+depending only on $m$ and the coefficients,
+\begin{equation}
+ B_t\le K_m^2\sum_{j=1}^m A_{t-j},                            \tag{5.12}
+\end{equation}
+where $A_r=0$ for $r<0$.  It follows from (5.10),
+$(\sum_{j=1}^m A_{t-j})^2\le m\sum_jA_{t-j}^2$, that
+\begin{equation}
+ \sum_t\E B_t^2=O_m(n^2\log(n+1)).                           \tag{5.13}
+\end{equation}
+
+There are two exact ways to compute the mean bracket.  Martingale isometry
+in (5.6) says $\E Q_n=\Var M_n^{(m)}$.  Since $Pd^{(m)}=0$, the proof of
+(4.2), with $d^{(m)}$ in place of $d$, applies without alteration.  Parseval
+in (5.2) therefore yields the exact identity
+\begin{equation}
+ \E Q_n=\|d^{(m)}\|_2^2 nS_{n-1}
+       =\Big(\sum_{S\ni1}a_S^2\Big)nS_{n-1}.                 \tag{5.14}
+\end{equation}
+
+Here is the promised complete bounded-influence argument.  Replace $X_i$ by
+an independent $X_i'$ and denote the resulting bracket by $Q_n^{(i)}$.
+In the augmented collection
+$\{X_1,\ldots,X_n,X_i'\}$ let
+\begin{equation}
+ H=1+\max_{x\ne y}\operatorname{lcp}(x,y),                   \tag{5.15}
+\end{equation}
+where $\operatorname{lcp}$ is common-prefix length.  At a fixed depth $r$,
+only the old prefix cell of $X_i$ and the new prefix cell of $X_i'$ have
+changed occupancy.  Apart from label $i$, an isolation indicator in the old
+cell can change only if that label had $i$ as its sole companion; there is at
+most one such label, since two would be companions of each other.  The same
+argument gives at most one companion in the new cell.  Thus at each depth
+the changed isolation indicators belong to label $i$ and at most two other
+labels.  No indicator can change at depth $r\ge H$: by (5.15) all augmented
+prefixes are then distinct.
+
+For labels other than $i$, their bits do not change; hence a changed term in
+(5.7) must contain one of those changed activity indicators.  A fixed pair
+(label,depth $r$) occurs only at the times $t=r+j$, $1\le j\le m$, so the
+number of affected $(i,t)$ entries of (5.8), counted with multiplicity, is
+at most $2mH$ for the two possible companions.  For the replaced label,
+both its old and new coefficient chains vanish after depth $H-1$; allowing
+the $m$ possible terminal offsets, their comparison affects at most
+$H+m$ time entries.  Every coefficient, before and after replacement, has absolute value at most
+$K_m$.  Hence the absolute difference of their squares is at most $K_m^2$.
+There are at most $2mH+H+m\le4m(H+m)$ affected entries.  Summing these
+entrywise bounds gives the deterministic estimate
+\begin{equation}
+ |Q_n-Q_n^{(i)}|\le D_m(H+m),\qquad D_m=4mK_m^2.             \tag{5.16}
+\end{equation}
+This enumeration accounts both for the factor $m$ (the possible Walsh
+maxima) and for every label whose isolation can change.
+
+For completeness, a fixed pair of independent strings has common prefix at
+least $h$ with probability $2^{-h}$.  A union bound over the
+$\binom{n+1}{2}$ augmented pairs gives
+\begin{equation}
+ \Pp(H>h+1)\le\binom{n+1}{2}2^{-h}.                           \tag{5.17}
+\end{equation}
+Taking $h_0=\lceil2\log_2(n+1)\rceil$ and using
+$\E Z^2=\sum_{k\ge0}(2k+1)\Pp(Z>k)$ for integer $Z\ge0$, the part below
+$h_0$ is $O(h_0^2)$ and (5.17) makes the remaining geometric sum
+$O(h_0+1)$.  Hence $\E(H+m)^2=O_m(\log^2(n+1))$.  The
+Efron--Stein inequality and (5.16) now give
+\begin{equation}
+ \Var Q_n\le\frac12\sum_{i=1}^n\E(Q_n-Q_n^{(i)})^2
+             =O_m(n\log^2(n+1)).                             \tag{5.18}
+\end{equation}
+In particular, if $\|d^{(m)}\|_2>0$, (5.14), (5.18), and
+$S_{n-1}\sim\log_2n$ imply
+\begin{equation}
+ {Q_n\over \|d^{(m)}\|_2^2nS_{n-1}}\longrightarrow1
+ \quad\hbox{in probability}.                                \tag{5.19}
+\end{equation}
+
+Conditionally on $\mathcal F_{t-1}$, the summands in (5.6) are independent
+centered variables.  Expanding the fourth power (only index patterns $4$ and
+$2+2$ survive) gives exactly
+\begin{equation}
+ \E(\Delta_{n,t}^4\mid\mathcal F_{t-1})
+ =3B_t^2-2\sum_iC_{i,t-1}^4\le3B_t^2.                        \tag{5.20}
+\end{equation}
+Consequently (5.13) yields
+\begin{equation}
+ \sum_t\E\Delta_{n,t}^4=O_m(n^2\log(n+1))
+                         =o((n\log n)^2).                    \tag{5.21}
+\end{equation}
+For every $\eta>0$, conditional Markov followed by expectation gives
+\begin{align}
+ \E\sum_t {\E[\Delta_{n,t}^2{\mathbf 1}_{\{|\Delta_{n,t}|>
+ \eta\sqrt{nS_{n-1}}\}}\mid\mathcal F_{t-1}]\over nS_{n-1}}
+ &\le {\sum_t\E\Delta_{n,t}^4\over
+             \eta^2(nS_{n-1})^2}\longrightarrow0.           \tag{5.22}
+\end{align}
+Thus the conditional Lindeberg quantity tends to zero in $L^1$, hence in
+probability.
+
+To make the triangular array finite, take explicitly
+\begin{equation}T_n=\lceil4\log_2(n+1)\rceil+m.               \tag{5.23}
+\end{equation}
+By martingale orthogonality, (5.12), and (5.9),
+\begin{align}
+ \E\Big|\sum_{t>T_n}\Delta_{n,t}\Big|^2
+ &=\sum_{t>T_n}\E B_t
+ \le K_m^2m\sum_{r>\lceil4\log_2(n+1)\rceil}\E A_r\\
+ &\le K_m^2mn(n-1)\sum_{r>\lceil4\log_2(n+1)\rceil}2^{-r}
+ =O_m(n^{-2}).                                                \tag{5.24}
+\end{align}
+It is therefore $o(1)$ in $L^2$ after division by $\sqrt{n\log n}$.
+
+We use the following standard martingale triangular-array CLT in its precise
+form: if a finite row $(Z_{n,t},\mathcal F_{n,t})$ consists of square
+integrable martingale differences, if
+$\sum_t\E(Z_{n,t}^2\mid\mathcal F_{n,t-1})\to1$ in probability, and for
+every $\eta>0$,
+$\sum_t\E(Z_{n,t}^2{\mathbf 1}_{|Z_{n,t}|>\eta}\mid
+\mathcal F_{n,t-1})\to0$ in probability, then $\sum_tZ_{n,t}\Rightarrow
+N(0,1)$.  Apply it to $1\le t\le T_n$ with
+$Z_{n,t}=\Delta_{n,t}/(\|d^{(m)}\|_2\sqrt{nS_{n-1}})$.
+The omitted bracket has expectation bounded by (5.24), so Markov's
+inequality and (5.19) verify the bracket hypothesis; (5.22) verifies
+Lindeberg.  Slutsky's theorem and (5.24) prove
+\begin{equation}
+ {M_n^{(m)}\over\|d^{(m)}\|_2\sqrt{nS_{n-1}}}
+ \Rightarrow N(0,1).                                         \tag{5.25}
+\end{equation}
+
+Finally, the increasing dyadic sigma fields generate the Borel sigma field
+modulo null sets.  The $L^2$ martingale convergence theorem applied to
+$\E(d\mid\mathcal D_m)$ gives
+\begin{equation}\|d-d^{(m)}\|_2\longrightarrow0.             \tag{5.26}\end{equation}
+Both terms are killed by $P$, so (4.2), applied to their difference, gives
+the exact estimate
+\begin{equation}
+ \E|M_n-M_n^{(m)}|^2=\|d-d^{(m)}\|_2^2nS_{n-1}.              \tag{5.27}
+\end{equation}
+If $c=\|d\|_2^2>0$, then $\|d^{(m)}\|_2^2\to c$ and is positive for all
+large $m$.  For such a fixed $m$, (5.25) and
+$S_{n-1}/\log_2n\to1$ give the normal limit with variance
+$\|d^{(m)}\|_2^2/c$ under normalization $\sqrt{cn\log_2n}$; (5.27) makes
+the $L^2$ distance to the corresponding normalization of $M_n$ at most
+$\|d-d^{(m)}\|_2/\sqrt c+o(1)$.  Letting first $n\to\infty$ and then
+$m\to\infty$ (the converging-together lemma) proves
+\begin{equation}
+ {M_n\over\sqrt{c(\theta)n\log_2n}}\Rightarrow N(0,1).
+                                                                    \tag{5.28}
+\end{equation}
+\section{Endpoint error}\label{sec:uniform-endpoint}
+Finite pathwise telescoping of (2.5), with no optional-stopping claim, gives
+\[
+ V_{\theta,n}=(\E F_\theta)L_n+M_n+H_n,\qquad
+ H_n=\sum_i\{h(T^{\tau_i}X_i)-h(X_i)\}.
+\]
+Let $\mathcal G_n$ be the sigma field generated by all labelled stopped
+prefixes.  Prefix freeness and cylinder factorization imply that, conditional
+on $\mathcal G_n$, the unused suffixes $T^{\tau_i}X_i$ are independent
+uniform strings and independent of $\mathcal G_n$.  Therefore
+\[
+ \E[\Var(\sum_i h(T^{\tau_i}X_i)\mid\mathcal G_n)]=n\Var(h),
+\]
+and its conditional mean is $n\E h=0$.  The initial sum consists of iid
+copies and also has variance $n\Var(h)$.  Cauchy--Schwarz controls their
+covariance, proving
+\begin{equation}\Var(H_n)\leq4n\Var(h)=O_\theta(n).             \tag{6.1}\end{equation}
+Set $\mu=\E F_\theta=2/\theta$.  Centering the displayed pathwise identity
+gives
+\[
+ V_{\theta,n}-\E V_{\theta,n}
+ =M_n+R_n,\qquad
+ R_n=\mu(L_n-\E L_n)+(H_n-\E H_n).
+\]
+The bound $\Var(L_n)=O(n)$ from the stopped-trie variance theorem,
+Theorem~\ref{thm:stopped-trie-phase} in Subsection~\ref{subsec:stopped-trie-phase} below,
+and (6.1), together
+with Cauchy--Schwarz, give $\Var(R_n)=O_\theta(n)$.  A second application of
+Cauchy--Schwarz gives
+$|\Cov(M_n,R_n)|\le\sqrt{c nS_{n-1}\,O_\theta(n)}
+=o(n\log n)$.  Therefore (4.2) implies, whenever $c(\theta)>0$,
+\[
+ \Var(V_{\theta,n})\sim c(\theta)n\log_2n.
+\]
+Moreover $R_n/\sqrt{c(\theta)n\log_2n}\to0$ in $L^2$; (5.28) and Slutsky's
+theorem prove the complete strict-stopped nonresonant limit
+\[
+ {V_{\theta,n}-\E V_{\theta,n}\over
+       \sqrt{c(\theta)n\log_2n}}\Rightarrow N(0,1).
+\]
+Since the variance ratio tends to one, the same statement holds with the
+true standard deviation $\sqrt{\Var(V_{\theta,n})}$ in the denominator.
+No adaptive-discrepancy assertion is used in this strict-stopped theorem.
+
+\part{Uniform adaptive comparison and resonance}
+% Standalone fragment for inclusion after the model, toll, and stopped-LISTER chapters.
+% Required notation: \D_r dyadic depth-r cells, \tau_i strict isolation depth,
+% V_{\theta,n} strict-stopped LISTER cost, T_{\theta,n} adaptive cost.
+\section{The adaptive root defect and an arithmetic-free guard}
+\label{sec:adaptive-guard-dossier}
+
+Throughout this section $0<\theta<1$ is fixed, $\alpha=\theta^{-1}$, and
+all cells are half open.  Equality in $w/D\leq\theta$ means acceptance.  Empty
+cells cost zero, a source singleton different from the target costs one, and
+a nonsingleton containing the target is opened, including along a one-child
+chain.  These conventions are part of every identity below.
+
+For a finite labelled configuration $S\subset[0,1)$ and $x\in S$, define the
+frontier $\mathcal A_\theta(x,S;I)$ of a dyadic source cell $I$ recursively:
+(i) it is empty if $S\cap I=\varnothing$; (ii) it is the singleton $I$ if
+$S\cap I$ has one element different from $x$; (iii) if $I$ contains $x$, it
+is the union of the frontiers of the children, with the leaf containing only
+$x$ assigned cost zero; (iv) if $I$ is disjoint from $x$, occupied by at least
+two points, and accepted, it is $\{I\}$; otherwise it is the union of the two
+child frontiers.  The recursion terminates because distinct points have finite
+separation depth.  The filled frontier is defined by the same geometric
+recursion without empty or singleton stopping.
+
+Let $Y_\theta(S)$ be the sum, over targets, of the two-direction adaptive
+cross-root frontier cardinality, and let
+\begin{equation}
+ \Phi_\theta(S)=\sum_{x\in S}F_\theta(x),\qquad
+ D_\theta(S)=Y_\theta(S)-\Phi_\theta(S).                 \label{eq:defect-def}
+\end{equation}
+For iid uniform samples of size $n$ abbreviate this by $D_{\theta,n}$, and put
+$\bar D_{\theta,n}=D_{\theta,n}{\bf1}_{\{n\ge2\}}$.
+
+\begin{lemma}[finite exterior frontier]\label{lem:finite-exterior}
+Put
+\begin{equation}
+ M=M(\theta)=2^{\max\{2,\lceil\log_2\max(1,4/\theta-2)\rceil\}},\qquad h=\log_2M.
+                                                               \label{eq:Mguard}
+\end{equation}
+Every filled exterior branch, other than the interactions between the two
+middle quarters, terminates by depth $h$.
+\end{lemma}
+\begin{proof}
+For a target in the left half, an opposite-half depth-$d$ cell at offset $j$
+has
+\begin{equation}D/w=j+\tfrac12+2^d|2x-1|.                    \label{eq:rowdistance}
+\end{equation}
+It is opened precisely when $2^d|2x-1|<\alpha-\tfrac12-j$; hence there are
+finitely many rows.  At depth $h$, every exterior source cell has distance at
+least $1/4+1/(2M)$.  Definition \eqref{eq:Mguard} gives
+$M\ge4\alpha-2$, or
+\begin{equation}1/4+1/(2M)\ge\alpha/M.                       \label{eq:guardineq-d}
+\end{equation}
+Thus that source cell is accepted, including equality.  If an ancestor was
+accepted, the branch stopped earlier; otherwise descent reaches depth $h$.
+The sole pairs not covered by the distance $1/4+1/(2M)$ are the two middle
+quarters.  Reflection proves the right-target assertion.
+\end{proof}
+
+Let $C_j=[j/M,(j+1)/M)$, let
+$\mathcal G_n=\{N(C_j)\ge1:0\le j<M\}$, let $J_*=[1/4,3/4)$,
+and let $K_n=N(J_*)$.
+\begin{theorem}[coefficient-one inward copy]\label{thm:inward-copy-dossier}
+On $\mathcal G_n$,
+\begin{equation}D_{\theta,n}=D^{\rm in}_{\theta,K_n}.          \label{eq:inward-copy-dossier}
+\end{equation}
+Conditional only on $K_n=k$, the right side has the canonical law of
+$D_{\theta,k}$.  Moreover
+\begin{equation}K_n\le n-M/2\quad\hbox{on }\mathcal G_n,\qquad
+ \Pr(\mathcal G_n^c)\le M(1-1/M)^n.                          \label{eq:guardfail-d}
+\end{equation}
+There is exactly one copy and no boundary toll.
+\end{theorem}
+\begin{proof}
+On $\mathcal G_n$ every cell at depth at most $h$ is occupied.  Before a
+filled exterior branch terminates, the adaptive traversal can therefore
+neither prune it empty nor stop at a singleton.  Lemma
+\ref{lem:finite-exterior} says that it terminates by depth $h$.  At its last
+node, an accepted occupied cell and an occupied singleton both contribute
+one.  Hence filled and adaptive exterior contributions cancel target by
+target in \eqref{eq:defect-def}.
+
+The uncancelled directed interactions are precisely $[1/4,1/2)$ against
+$[1/2,3/4)$ and the reverse direction.  The increasing map
+$\sigma(x)=2x-1/2$ maps those quarters to the two root halves.  It doubles
+both widths and midpoint distances, preserves $w/D$, equality, dyadic
+containment, multiplicity, empty children, singleton stopping, clipping and
+each link of a one-child chain.  The two directed interactions are therefore
+the two directions of one canonical root problem, rather than two copies.
+This proves \eqref{eq:inward-copy-dossier}.  Given $K_n=k$, the $k$ points in
+$J_*$ are iid uniform there, so their $\sigma$-images are canonical.  This
+conditioning is not conditioning on $\mathcal G_n$.  The outer $M/2$ cells
+each contain a point on $\mathcal G_n$, proving the size loss; a union bound
+proves \eqref{eq:guardfail-d}.
+\end{proof}
+
+\begin{proposition}[all root-defect moments]\label{prop:defect-moments-d}
+For every finite $p>0$, $\sup_n\mathbb E|D_{\theta,n}|^p<\infty$.
+\end{proposition}
+\begin{proof}
+The actual cross cost is at most $n(n-1)$.  From the exact toll formula,
+$F_\theta(x)\le C_\theta(1+\log_+|2x-1|^{-1})$, whose every finite moment is
+finite.  Minkowski therefore gives
+$\mathbb E|D_{\theta,n}|^{2p}\le P_{\theta,p}(n)$ for a polynomial $P$.
+By Cauchy--Schwarz and \eqref{eq:guardfail-d},
+\begin{equation}e_n:=\mathbb E[|D_{\theta,n}|^p;\mathcal G_n^c]
+ \le P_{\theta,p}(n)^{1/2}M^{1/2}(1-1/M)^{n/2},              \label{eq:en}
+\end{equation}
+so $\sum_ne_n<\infty$.  Put $A_n=\max_{0\le j\le n}\mathbb E|D_{\theta,j}|^p$.
+On the good event use the pathwise copy and then enlarge the expectation to
+the unconditional inward sample; this order avoids conditioning bias.  The
+size loss yields
+\begin{equation}
+ \mathbb E|D_{\theta,n}|^p\le A_{n-M/2}+e_n\le A_{n-1}+e_n.
+\end{equation}
+Consequently $A_n\le A_{M/2}+\sum_{j>M/2}e_j$, uniformly in $n$.
+\end{proof}
+
+\section{Exact discrepancy recursion and linear variance}
+Partition every ordered interaction by the least common dyadic ancestor of
+its target and source.  The finite-tree partition is disjoint and exhaustive;
+empty and singleton nodes contribute no internal toll, while one-child
+internal nodes remain.  Thus, pathwise,
+\begin{align}
+ \Delta_{\theta,n}:=T_{\theta,n}-V_{\theta,n}
+ &=\sum_{u:N_u\ge2}\bar D_\theta(S_u),                       \label{eq:finite-defect-sum}\\
+ \Delta_{\theta,n}&=\Delta^{(0)}_{\theta,J}
+ +\Delta^{(1)}_{\theta,n-J}+\bar D_{\theta,n},               \label{eq:delta-rec-d}
+\end{align}
+where $J\sim\mathrm{Bin}(n,1/2)$ and, conditional on the labelled first-bit
+allocation, the two child samples are independent canonical samples.  The
+root defect is a function of both children and is not independent of them.
+Consequently, if $d(n)=\mathbb E\bar D_{\theta,n}$,
+$a(n)=\mathbb E\Delta_{\theta,n}$, $q(n)=\operatorname{Var}\Delta_{\theta,n}$,
+and $S_n=\Delta^{(0)}_{\theta,J}+\Delta^{(1)}_{\theta,n-J}$, then the exact
+mean and variance recurrences are
+\begin{align}
+ a(n)&=2\mathbb Ea(B_n)+d(n),                                  \label{eq:amean-exact-d}\\
+ q(n)&=2\mathbb Eq(B_n)+r(n),                                  \label{eq:qrec-d}\\
+ r(n)&=\operatorname{Var}\{a(J)+a(n-J)\}
+       +\operatorname{Var}(\bar D_{\theta,n})
+       +2\operatorname{Cov}(S_n,\bar D_{\theta,n}).           \label{eq:signed-force-d}
+\end{align}
+Here $B_n\sim\mathrm{Bin}(n,1/2)$.  In particular the last covariance in
+\eqref{eq:signed-force-d} may not be discarded or replaced by its absolute
+value in an iteration.  \subsection{E.2--E.3: the two exact mean smoothings}
+In this subsection put $d_n=\mathbb E\bar D_{\theta,n}$ (the bar is essential
+at sizes zero and one) and define
+\[
+ ({\cal B}f)(n)=2^{-n}\sum_{k=0}^n{n\choose k}f(k),\qquad
+ \rho_n=d_n-({\cal B}d)(n).
+\]
+This is an exact recurrence, $d_n=({\cal B}d)(n)+\rho_n$, not an
+asymptotic one.  Couple the original sample and its rescaled middle-half
+sample.  On $\mathcal G_n$ their barred defects agree (the guard implies
+$n,K_n\ge2$), whereas off that event Cauchy--Schwarz, Proposition
+\ref{prop:defect-moments-d}, and \eqref{eq:guardfail-d} give, for constants
+$C<\infty,r<1$ depending only on $\theta$,
+\begin{equation}|\rho_n|\le Cr^n.\label{eq:rho-d}\end{equation}
+This argument does not condition the inward sample on the guard: its
+unconditional law, conditional only on $K_n=k$, is canonical.
+
+We give all smoothing details needed below.  Couple
+$B_{n+1}=B_n+\xi$, where $B_n\sim\operatorname{Bin}(n,1/2)$ and $\xi$ is an
+independent fair bit.  With $e_n=d_{n+1}-d_n$, subtraction gives
+\begin{equation}e_n={1\over2}\mathbb Ee_{B_n}+\rho_{n+1}-\rho_n.\label{eq:e-d}\end{equation}
+For $0<\beta<1$,
+\begin{equation}(n+1)^\beta\mathbb E(B_n+1)^{-\beta}\longrightarrow2^\beta.
+\label{eq:negmoment-d}\end{equation}
+Indeed, on $|B_n/n-1/2|\le\epsilon$ the ratio is bounded and converges in
+probability, and on the complement it is at most $(n+1)^\beta$ while
+Chernoff bounds its probability by $2e^{-c_\epsilon n}$.  Thus the weighted
+coefficient in \eqref{eq:e-d} tends to $2^{\beta-1}<1$.  Choose a strict
+margin, isolate the self atom $B_n=n$ of coefficient $2^{-n-1}$, and choose
+$C_\beta$ to dominate the finite initial range and the exponential forcing
+divided by that margin.  Strong induction proves
+\begin{equation}|d_{n+1}-d_n|\le C_{\theta,\beta}(n+1)^{-\beta}.\label{eq:dreg-d}\end{equation}
+These choices specify the constants and range: first choose
+$\gamma\in(2^{\beta-1},1)$, then $N$ so \eqref{eq:negmoment-d} and
+$2^{-N-1}$ leave margin $1-\gamma$, and finally take the maximum of the
+finitely many required ratios for $n<N$ and $2C(1+r)r^n(n+1)^\beta/(1-\gamma)$.
+
+Taking expectations in \eqref{eq:delta-rec-d} gives exactly
+$a(n)=2({\cal B}a)(n)+d_n$.  Put $z_n=a(n+1)-a(n)$.  The same coupling gives
+\begin{equation}z_n=\mathbb Ez_{B_n}+e_n.\label{eq:z-d}\end{equation}
+Iterate along half-thinnings $Z_{t+1}|Z_t\sim\operatorname{Bin}(Z_t,1/2)$
+until $Z_t\le1$.  Uniform accumulation of the errors follows as follows.
+For $t\le\lfloor\log_2n\rfloor-2$, Chernoff gives
+\[
+ \mathbb E[(Z_t+1)^{-\beta};Z_t>1]
+ \le2^\beta(n2^{-t})^{-\beta}+e^{-n2^{-t}/8};
+\]
+for later $t$, $\mathbb P(Z_t>1)\le n^22^{-2t}/2$.  Both geometric sums are
+uniformly bounded.  Hence $\sup_n|z_n|<\infty$.  Subtracting \eqref{eq:z-d}
+once more, for $h_n=z_{n+1}-z_n$,
+$h_n=\frac12\mathbb Eh_{B_n}+e_{n+1}-e_n$.  Estimate \eqref{eq:dreg-d} and
+the same weighted induction prove $|h_n|\le C(n+1)^{-\beta}$, and telescoping
+proves
+\begin{equation}|z_u-z_v|\le C|u-v|(1+\min(u,v))^{-\beta}.\label{eq:zreg-d}\end{equation}
+No decay of $z_n$ itself is asserted.
+
+For $f_n(k)=a(k)+a(n-k)$, the midpoint is
+$c_n=a(\lfloor n/2\rfloor)+a(\lceil n/2\rceil)$.  If $n=2m$,
+\[
+f_n(m+s)-c_n=\sum_{i=1}^s[z_{m+i-1}-z_{m-i}],
+\]
+and if $n=2m+1$ then $f_n(m)=f_n(m+1)=c_n$ and
+\[
+f_n(m+1+s)-c_n=\sum_{i=1}^s[z_{m+i}-z_{m-i}].
+\]
+Thus first-order terms cancel pairwise, including odd $n$.  On
+$|k-n/2|\le n/4$, \eqref{eq:zreg-d} yields
+\begin{equation}|f_n(k)-c_n|\le C(1+|k-n/2|)^2n^{-\beta}.\label{eq:pair-d}\end{equation}
+Off this window bounded $z$ gives $Cn$, while Chernoff is exponential.
+Since $\mathbb E|B_n-n/2|^4=3n^2/16-n/8$,
+\begin{equation}\operatorname{Var}f_n(B_n)=O_{\theta,\eta}(n^\eta)\quad
+\hbox{for every }\eta>0,\label{eq:meanvar-d}\end{equation}
+by taking $\beta>1-\eta/2$.
+
+\subsection{E.4--E.7: signed forcing and bootstrap}
+Let $\mu_n(J)=f_n(J)$ and $b_n(J)=\mathbb E(\bar D_{\theta,n}|J)$.
+Conditionally on $J$, the children are independent, so
+$\mathbb E(S_n|J)=\mu_n(J)$ and
+$\operatorname{Var}(S_n|J)=q(J)+q(n-J)$.  Total variance and total covariance
+therefore expand the forcing, without an independence assumption, as
+\begin{align}
+r(n)={}&\operatorname{Var}(\mu_n(J))
+ +\mathbb E\operatorname{Var}(\bar D_{\theta,n}|J)+\operatorname{Var}(b_n(J))\notag\\
+&+2\mathbb E\operatorname{Cov}(S_n,\bar D_{\theta,n}|J)
+ +2\operatorname{Cov}(\mu_n(J),b_n(J)).\label{eq:five-d}
+\end{align}
+This is exactly \eqref{eq:signed-force-d}.  With
+$C_D=\sup_n\operatorname{Var}\bar D_{\theta,n}<\infty$, Cauchy--Schwarz and
+\eqref{eq:meanvar-d} give
+\begin{equation}|r(n)|\le Cn^\eta+C_D+2\sqrt{C_D(2\mathbb Eq(B_n)+Cn^\eta)}.
+\label{eq:rboot-d}\end{equation}
+
+For clarity we spell out the preliminary induction.  Fix $p=1+\epsilon$ and
+choose $2^{1-p}<\gamma<1$.  The central-event proof used above also gives
+$2\mathbb E(B_n+1)^p/(n+1)^p\to2^{1-p}$, so it is at most $\gamma$ beyond
+some $n_0$.  Under $q(k)\le A(k+1)^p$ for $k<n$, isolate the self atom, whose
+coefficient is $s_n=2^{1-n}$, to obtain
+\[
+\operatorname{Var}S_n\le s_nq(n)+\gamma A(n+1)^p+C_0(n+1)^\eta.
+\]
+In $q(n)\le V+C_D+2\sqrt{C_DV}$ use
+$2\sqrt{C_Ds_nq(n)}\le\delta q(n)+C_Ds_n/\delta$, with
+$\delta<(1-\gamma)/4$, enlarge $n_0$ until $s_n<(1-\gamma)/4$, and take
+$\eta<p$.  The lower powers are absorbed by the remaining strict margin;
+then enlarge $A$ for $n<n_0$.  Strong induction proves
+\begin{equation}q(n)=O_{\theta,\epsilon}(n^{1+\epsilon}).\label{eq:qcoarse-d}\end{equation}
+There is no use here of a linear bound.  Substitution in \eqref{eq:rboot-d},
+choosing the coarse and mean exponents sufficiently small, yields
+\begin{equation}|r(n)|=O_{\theta,\epsilon}(n^{1/2+\epsilon})
+\quad(\epsilon>0).\label{eq:rsub-d}\end{equation}
+
+\subsection{E.8: signed binomial renewal}
+\begin{theorem}[signed renewal]\label{thm:renew-d}
+If $q(0)=q(1)=r(0)=r(1)=0$, $q(n)=2\mathbb Eq(B_n)+r(n)$, and
+$|r(n)|\le Cn^\alpha$ for $n\ge2$ with $0<\alpha<1$, then $q(n)=O(n)$.
+\end{theorem}
+\begin{proof}
+Repeated independent thinning gives
+\[
+q(n)=\sum_{j<L}2^j\mathbb Er(\operatorname{Bin}(n,2^{-j}))
+ +2^L\mathbb Eq(\operatorname{Bin}(n,2^{-L})).
+\]
+The boundary tends to zero: for fixed $n$, the last expectation is
+$O_n(2^{-2L})$ because $q(0)=q(1)=0$ and
+$\mathbb P\{\operatorname{Bin}(n,p)\ge2\}\le n(n-1)p^2/2$.  Hence the
+infinite forcing representation exists.  It is absolutely convergent and
+$O(n)$: put $\lambda=n2^{-j}$.  For $\lambda\ge1$, concavity gives
+$\mathbb E B^\alpha\le\lambda^\alpha$, so
+$2^j\mathbb E|r(B)|\le Cn\lambda^{\alpha-1}$; summing over the dyadic
+$\lambda\ge1$ is $O(n)$.  For $\lambda<1$, since $r(0)=r(1)=0$ and
+$k^\alpha\le k(k-1)$ for $k\ge2$,
+$2^j\mathbb E|r(B)|\le C2^jn(n-1)2^{-2j}\le Cn\lambda$, whose tail is also
+$O(n)$.  These absolute bounds justify every signed cancellation.  They
+also control all boundary terms.  In particular, any dyadic log-periodic
+component is bounded after division by $n$ by this same absolute majorant;
+no monotonicity, Poissonization, or hidden periodic assumption is used.
+\end{proof}
+Choose $\alpha\in(1/2,1)$ in \eqref{eq:rsub-d}.  The theorem proves
+\begin{equation}\boxed{\operatorname{Var}\Delta_{\theta,n}=O_\theta(n).}
+\label{eq:renew-result-d}\end{equation}
+
+The following stabilization proof is retained as an independent check, but
+is not used in E.2--E.8.
+
+For a sample $Y=(Y_1,\ldots,Y_k)$ and an independent uniform point $X$, put
+\[
+ Z_k=D_\theta(Y_1,\ldots,Y_k,X)-D_\theta(Y_1,\ldots,Y_k),
+\]
+with the barred convention at sizes zero and one.  Write $I^*=[1/4,3/4)$,
+let $I^{*j}$ be its $j$-fold affine inward copy, let
+$S_j=\{X\in I^{*j}\}$, and let $G_j$ be the event that the old points in
+$I^{*j}$ occupy every one of the $M$ guard subcells after affine rescaling.
+Thus $S_0$ is certain, $|I^{*j}|=2^{-j}$, and $G_j$ depends only on the old
+sample.
+
+\begin{lemma}[support of a root add-one cost]\label{lem:uniform-support-d}
+For every integer $L\ge0$,
+\begin{equation}
+ \{Z_k\ne0\}\subset S_L\cup\bigcup_{0\le j<L}(S_j\cap G_j^c). \label{eq:uniform-support-d}
+\end{equation}
+Moreover, for constants depending only on $\theta$,
+\begin{equation}
+ \mathbb P(Z_k\ne0)\le {C_\theta\over k+1}.                   \label{eq:add-support-prob-d}
+\end{equation}
+\end{lemma}
+\begin{proof}
+For $L=0$, \eqref{eq:uniform-support-d} says only that the event is contained
+in the whole sample space.  Suppose it holds at $L$.  On
+$S_L\cap G_L$, apply Theorem~\ref{thm:inward-copy-dossier} once to the old
+configuration and once after insertion.  If $X\notin I^{*(L+1)}$, the two
+inward configurations are identical, so their defects, and hence their
+difference, are identical.  If $X\in I^{*(L+1)}$, no conclusion is needed.
+On $S_L\cap G_L^c$ we retain the guard-failure event.  This replaces the term
+$S_L$ by $(S_L\cap G_L^c)\cup S_{L+1}$ and proves the induction step.  Notice
+that this compares the old and new configurations under the old guard; adding
+a point cannot destroy that guard.
+
+Let $N_j$ be the old occupancy of $I^{*j}$.  Conditional on $N_j=s$, the
+$s$ old points there are iid uniform, so a union bound over the $M$ guard
+subcells gives
+\[
+ \mathbb P(G_j^c\mid N_j=s)\le M(1-1/M)^s.
+\]
+Since $N_j\sim\mathrm{Bin}(k,2^{-j})$, the binomial generating function gives
+\[
+ \mathbb P(G_j^c)\le M(1-2^{-j}/M)^k\le M e^{-k2^{-j}/M}.
+\]
+The new point is independent of the old sample, hence $S_j$ and $G_j$ are
+independent.  Letting $L\to\infty$ in \eqref{eq:uniform-support-d} (the
+nested intervals have intersection of Lebesgue measure zero) yields
+\[
+ \mathbb P(Z_k\ne0)\le M\sum_{j\ge0}2^{-j}e^{-k2^{-j}/M}.
+\]
+For $k\ge1$, put $j_0=\lfloor\log_2 k\rfloor$.  For $j>j_0$ the sum of
+$2^{-j}$ is at most $2/k$.  For $j\le j_0$, set $l=j_0-j$ and use
+$k2^{-j}\ge2^l$ and $2^{-j}\le2^{l+1}/k$; thus this part is at most
+$2k^{-1}\sum_{l\ge0}2^le^{-2^l/M}$.  The latter series converges.  Enlarging
+the constant handles $k=0$ and proves \eqref{eq:add-support-prob-d}.
+\end{proof}
+
+\begin{lemma}[uniform local stabilization]\label{lem:uniform-localstab-d}
+For every $0<\alpha<1$ there is $C_{\theta,\alpha}<\infty$ such that
+\begin{equation}
+ \mathbb E|Z_k|^2\le C_{\theta,\alpha}(k+1)^{-\alpha}.         \label{eq:uniform-localstab-d}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Choose $p>2/(1-\alpha)$.  Proposition~\ref{prop:defect-moments-d}, applied
+at sizes $k$ and $k+1$, and $|u-v|^p\le2^{p-1}(|u|^p+|v|^p)$ give
+$\sup_k\mathbb E|Z_k|^p<\infty$.  By H\"older and
+\eqref{eq:add-support-prob-d},
+\[
+ \mathbb E|Z_k|^2
+ \le(\mathbb E|Z_k|^p)^{2/p}\mathbb P(Z_k\ne0)^{1-2/p}
+ \le C(k+1)^{-(1-2/p)}\le C(k+1)^{-\alpha}.
+\]
+\end{proof}
+
+\begin{lemma}[bounded discrepancy add-one cost]\label{lem:delta-addone-d}
+If $X_1,\ldots,X_m,X$ are iid uniform and
+\[
+ A_m^+=\Delta_\theta(X_1,\ldots,X_m,X)
+       -\Delta_\theta(X_1,\ldots,X_m),
+\]
+then $\sup_m\mathbb E|A_m^+|^2<\infty$.
+\end{lemma}
+\begin{proof}
+For the depth-$r$ cell $I_r(X)$ let $K_r$ be its old occupancy.  Subtracting
+the two finite-tree sums \eqref{eq:finite-defect-sum} cancels every node not
+on the ancestor chain of $X$ and gives, pathwise,
+\begin{equation}
+ A_m^+=\sum_{r\ge0}\delta_r,\qquad
+ \delta_r=\bar D_\theta(S_{I_r(X)}\cup\{X\})
+             -\bar D_\theta(S_{I_r(X)}).                     \label{eq:add-chain-d}
+\end{equation}
+After affine rescaling, conditional on the identity of $I_r(X)$ and on
+$K_r=k$, the old points in that cell and $X$ are independent iid uniform
+points in the cell: this follows directly by conditioning their independent
+binary prefixes and then retaining their independent suffixes.  Hence Lemma
+\ref{lem:uniform-localstab-d} gives
+\begin{equation}
+ \mathbb E(\delta_r^2\mid K_r)\le C(K_r+1)^{-\alpha}.        \label{eq:delta-large-d}
+\end{equation}
+Here $K_r\sim\mathrm{Bin}(m,2^{-r})$ and $\lambda_r=m2^{-r}$.
+
+We record both elementary binomial estimates used below.  If $K\sim
+\mathrm{Bin}(m,p)$ and $\lambda=mp\ge1$, Chernoff's bound gives
+$\mathbb P(K<\lambda/2)\le e^{-\lambda/8}$, whence
+\[
+ \mathbb E(K+1)^{-\alpha}
+ \le(\lambda/2)^{-\alpha}+e^{-\lambda/8}\le C_\alpha\lambda^{-\alpha}.
+\]
+(The displayed Chernoff inequality follows from
+$\mathbb Ee^{-tK}=(1-p+pe^{-t})^m\le
+\exp[-\lambda(1-e^{-t})]$ and Markov's inequality, taking $t=\log2$ and
+weakening the resulting absolute constant.)  Thus, when $\lambda_r\ge1$,
+\begin{equation}\|\delta_r\|_2\le C\lambda_r^{-\alpha/2}.     \label{eq:large-lambda-d}\end{equation}
+When $\lambda_r\le1$, $K_r=0$ implies $\delta_r=0$, because both barred
+root defects then vanish.  A uniform fourth moment of $\delta_r$ follows
+from Proposition~\ref{prop:defect-moments-d}; Cauchy--Schwarz and
+$\mathbb P(K_r\ge1)\le\mathbb EK_r=\lambda_r$ give
+\begin{equation}\|\delta_r\|_2\le C\lambda_r^{1/4}.           \label{eq:small-lambda-d}\end{equation}
+Minkowski's inequality, \eqref{eq:large-lambda-d}, and
+\eqref{eq:small-lambda-d} now yield
+\[
+ \|A_m^+\|_2\le\sum_{r\ge0}\|\delta_r\|_2
+ \le C\sum_{r:\lambda_r\ge1}\lambda_r^{-\alpha/2}
+      +C\sum_{r:\lambda_r<1}\lambda_r^{1/4}\le C_{\theta,\alpha}.
+\]
+Both sums are geometric when indexed away from the unique scale at which
+$\lambda_r$ crosses one.  Formula \eqref{eq:add-chain-d} is initially a
+finite sum up to the isolation depth of $X$; the displayed summable bound
+also proves convergence in $L^2$, so no interchange of an undominated
+infinite sum is being made.
+\end{proof}
+
+\begin{theorem}[linear adaptive discrepancy variance]\label{thm:delta-linear-d}
+For fixed $\theta$, $\operatorname{Var}\Delta_{\theta,n}=O_\theta(n)$.
+\end{theorem}
+\begin{proof}
+Let $X^{(i)}$ be obtained by replacing $X_i$ by an independent copy $X_i'$.
+Relative to the common sample with label $i$ removed, the difference
+$\Delta(X)-\Delta(X^{(i)})$ is one insertion cost minus another.  Lemma
+\ref{lem:delta-addone-d} and $(u-v)^2\le2u^2+2v^2$ therefore give
+\[
+ \sup_{n,i}\mathbb E\{\Delta(X)-\Delta(X^{(i)})\}^2\le C_\theta.
+\]
+The Efron--Stein inequality, in its replacement form,
+$\operatorname{Var}W\le\frac12\sum_i\mathbb E(W-W^{(i)})^2$, now gives
+$\operatorname{Var}\Delta_{\theta,n}\le C_\theta n$.
+This proof also controls all covariance terms in \eqref{eq:signed-force-d}
+without assuming independence and makes a signed renewal argument unnecessary.
+\end{proof}
+
+\section{Uniform nonresonant full theorem}
+Assume $c(\theta)>0$.  The strict-stopped theorem proved in
+Sections~\ref{sec:walsh-clt} and~\ref{sec:uniform-endpoint} gives
+\[
+ \operatorname{Var}V_{\theta,n}\sim c(\theta)n\log_2n,
+ \qquad
+ {V_{\theta,n}-\mathbb EV_{\theta,n}\over
+  \sqrt{c(\theta)n\log_2n}}\Rightarrow N(0,1).
+\]
+The linear adaptive discrepancy variance theorem,
+Theorem~\ref{thm:delta-linear-d}, supplies
+$\operatorname{Var}\Delta_{\theta,n}=O_\theta(n)$.  No independence
+between $V_{\theta,n}$ and $\Delta_{\theta,n}$ is needed.  Indeed,
+Cauchy--Schwarz gives, explicitly,
+\[
+ |\operatorname{Cov}(V_{\theta,n},\Delta_{\theta,n})|
+ \le \sqrt{\operatorname{Var}V_{\theta,n}
+                  \operatorname{Var}\Delta_{\theta,n}}
+ =O_\theta(n\sqrt{\log n})=o(n\log n).
+\]
+Since $T_{\theta,n}=V_{\theta,n}+\Delta_{\theta,n}$, expansion of its
+variance therefore gives
+\[
+ \operatorname{Var}T_{\theta,n}
+ =\operatorname{Var}V_{\theta,n}+\operatorname{Var}\Delta_{\theta,n}
+   +2\operatorname{Cov}(V_{\theta,n},\Delta_{\theta,n})
+ \sim c(\theta)n\log_2n.
+\]
+Moreover
+\[
+ {\Delta_{\theta,n}-\mathbb E\Delta_{\theta,n}\over
+       \sqrt{c(\theta)n\log_2n}}\longrightarrow0
+ \quad\hbox{in }L^2,
+\]
+so a single application of Slutsky's theorem gives the centered CLT
+with deterministic normalization; the displayed variance equivalence and
+another application of Slutsky gives true-variance normalization.
+There is no interchange of limits in this transfer.
+
+Together, Theorem~\ref{thm:delta-linear-d}, the strict-stopped theorem of
+Sections~\ref{sec:walsh-clt} and~\ref{sec:uniform-endpoint}, the displayed
+Cauchy--Schwarz estimate, and the two applications of Slutsky prove the
+uniform nonresonant full theorem,
+including true-variance normalization.
+
+\section{Resonant stopped and adaptive theory: dependency-complete statement}
+\label{sec:resonant-dossier}
+Fix $Q\ge3$ and $\theta=2/Q$, and retain the notation of
+Sections~1--2.  Thus $b=(Q-1)/2$, $J=\lceil b\rceil$, and
+\[
+ r_j=\max\{\lceil\log _2(j+1)\rceil,
+                 \lceil\log _2(b-j)\rceil\},\qquad
+ c_j=(b-j)2^{-r_j}.
+\]
+The transfer used everywhere in this section is not an unspecified
+cohomologous representative.  Put $D(c)=\{2c\}$, $S_c=\bar R_c$ for $0<c\le1$, extend
+$S_0:=0$, and
+\begin{align}
+ \bar A_Q&=A_Q-\mathbb EA_Q
+   =\sum_{j<J}\sum_{\ell\ge0}S_{c_j2^{-\ell}},\label{eq:Abar-explicit-d}\\
+ K_Q&=\sum_{j<J}\sum_{s\ge1}2^{-s}S_{D^s(c_j)},\qquad
+ g_Q=-\bar A_Q-K_Q.                                   \label{eq:g-explicit-d}
+\end{align}
+The first equality in \eqref{eq:Abar-explicit-d} is in every finite $L^p$;
+it is the centered version of the $A$ in Section~2.  The $K_Q$ here is
+exactly the function denoted $k$ there, specialized to $\theta=2/Q$.
+Indeed $Q=2b+1=\mathbb EF_{2/Q}$, and the Fourier criterion in Section~3
+says that $d=0$ at this parameter.  Equations (2.4)--(2.5) consequently give
+$F_{2/Q}-Q=h\circ T-h$ with $h=\bar A_Q+K_Q$, proving, rather than merely
+choosing, that $g_Q=-h$ and
+\begin{equation}F_{2/Q}-Q=g_Q-g_Q\circ T,\qquad \mathbb Eg_Q=0,\quad g_Q\in L^p\ (p<\infty). \label{eq:res-cob}
+\end{equation}
+
+\begin{lemma}[Explicit resonant Perron orbit and parity translation]
+\label{lem:explicit-perron-parity-d}
+Let $R_Q=\max_{j<J}r_j$.  Then, as $L^p$ identities for every finite $p$,
+\begin{align}
+ P\bar A_Q&={1\over2}\bar A_Q+{1\over2}\sum_{j<J}S_{D(c_j)},
+                                                        \label{eq:P-Abar-d}\\
+ PK_Q&=\sum_{j<J}\sum_{s\ge2}2^{-s}S_{D^s(c_j)},       \label{eq:P-K-d}\\
+ Pg_Q&={1\over2}g_Q-{1\over2}K_Q,\qquad
+ P^{R_Q+1}K_Q=0.                                      \label{eq:Pg-exact-d}
+\end{align}
+Consequently, if $Q$ is odd and
+$W_Q:=Pg_Q-g_Q/2$, then
+\[
+ W_Q=-K_Q/2,\qquad P^{R_Q+1}W_Q=0.
+\]
+If $Q$ is even and $K_Q:=g_Q-2Pg_Q$ (the notation already used in the mixed
+recurrence), this is the very same explicit $K_Q$ in
+\eqref{eq:g-explicit-d}, and $P^{R_Q+1}K_Q=0$.  Thus one may take
+$L_Q=R_Q+1$ in both parities (the minimal depth may be smaller through
+cancellation).
+\end{lemma}
+\begin{proof}
+Direct averaging of the two inverse branches, including the overlap when
+$c>1/2$, gives
+\begin{equation}
+ PS_c={1\over2}S_{D(c)}.                              \label{eq:PS-D-d}
+\end{equation}
+For example, if $c<1/2$ this is $S_{2c}/2$; if $c>1/2$ the raw answer is
+$-S_{2-2c}/2=S_{2c-1}/2$; and at $c=1/2$ both sides are zero a.e.  This
+case division derives \eqref{eq:PS-D-d} from the actual step functions and
+also shows that only their finitely many endpoints are discarded.
+
+Apply \eqref{eq:PS-D-d} term by term first to finite partial sums of
+\eqref{eq:Abar-explicit-d}.  For $\ell\ge1$,
+$D(c_j2^{-\ell})=c_j2^{-(\ell-1)}$; separating the $\ell=0$ term and then
+passing in $L^p$ gives \eqref{eq:P-Abar-d}; this passage is valid because
+$P$ is a contraction on $L^p$.  Applying the same formula to
+the uniformly convergent series defining $K_Q$ and shifting $s$ gives
+\eqref{eq:P-K-d}.  Since
+\[
+ K_Q={1\over2}\sum_{j<J}S_{D(c_j)}
+       +\sum_{j<J}\sum_{s\ge2}2^{-s}S_{D^s(c_j)},
+\]
+substitution into $g_Q=-\bar A_Q-K_Q$ proves
+$Pg_Q=g_Q/2-K_Q/2$.  Iteration is therefore completely explicit:
+\begin{equation}
+ P^ag_Q=2^{-a}g_Q-\sum_{r=0}^{a-1}2^{-(a-r)}P^rK_Q,qquad
+ P^aK_Q=2^{-a}\sum_{j<J}\sum_{s\ge1}2^{-s}S_{D^{s+a}(c_j)}.
+                                                        \label{eq:P-iterates-d}
+\end{equation}
+Now
+$c_j=(Q-1-2j)/2^{r_j+1}$.  Hence $D^{r_j+1}(c_j)=0$ on the circle,
+$S_0=0$, and every summand in the last display vanishes once
+$a\ge R_Q+1$.  This is the advertised cancellation; the depth depends only
+on $Q$, never on the sample size.  Finally the definitions of $W_Q$ and of
+the even-parity $K_Q$ applied to \eqref{eq:Pg-exact-d} give the two stated
+identities and signs.
+\end{proof}
+The odd/even difference is therefore one of coordinates, not of the
+underlying transfer: odd root-toll notation stores the boundary correction
+as $W_Q=Pg_Q-g_Q/2=-K_Q/2$, whereas even notation stores twice its negative
+as $K_Q=g_Q-2Pg_Q$.  Formula \eqref{eq:P-iterates-d} is an explicit finite
+dyadic-step orbit, so no spectral or ``finite Walsh space'' assertion is
+being used in its place.
+
+For the strict isolation depth, the pathwise stopped identity is
+\begin{equation}V_{2/Q,n}=QL_n+\sum_{i=1}^n\{g_Q(X_i)-g_Q(T^{\tau_i}X_i)\}. \label{eq:res-stop-id}
+\end{equation}
+The following supplies the required stopped-line factorization; in particular, it does not use the
+false shortcut ``prefix-free, therefore independent.''
+
+\begin{lemma}[Labelled stopped-line cylinder factorization]
+\label{lem:res-suffix-factor}
+Write $X_i=(X_i(1),X_i(2),\ldots)\in\{0,1\}^{\mathbb N}$, choosing either
+binary expansion on the null set of dyadic rationals, and put
+\[
+ \tau_i=\min\{r\ge0:X_i(1)\cdots X_i(r)\hbox{ is shared by no }j\ne i\},
+ \quad W_i=X_i(1)\cdots X_i(\tau_i),\quad Y_i=T^{\tau_i}X_i.
+\]
+On the null event that two infinite strings coincide define these objects
+arbitrarily.  Let
+\[
+ \mathcal G_n=\sigma(W_1,\ldots,W_n)
+ =\sigma\{\tau_i,X_i(1),\ldots,X_i(\tau_i):i\le n\}.
+\]
+Conditionally on $\mathcal G_n$, the vector $(Y_1,\ldots,Y_n)$ has product
+fair-bit law, and hence is independent of $\mathcal G_n$.  The same statement
+holds conditionally on
+\[
+ \mathcal P_\ell=\sigma\{\tau_i\wedge\ell,
+ X_i(1),\ldots,X_i(\tau_i\wedge\ell),
+ {\bf1}_{\{\tau_i\le\ell\}}:i\le n\}.
+\]
+\end{lemma}
+\begin{proof}
+Call a labelled tuple $w=(w_1,\ldots,w_n)$ admissible when (i) its words are
+prefix-free and (ii), for every $i$ and $0\le r<|w_i|$, some $j\ne i$ has
+$|w_j|>r$ and $w_j|_r=w_i|_r$.  Condition (i) says that label $i$ is alone
+at depth $|w_i|$; condition (ii) says it was not alone at any earlier depth.
+Thus, writing $E_w=\{(W_i)_i=w\}$, for every admissible $w$ one has the exact
+atom identity
+\begin{equation}
+ E_w=\bigcap_{i=1}^n\{X_i(1)\cdots X_i(|w_i|)=w_i\}.       \label{eq:stop-line-atom}
+\end{equation}
+For a nonadmissible tuple $E_w$ is empty.  For $n=1$ the unique admissible
+tuple consists of the empty word; for $n\ge2$ no terminal word is empty.
+
+Let $i_1,\ldots,i_k$ be distinct labels and let $C_a=[u_a]$ be arbitrary
+finite suffix cylinders.  All coordinates fixed in
+\eqref{eq:stop-line-atom} and all coordinates fixed by the $C_a$ are
+distinct.  Product measure therefore gives, exactly,
+\begin{align*}
+ &\mathbb P\{E_w,\ Y_{i_a}\in C_a\ (1\le a\le k)\}\\
+ &\qquad=2^{-\sum_i|w_i|-\sum_a|u_a|}
+ =\mathbb P(E_w)\prod_{a=1}^k2^{-|u_a|}.
+\end{align*}
+Equivalently, on every positive-probability stopped-line atom,
+\[
+ \mathbb P\{Y_{i_1}\in C_1,\ldots,Y_{i_k}\in C_k\mid\mathcal G_n\}
+ =\prod_{a=1}^k2^{-|u_a|}.
+\]
+This calculation explains why the random depths cause no stopping-time
+difficulty: on $E_w$ the depths are the fixed integers $|w_i|$, and the atom
+inspects no later coordinate.  (Repeated labels are handled by first
+intersecting their cylinder requirements; the displayed product assertion is
+of course for distinct coordinates.)
+
+There are countably many finite labelled tuples, and their admissible atoms
+partition the probability-one event of pairwise distinct input strings.
+Summing over atoms proves the factorization with any event in $\mathcal G_n$.
+A $\pi$--$\lambda$ argument, first in each suffix coordinate and then in
+their finite product, extends it from cylinders to the full product suffix
+sigma-field.  Finally $\mathcal P_\ell\subseteq\mathcal G_n$; taking conditional
+expectations down from $\mathcal G_n$ proves the assertion for
+$\mathcal P_\ell$.  Conditioning only on an unlabelled terminal family would
+not justify this last conclusion, which is why both fields retain labels.
+\end{proof}
+
+\subsection{The stopped-trie variance phase: a direct second-moment renewal}
+\label{subsec:stopped-trie-phase}
+
+We now supply the fixed-size phase theorem used by the stopped-vector
+argument.  This is a variance calculation, not a consequence of the CLT.
+The sample is the canonical one of independent fair infinite binary strings
+$X_1,\ldots,X_n$.  With $\tau_i$ as in
+Lemma~\ref{lem:res-suffix-factor}, put
+\begin{equation}
+ L_n=\sum_{i=1}^n\tau_i,\qquad L_0=L_1=0.       \label{eq:trie-L-definition}
+\end{equation}
+Thus $L_n$ is the \emph{external} path length of the strict stopped binary
+trie: a label contributes one for every edge traversed before its first
+isolating prefix.  It is not the internal path length.  In particular the
+unique label in a one-point sample is isolated at the empty prefix and has
+$\tau_1=0$.
+
+\begin{theorem}[Stopped-trie phase variance and uniform tail]
+\label{thm:stopped-trie-phase}
+Let $m(n)=\mathbb EL_n$ and $v(n)=\operatorname {Var}L_n$.  There is an
+explicit bounded continuous one-periodic function $v_L$ such that
+\begin{equation}
+ \frac{v(n)}n\longrightarrow v_L(t)
+ \quad\hbox{whenever }\{\log _2n\}\longrightarrow t.       \label{eq:trie-phase-limit}
+\end{equation}
+Moreover,
+\begin{equation}
+ \sup_{k\ge M}\left|\frac{v(k)}k-v_L(\{\log _2k\})\right|
+ \longrightarrow0\qquad(M\to\infty).                       \label{eq:trie-uniform-tail}
+\end{equation}
+Both assertions follow directly from the exact variance recurrence below.
+\end{theorem}
+
+\begin{proof}
+\emph{Exact split and conditional-mean forcing.}
+For $n\ge2$, let $J_n$ be the number of first bits equal to zero.  Thus
+$J_n\sim\operatorname {Bin}(n,1/2)$, and, after removal of the first bit,
+the two labelled child samples are conditionally independent canonical
+samples.  Every label is nonisolated at the root and traverses exactly one
+first edge.  Consequently, including the self-split events $J_n=0,n$,
+\begin{equation}
+ L_n\ \mathrel{\mathop=\limits^{d}}\
+ L_{J_n}^{(0)}+L_{n-J_n}^{(1)}+n.             \label{eq:trie-distributional-rec}
+\end{equation}
+The toll is exactly $n$.  Taking expectations gives
+\begin{equation}
+ m(n)=2\mathbb Em(B_n)+n\quad(n\ge2),\qquad m(0)=m(1)=0,     \label{eq:trie-mean-rec}
+\end{equation}
+where $B_n\sim\operatorname {Bin}(n,1/2)$.  If
+$X_n=L_n-m(n)$, then the exact centered recurrence is
+\begin{equation}
+ X_n=X_{J_n}^{(0)}+X_{n-J_n}^{(1)}+d_n(J_n),\qquad
+ d_n(j)=m(j)+m(n-j)+n-m(n),                  \label{eq:trie-centered-rec}
+\end{equation}
+and $\mathbb Ed_n(J_n)=0$.  Conditional variance in
+\eqref{eq:trie-distributional-rec} therefore gives
+\begin{align}
+ v(n)&=2\mathbb Ev(B_n)+r_L(n),                         \label{eq:trie-variance-rec}\\
+ r_L(n)&=\operatorname {Var}\{m(B_n)+m(n-B_n)\},        \label{eq:trie-force}
+\end{align}
+with $v(0)=v(1)=r_L(0)=r_L(1)=0$.  Formula
+\eqref{eq:trie-force} is precisely the variance of the conditional mean;
+the deterministic toll cancels, but this term does not.
+
+\emph{Mean formula and regularity.}
+A fixed label has $\tau_i>r$ precisely when at least one of the other labels
+shares its prefix of length $r$.  Survival counting and Tonelli's theorem
+give, for $n\ge2$,
+\begin{equation}
+ m(n)=n\sum_{r\ge0}\{1-(1-2^{-r})^{n-1}\}.              \label{eq:trie-mean-formula}
+\end{equation}
+Put $p_r=2^{-r}$ and
+\[
+ S_a=\sum_{r\ge0}\{1-(1-p_r)^a\},\quad
+ A_a=\sum_{r\ge0}p_r(1-p_r)^a,\quad
+ D_a=\sum_{r\ge0}p_r^2(1-p_r)^a.
+\]
+For $e(n)=m(n+1)-m(n)$, direct subtraction of
+\eqref{eq:trie-mean-formula} gives, for $n\ge1$,
+\begin{equation}
+ e(n)=S_n+nA_{n-1},\qquad
+ e(n+1)-e(n)=2A_{n-1}-(n+2)D_{n-1}.          \label{eq:trie-mean-differences}
+\end{equation}
+For $a=0$ the two sums below are finite geometric sums.  For $a\ge1$,
+$(1-p)^a\le e^{-ap}\le e^{-(a+1)p/2}$; splitting the dyadic values
+$y=(a+1)2^{-r}$ at $y=1$ yield
+\[
+ A_a\le {1\over a+1}\sum_{r\ge0}y e^{-y/2}\le {C\over a+1},
+ \qquad
+ D_a\le {1\over(a+1)^2}\sum_{r\ge0}y^2e^{-y/2}\le {C\over(a+1)^2}.
+\]
+Indeed below one each sum is geometric, while above one its dyadic
+exponential tail is summable, uniformly in $a$.  Hence
+\begin{equation}
+ |e(n+1)-e(n)|\le {C\over n+1}.                         \label{eq:trie-second-difference}
+\end{equation}
+
+We use this estimate without hiding the midpoint parity.  Set
+$f_n(j)=m(j)+m(n-j)$.  On $n/4\le j\le3n/4$,
+\[
+ f_n(j+1)-f_n(j)=e(j)-e(n-j-1),qquad
+ |f_n(j+1)-f_n(j)|\le C{|2j+1-n|+1\over n}.
+\]
+The first difference is zero at the symmetric odd midpoint; for even $n$
+the displayed extra one covers the two adjacent indices.  Summation from
+$\lfloor n/2\rfloor$ in either parity gives
+\begin{equation}
+ |f_n(j)-f_n(\lfloor n/2\rfloor)|
+ \le C\left(1+{|j-n/2|^2\over n}\right).                \label{eq:trie-midpoint-bound}
+\end{equation}
+The centered binomial fourth moment is $O(n^2)$, so the square of the
+right side has bounded expectation on the central window.  Also
+\eqref{eq:trie-mean-formula} gives $m(k)\le Ck\log(k+1)$: terms with
+$2^{-r}\ge1/k$ contribute $O(k\log(k+1))$, and the remaining geometric
+tail contributes $O(k)$.  A binomial Chernoff bound therefore makes the
+contribution of $B_n\notin[n/4,3n/4]$ exponentially small even after
+squaring this polynomial-logarithmic bound.  Since variance is bounded by
+the mean square about any constant, \eqref{eq:trie-midpoint-bound} proves
+\begin{equation}0\le r_L(n)\le C\quad\hbox{for every }n.  \label{eq:trie-force-bounded}
+\end{equation}
+
+\emph{Exact thinning renewal and its boundary.}
+Iterating \eqref{eq:trie-variance-rec} $q$ times, using binomial thinning,
+gives the finite identity
+\begin{equation}
+ v(n)=\sum_{j=0}^{q-1}2^j\mathbb E r_L(\operatorname {Bin}(n,2^{-j}))
+ +2^q\mathbb Ev(\operatorname {Bin}(n,2^{-q})).          \label{eq:trie-finite-renewal}
+\end{equation}
+For fixed $n$, let $C_n=\max_{0\le k\le n}v(k)<\infty$.  Because
+$v(0)=v(1)=0$ and
+$\mathbb P\{\operatorname {Bin}(n,p)\ge2\}\le {n\choose2}p^2$,
+the last term is at most $C_n{n\choose2}2^{-q}$ and tends to zero.  Thus
+the self-atoms in the split leave no boundary term, and
+\begin{equation}
+ v(n)=\sum_{j\ge0}2^j\mathbb E r_L(\operatorname {Bin}(n,2^{-j}))     \label{eq:trie-infinite-renewal}
+\end{equation}
+exactly.  The same estimate proves absolute convergence.
+
+\emph{Poisson limiting forcing and the phase function.}
+For $P_x\sim\operatorname {Pois}(x)$ define
+\begin{equation}
+ R_L(x)=\mathbb E r_L(P_x),\qquad
+ v_L(t)=\sum_{a\in\mathbb Z}{R_L(2^{t-a})\over2^{t-a}}. \label{eq:trie-phase-series}
+\end{equation}
+The bounded sequence $r_L(k)$ makes the Poisson power series for $R_L$
+locally uniformly convergent, hence $R_L$ is continuous.  Since $r_L(0)$
+and $r_L(1)$ vanish,
+\begin{equation}
+ R_L(x)\le Cx^2\quad(0<x\le1),\qquad R_L(x)\le C\quad(x\ge1).          \label{eq:trie-poisson-bounds}
+\end{equation}
+Uniformly for $t\in[0,1]$, the summands in
+\eqref{eq:trie-phase-series} are bounded by
+$C\min(2^{t-a},2^{a-t})$, which has a bilateral geometric envelope.
+The series therefore converges normally.  It defines a bounded continuous
+function on a fundamental interval, and reindexing $a$ after replacing
+$t$ by $t+1$ proves one-periodicity (and continuity at the identified
+endpoints).
+
+\emph{Fixed-size phase convergence.}
+Let $q_n=\lfloor\log _2n\rfloor$, $t_n=\{\log _2n\}$, and
+$x_{n,a}=n2^{-(q_n+a)}=2^{t_n-a}$.  Reindexing
+\eqref{eq:trie-infinite-renewal} by $j=q_n+a$ gives
+\begin{equation}
+ {v(n)\over n}=\sum_{a\ge-q_n}{
+ \mathbb E r_L(\operatorname {Bin}(n,x_{n,a}/n))\over x_{n,a}}.      \label{eq:trie-reindexed}
+\end{equation}
+For fixed $a$, if $t_n\to t$, binomial-to-Poisson convergence and the
+boundedness of $r_L$ make the summand converge to the corresponding term of
+\eqref{eq:trie-phase-series}.  Domination here is for the actual binomial
+array, not merely its Poisson limit.  If $Z\sim\operatorname {Bin}(n,x/n)$,
+then \eqref{eq:trie-force-bounded}, $r_L(0)=r_L(1)=0$, and
+$\mathbb P(Z\ge2)\le x^2/2$ give
+\begin{equation}
+ {\mathbb E r_L(Z)\over x}\le C\min(x,x^{-1}).           \label{eq:trie-binomial-majorant}
+\end{equation}
+For $t_n\in[0,1)$ this has a fixed bilateral geometric envelope in $a$;
+terms $a<-q_n$ are read as zero.  Dominated convergence in
+\eqref{eq:trie-reindexed} proves \eqref{eq:trie-phase-limit}, independently
+of every distributional limit theorem.
+
+\emph{Uniform phase tail.}
+If \eqref{eq:trie-uniform-tail} failed, there would be an $\epsilon>0$ and
+integers $k_j\to\infty$ for which the displayed error is at least
+$\epsilon$.  Compactness of the phase circle gives a subsequence whose
+phases converge to some $t$ (with endpoints identified).  The already proved
+phasewise limit sends $v(k_j)/k_j$ to $v_L(t)$, while continuity and
+periodicity send $v_L(\{\log _2k_j\})$ to the same number.  This
+contradiction proves the claimed supremum tail.
+\end{proof}
+
+The theorem has the normalization required below: its $v_L(t)$ is the limit
+of $n^{-1}\operatorname {Var}L_n$, not a variance obtained from a CLT.  At a
+half-log cut with $K=2^\ell$, $\lambda=n/K\to\infty$, and multinomial
+occupancies $(N_I)$, a Chernoff union bound gives
+$\max_I|N_I/\lambda-1|\to0$ in probability.  Thus the occupancies tend
+uniformly to infinity and their phases approach that of
+$\lambda$ (which equals that of $n$).  Equation
+\eqref{eq:trie-uniform-tail}, uniform continuity of $v_L$, and
+$\sum_I N_I=n$ give
+\begin{equation}
+ {1\over n}\sum_Iv(N_I)\longrightarrow v_L(t)
+ \quad\hbox{in probability whenever }\{\log _2n\}\to t. \label{eq:trie-occupancy-transfer}
+\end{equation}
+Consequently the $(1,1)$ entry of the stopped vector's covariance is
+$v_L(t)$; its other two diagonal entries remain the independently computed
+$\sigma_Q^2$.  For the stopped-cost block matrix $C_Q(m)$ used in the
+random-occupancy transfer, the same statement supplies exactly the
+$Q^2v_L(t)+\sigma_Q^2$ part of its $(1,1)$ entry.  No assertion about its
+mixed or discrepancy entries is made here.
+
+\subsection{Ingredient 2: the joint stopped vector}
+Put $\sigma_Q^2=\mathbb E g_Q^2$ and, with the stopping depths and suffixes
+of Lemma~\ref{lem:res-suffix-factor}, define
+\[
+ A_n=\sum_{i=1}^ng_Q(X_i),\qquad B_n=\sum_{i=1}^ng_Q(Y_i),
+ \qquad Y_i=T^{\tau_i}X_i.
+\]
+There is no fourth coordinate.  The exact pathwise identity (also for
+$n=0,1$) is
+\begin{equation}
+ V_{2/Q,n}=QL_n+A_n-B_n.                         \label{eq:stopped-vector-id}
+\end{equation}
+For $n=1$, $\tau_1=0$ and $A_1=B_1$, so this convention has no hidden
+singleton correction.
+
+\begin{theorem}[Joint stopped-vector Cram\'er--Wold theorem]
+\label{thm:joint-stopped-vector}
+For every $Q\ge3$, odd or even, if $\{\log _2n\}\to t$, then
+\[
+ {1\over\sqrt n}(L_n-\mathbb EL_n,A_n,B_n)
+ \Longrightarrow N_3(0,\Sigma_Q(t)),\qquad
+ \Sigma_Q(t)=\operatorname {diag}(v_L(t),\sigma_Q^2,\sigma_Q^2).
+\]
+Moreover the normalized covariance matrices converge entry by entry to
+$\Sigma_Q(t)$.  Consequently
+\[
+ {\operatorname {Var}V_{2/Q,n}\over n}\longrightarrow
+ Q^2v_L(t)+2\sigma_Q^2,
+\]
+and the same scalar limit theorem follows from \eqref{eq:stopped-vector-id}.
+\end{theorem}
+\begin{proof}
+We give all centering, bracket, exceptional-event and moment details.  Let
+$\ell=\lfloor\frac12\log _2n\rfloor$, $K=2^\ell$, let $I_1,\ldots,I_K$
+be the depth-$\ell$ cells, and let $N_I$ be their labelled occupancies.  Put
+\[
+ g_\ell=\mathbb E(g_Q\mid X(1),\ldots,X(\ell)),\quad
+ \rho_\ell=g_Q-g_\ell,\quad M_{n,\ell}=\sum_i g_\ell(X_i),\quad
+ R_{n,\ell}=\sum_i\rho_\ell(X_i).
+\]
+Thus $A_n=M_{n,\ell}+R_{n,\ell}$ and
+$\|R_{n,\ell}\|_2/\sqrt n=\|\rho_\ell\|_2\to0$.  On the event
+$E_{n,\ell}$ that no depth-$\ell$ cell is a singleton, every path reaches
+the cut and, pathwise,
+\begin{equation}
+ L_n=n\ell+\sum_I L_{N_I}^{I},\qquad
+ B_n=\sum_I G_{N_I}^{Y,I},\quad G_k^Y=\sum_{j=1}^kg_Q(Y_j).
+                                                        \label{eq:joint-cut}
+\end{equation}
+
+Here is the promised martingale representation.  Reveal first the labelled
+$\ell$-bit words, one label at a time, and then reveal, cell by cell, the
+entire unused suffix blocks.  Denote the resulting filtration by
+$\mathcal H_0\subset\cdots\subset\mathcal H_{n+K}$; in particular
+$\mathcal H_n=\mathcal F_\ell$, the labelled allocation field.  For a fixed
+$\lambda=(a,b,c)\in\mathbb R^3$ its differences are
+\begin{align*}
+ D_j&=b\,g_\ell(X_j),&&1\le j\le n,\\
+ D_{n+r}&=a\{L_{N_{I_r}}^{I_r}-m(N_{I_r})\}
+              +cG_{N_{I_r}}^{Y,I_r},&&1\le r\le K,
+                                                        \label{eq:joint-diffs}
+\end{align*}
+where $m(k)=\mathbb EL_k$.  The first differences are adapted and centered
+because the prefix words are iid and $\mathbb Eg_\ell=0$; conditional
+Jensen gives their square integrability.  The second differences are
+adapted.  Conditional on $\mathcal F_\ell$, the labelled stopped-line cylinder
+factorization, Lemma~\ref{lem:res-suffix-factor}, applied separately in every
+cell, makes the cell suffix
+samples independent canonical samples.  Hence they are conditionally
+centered and square integrable.  Thus \eqref{eq:joint-diffs}, rather than the
+inapplicable identities $[A,A]=L_n$ or $[A,B]=L_n-n$, is the exact
+Cram\'er--Wold martingale array.
+
+For completeness, compute every bracket term.  The stopped-prefix field of
+a canonical $k$-sample determines $L_k$, while the cylinder factorization
+gives
+\[
+ \mathbb E(G_k^Y\mid\mathcal G_k)=0,\quad
+ \mathbb E((G_k^Y)^2\mid\mathcal G_k)=k\sigma_Q^2.
+\]
+Consequently, term by term,
+\[
+ \operatorname {Var}(L_k-m(k))=\operatorname {Var}L_k,\quad
+ \operatorname {Cov}(L_k,G_k^Y)=0,\quad
+ \operatorname {Var}G_k^Y=k\sigma_Q^2.
+\]
+Different cells have zero conditional cross-brackets, as do the two reveal
+stages.  The predictable bracket of \eqref{eq:joint-diffs} is therefore
+\begin{equation}
+ \langle S_\lambda\rangle
+ =b^2n\|g_\ell\|_2^2+a^2\sum_I\operatorname {Var}L_{N_I}
+       +c^2n\sigma_Q^2.                              \label{eq:joint-bracket}
+\end{equation}
+Write $v(k)=\operatorname {Var}L_k$.  The stopped-trie variance theorem, Theorem~\ref{thm:stopped-trie-phase}, gives $v(k)/k\to v_L(s)$ uniformly when
+$\{\log _2k\}\to s$, and $v(k)\le Ck$.  A multinomial Chernoff union
+bound gives $\max_I|N_I/(n/K)-1|=o_{\mathbb P}(1)$.  Since $\ell$ is an
+integer, $\{\log _2(n/K)\}=\{\log _2n\}\to t$; hence, on that event,
+\[
+ {1\over n}\sum_Iv(N_I)
+ =\sum_I{N_I\over n}{v(N_I)\over N_I}
+ \longrightarrow v_L(t).
+\]
+(The empty terms are zero.)  This also follows directly from total variance:
+conditional suffix variance is $\sum_Iv(N_I)$, while the conditional-mean
+variance is $\operatorname {Var}\sum_Im(N_I)=O(K)=o(n)$ by
+\eqref{eq:actual-occ}; the exceptional cut error below is $o_{L^2}(\sqrt n)$.
+The ratio is bounded by $C$ because $v(k)\le Ck$, so convergence in
+probability upgrades to $L^2$.
+Together with $\|g_\ell\|_2^2\to\sigma_Q^2$, \eqref{eq:joint-bracket}
+converges, after division by $n$, to
+$a^2v_L(t)+(b^2+c^2)\sigma_Q^2$.
+
+We now prove, rather than assume, the occupancy centering used here.  Direct
+survival counting gives
+\begin{equation}
+ m(k)=k\sum_{r\ge0}\{1-(1-2^{-r})^{k-1}\},\qquad m(0)=m(1)=0. \label{eq:m-actual}
+\end{equation}
+This is an actual increment estimate, as follows.  Put $z=2^{-r}$ and
+$q=1-z$.  The $r$th summand is $k(1-q^{k-1})$, and direct subtraction gives
+\[
+ \Delta^2\{k(1-q^{k-1})\}
+ =q^{k-1}\{2zq-kz^2\}.
+\]
+Therefore
+\[
+ |\Delta^2m(k)|\le\sum_{r\ge0}
+ \{2z(1-z)^k+kz^2(1-z)^{k-1}\}.
+\]
+For $z\le1/k$ the dyadic geometric sums are $O(1/k)$; for $z>1/k$,
+$(1-z)^{k-1}\le e^{-(k-1)z}$ and the dyadic sum, after $u=kz$, is again
+$O(1/k)$.  Thus, for $d(s)=m(s+1)-m(s)$,
+\begin{equation}|d(s+1)-d(s)|\le {C\over s+1}.          \label{eq:difference-d}
+\end{equation}
+Replace one labelled cell choice by an independent choice.  If it moves a
+label from occupancy $u$ to occupancy $w$, the actual change of
+$S=\sum_I m(N_I)$ is $d(w)-d(u-1)$ (and is zero if the cells agree).  Write
+$\lambda_0=n/K$ and $z_0=\lfloor\lambda_0\rfloor$.  For a binomial
+occupancy $Z$, on $Z\ge z_0/2$, \eqref{eq:difference-d} gives
+\[
+ |d(Z)-d(z_0)|\le {C|Z-z_0|\over z_0/2+1},\qquad
+ \mathbb E|d(Z)-d(z_0)|^2=O(1/\lambda_0).
+\]
+On $Z<z_0/2$, telescoping gives at most
+$C\log((z_0+1)/(Z+1))$ and Chernoff's bound makes its squared expectation
+$O(\log^2(z_0+1)e^{-c\lambda_0})=O(1/\lambda_0)$.  The size-biased source
+occupancy has the same calculation after subtracting the moved label.
+Thus, without assuming independence of the two affected cells,
+\[
+ \mathbb E(S-S^{(i)})^2\le C/\lambda_0=CK/n.
+\]
+Efron--Stein now yields
+\begin{equation}
+ \left\|\sum_I m(N_I)-\mathbb E\sum_I m(N_I)\right\|_2
+ \le C\sqrt K=O(2^{\ell/2}).                         \label{eq:actual-occ}
+\end{equation}
+This calculation uses the actual mean \eqref{eq:m-actual}, and its constant
+is uniform throughout $K\le C_0\sqrt n$.
+
+The conditional Lyapunov condition is also explicit.  Set
+$X_k=L_k-m(k)$ and
+$c_k=k+m(B_k)+m(k-B_k)-m(k)$, where $B_k$ is binomial.  Conditional on
+$B_k$, the child tries are independent, so
+\[
+ \mathbb E|X_{B_k}^{(0)}+X_{k-B_k}^{(1)}|^4
+ =2\mathbb EM_4(B_k)+6\mathbb E\{v(B_k)v(k-B_k)\}.
+\]
+The displayed second-difference estimate and binomial fourth moments give
+$\mathbb E|c_k|^4=O(k^2)$, while $v(k)=O(k)$.  Young's inequality gives
+$M_4(k)\le(1+\epsilon)2\mathbb EM_4(B_k)+C_\epsilon k^2$.
+After moving the self-atom $2(1+\epsilon)2^{-k}M_4(k)$ to the left, induction
+closes because $2\mathbb E(B_k+1)^2/(k+1)^2\to1/2$.  Enlarging the constant
+for finitely many $k$ proves
+$\mathbb E|L_k-m(k)|^4\le C(k+1)^2$.
+
+For the endpoint, suffix factorization gives the exact iid formula
+\[
+ \mathbb E|G_k^Y|^4
+ =k\mathbb E|g_Q|^4+3k(k-1)\sigma_Q^4=O_Q((k+1)^2),
+\]
+including the exceptional singleton $G_1^Y=g_Q(Y_1)$.  Thus
+$\mathbb E(|D_{n+r}|^4\mid\mathcal F_\ell)\le C_{\lambda,Q}(N_{I_r}+1)^2$.  No undefined
+central window is needed: multinomial moments give deterministically
+\[
+ \mathbb E\sum_I(N_I+1)^2
+ ={n^2\over K}+n(1-K^{-1})+2n+K,
+\]
+so Markov's inequality yields
+\[
+ {1\over n^2}\sum_I
+ \mathbb E(|D_{n+I}|^4\mid\mathcal F_\ell)
+ =O_{\mathbb P}(K^{-1}+n^{-1})=o_{\mathbb P}(1).
+\]
+For the prefix row, independence from $\mathcal H_{j-1}$ and conditional
+Jensen give exactly
+\[
+ n^{-2}\sum_{j\le n}\mathbb E(|D_j|^4\mid\mathcal H_{j-1})
+ ={b^4\mathbb E|g_\ell|^4\over n}
+ \le {b^4\mathbb E|g_Q|^4\over n}=o(1).
+\]
+These conditional Lyapunov bounds imply conditional Lindeberg.  They prove
+the scalar martingale CLT when the limiting bracket is positive; when it is
+zero, \eqref{eq:joint-bracket} and conditional Chebyshev give convergence
+to zero, so no division by a vanishing variance occurs.
+
+It remains to justify the cut and all endpoint covariances in second
+moment.  A labelled union bound gives
+\[
+ \mathbb P(E_{n,\ell}^c)\le n(1-K^{-1})^{n-1},
+\]
+which is superpolynomially small.  The fourth-moment bounds just displayed,
+Minkowski, and $\mathbb E|A_n|^4+\mathbb E|B_n|^4=O_Q(n^2)$ show by
+Cauchy--Schwarz that deleting $E_{n,\ell}^c$ changes each normalized
+coordinate in $L^2$ by $o(1)$.  This is the exceptional-singleton
+fourth-moment transfer; it applies to every linear combination, including a
+combination whose Gaussian variance is zero, and supplies uniform
+integrability of all normalized products.
+
+The suffix factorization gives exactly
+\begin{equation}\operatorname {Cov}(L_n,B_n)=0.        \label{eq:LBexact}\end{equation}
+Indeed $L_n$ is $\mathcal G_n$-measurable and
+$\mathbb E(B_n\mid\mathcal G_n)=0$.  Also
+$\operatorname {Cov}(L_n,A_n)=0$ exactly: conditional on $X_i=x$, bitwise
+XOR of every other string with $x$ preserves all prefix-equality relations,
+so the conditional law of $L_n$ does not depend on $x$; summing
+$\mathbb E[(L_n-\mathbb EL_n)g_Q(X_i)]$ proves the claim.  Finally, on
+$E_{n,\ell}$ the block $B_n$ is conditionally centered given
+$\mathcal F_\ell$, and is therefore orthogonal to $M_{n,\ell}$.  Hence
+\[
+ |\operatorname {Cov}(A_n,B_n)|
+ \le\|R_{n,\ell}\|_2\|B_n\|_2+o(n)=o(n),
+\]
+because $\|B_n\|_2=\sqrt n\sigma_Q$; the displayed fourth-moment transfer
+is the $o(n)$ exceptional term.  These are actual covariance estimates,
+not consequences inferred from convergence in law.  Likewise
+\eqref{eq:actual-occ} makes the conditional/global centering discrepancy
+$o_{L^2}(\sqrt n)$.
+
+Thus the martingale sum differs in $L^2/\sqrt n$ from the exact
+Cram\'er--Wold statistic
+$a(L_n-\mathbb EL_n)+bA_n+cB_n$ by a quantity tending to zero.  The scalar
+CLT for every $(a,b,c)$ and Cram\'er--Wold prove the asserted joint limit.
+The exact variance formulas, the three cross-covariance calculations, and
+uniform integrability prove entrywise covariance convergence.
+
+Nothing in this proof uses a Perron sign or an odd/even switching grid: it
+uses only the fair trie and the coboundary identity
+$F_{2/Q}-Q=g_Q-g_Q\circ T$ with $g_Q\in L^4$.  It therefore proves the
+identical theorem separately for odd and even $Q$.  Parity first enters the
+later discrepancy mixed forcing, which is not an ingredient of this theorem.
+\end{proof}
+
+\subsection{Ingredient 3: random occupancies and the actual block matrix}
+For later use put
+\[
+ W_m=QL_m-\sum_{i=1}^m g_Q(Y_i),\qquad
+ q_Q(m)=\operatorname {Var}\Delta_{Q,m},
+\]
+and define the two mixed coefficients
+\[
+ h_Q(m)=Q\operatorname {Cov}(L_m,\Delta_{Q,m}),\qquad
+ p_Q(m)=\operatorname {Cov}\!\left(\sum_{i=1}^m
+ g_Q(Y_i),\Delta_{Q,m}\right).
+\]
+The empty and singleton conventions are the actual ones: $L_0=L_1=0$,
+$\Delta_{Q,0}=\Delta_{Q,1}=0$, and the endpoint sum is empty for $m=0$.
+In particular, no singleton correction is suppressed in the following exact
+identity:
+\begin{equation}
+ C_Q(m):=\operatorname {Cov}\binom{W_m}{\Delta_{Q,m}}
+ =\begin{pmatrix}
+ Q^2\operatorname {Var}L_m+m\sigma_Q^2&h_Q(m)-p_Q(m)\\
+ h_Q(m)-p_Q(m)&q_Q(m)
+ \end{pmatrix}.                                      \label{eq:actual-block-matrix}
+\end{equation}
+Indeed Lemma~\ref{lem:res-suffix-factor} gives
+$\operatorname {Cov}(L_m,\sum_i g_Q(Y_i))=0$ and variance
+$m\sigma_Q^2$; bilinearity gives the off-diagonal entry.  Notice that
+$W_m$, rather than the complete stopped cost, occurs here.
+
+We record the random-occupancy passage in the precise strength needed below.
+This separates a genuine renewal obligation from a sometimes implicit
+appeal to pointwise phase convergence.
+
+\begin{lemma}[Uniform phase tails imply the block occupancy limit]
+\label{lem:block-occupancy-transfer}
+Suppose that continuous one-periodic functions $c_{11},c_{12},c_{22}$
+satisfy, entrywise,
+\begin{equation}
+ \sup_{m\ge M}\left|m^{-1}C_Q(m)_{ab}
+ -c_{ab}(\{\log _2m\})\right|\longrightarrow0
+ \quad(M\to\infty).                                  \label{eq:block-uniform-tail}
+\end{equation}
+If $K=2^\ell\le C_0\sqrt n$, $n/K\to\infty$, and
+$(N_I)_{I\in\mathcal D_\ell}$ are the labelled multinomial occupancies,
+then, whenever $\{\log _2n\}\to t$,
+\[
+ {1\over n}\sum_{I\in\mathcal D_\ell}C_Q(N_I)
+ \longrightarrow_{\mathbb P}
+ \begin{pmatrix}c_{11}(t)&c_{12}(t)\\c_{12}(t)&c_{22}(t)\end{pmatrix}.
+\]
+Moreover, for any scalar sequence $u(m)$, a continuous phasewise limit
+$u(m)/m\to c(\{\log _2m\})$ along every convergent phase sequence already
+implies the uniform tail assertion analogous to
+\eqref{eq:block-uniform-tail}.
+\end{lemma}
+\begin{proof}
+Write $\lambda=n/K$.  Since $\ell$ is integral,
+$\{\log _2\lambda\}=\{\log _2n\}$.  A binomial Chernoff bound and a union
+bound give
+\[
+ \max_I|N_I-\lambda|=O_{\mathbb P}(\sqrt{\lambda\log K})
+ =o_{\mathbb P}(\lambda).
+\]
+Thus, with probability tending to one, all $N_I$ tend uniformly to infinity
+and
+$\max_I|\log _2N_I-\log _2\lambda|\to0$.  Apply
+\eqref{eq:block-uniform-tail} and uniform continuity on the phase circle,
+entry by entry, to obtain
+\[
+ C_Q(N_I)_{ab}=N_I\{c_{ab}(t)+o_{\mathbb P}(1)\}
+\]
+uniformly in $I$.  Summing and using $\sum_I N_I=n$ proves the matrix
+claim.  For the final assertion, if uniformity failed, there would be
+$m_j\to\infty$ with an error bounded away from zero.  Compactness of the
+phase circle supplies a subsequence with $\{\log _2m_j\}\to s$; the assumed
+phasewise convergence and continuity at $s$ give a contradiction.
+\end{proof}
+
+For the $(1,1)$ entry, Theorem~\ref{thm:joint-stopped-vector} supplies
+\eqref{eq:block-uniform-tail}: its phasewise covariance convergence and the
+compactness clause of Lemma~\ref{lem:block-occupancy-transfer} give
+\[
+ c_{11}(t)=Q^2v_L(t)+\sigma_Q^2.
+\]
+For the $(2,2)$ entry the signed discrepancy renewal must supply the same
+uniform tail for $q_Q(m)$.  For the mixed entry it must be supplied for the
+actual difference $h_Q(m)-p_Q(m)$, with both terms retained.  Thus the
+occupancy argument itself is explicit and proved, but it cannot create its
+renewal inputs.  Ingredient~4 below supplies the mixed input; the discrepancy
+diagonal remains a separate input.  In particular, pointwise convergence in
+law is not being used in place of \eqref{eq:block-uniform-tail}.
+
+\subsection{Ingredient 4: the mixed covariance and its phase function}
+\label{sec:mixed-kappa-d}
+We now discharge the mixed input left open above.  Because two earlier modules
+used the letter $h$ for different covariances, we keep both names visible.
+Put, for a canonical $m$-sample,
+\[
+ G_{f,m}=\sum_{i=1}^m f(X_i),\qquad
+ \widetilde h_Q(m)=\Cov(V_{2/Q,m},\Delta_{Q,m}),\qquad
+ \widetilde p_Q(m)=\Cov(G_{g_Q,m},\Delta_{Q,m}).
+\]
+Thus $h_Q,p_Q$ in \eqref{eq:actual-block-matrix} use respectively the
+LISTER length and the \emph{terminal} suffixes $Y_i$, whereas the tilded
+quantities use the complete stopped cost and the \emph{entrance} points
+$X_i$.  The stopped identity \eqref{eq:res-stop-id} gives the exact bridge
+\begin{equation}
+ C_Q(m)_{12}=h_Q(m)-p_Q(m)
+ =\widetilde h_Q(m)-\widetilde p_Q(m).                 \label{eq:mixed-bridge-d}
+\end{equation}
+This identity, rather than an identification of the two notationally
+different $h$'s or $p$'s, is what connects the renewal below to Ingredient~3.
+
+Write $a(m)=\E\Delta_{Q,m}$, $v(m)=\E V_{2/Q,m}$ and abbreviate
+$\bar D_m=\bar D_{2/Q,m}$.  If $J$ is the labelled left occupancy, let
+\[
+ A=V_{2/Q,J}^{(0)}+V_{2/Q,m-J}^{(1)},\quad
+ B=\Delta_{Q,J}^{(0)}+\Delta_{Q,m-J}^{(1)},\quad
+ \bar\Phi_m={\bf1}_{\{m\ge2\}}\sum_{i=1}^mF_{2/Q}(X_i).
+\]
+Conditionally on all labelled first bits the two child samples are independent
+canonical samples, but $\bar D_m$ is a function of both of them.  The exact
+root recursions are
+\[
+ V_{2/Q,m}=A+\bar\Phi_m,
+ \qquad \Delta_{Q,m}=B+\bar D_m.                       \label{eq:mixed-root-d}
+\]
+The barred toll is essential: both variables and all covariances below vanish
+at $m=0,1$.
+
+\begin{proposition}[Exact four-term mixed forcing]\label{prop:mixed-force-d}
+For $B_m\sim\operatorname {Bin}(m,1/2)$,
+\begin{equation}
+ \widetilde h_Q(m)=2\E\widetilde h_Q(B_m)+s_Q(m),       \label{eq:mixed-renew-d}
+\end{equation}
+where $s_Q(0)=s_Q(1)=0$ and, without changing any sign,
+\begin{align}
+ s_Q(m)={}&\Cov\{v(J)+v(m-J),a(J)+a(m-J)\}             \label{eq:mixed-four-d}\\
+ &+\Cov(A,\bar D_m)+\Cov(\bar\Phi_m,B)
+   +\Cov(\bar\Phi_m,\bar D_m).\notag
+\end{align}
+Moreover, for every $\epsilon>0$,
+\begin{equation}|s_Q(m)|\le C_{Q,\epsilon}(m+1)^{1/2+\epsilon}.\label{eq:mixed-force-bound-d}\end{equation}
+\end{proposition}
+\begin{proof}
+Apply total covariance to \eqref{eq:mixed-root-d}.  Conditional on $J$, the
+centered child pairs are independent across branches.  Their two same-branch
+covariances give $\widetilde h_Q(J)+\widetilde h_Q(m-J)$; their conditional
+means give the first covariance in \eqref{eq:mixed-four-d}.  Expanding the
+remaining covariance of $A+\bar\Phi_m$ with $B+\bar D_m$ gives, in order,
+the other three displayed covariances.  Binomial reflection turns the two
+same-branch terms into $2\E\widetilde h_Q(B_m)$.  This proves the signed
+identity; in particular neither child/root covariance has been declared zero.
+
+We next bound its four terms without using a bound on $\widetilde h_Q$.
+The estimates \eqref{eq:zreg-d} and \eqref{eq:pair-d}, applied to $a$, say
+\[
+ |\nabla a(u)-\nabla a(w)|\le C_{Q,\beta}|u-w|
+ (1+\min(u,w))^{-\beta},\qquad \sup_u|\nabla a(u)|<\infty.
+\]
+Taking expectations in the stopped identity \eqref{eq:res-stop-id}
+and using $\E g_Q(X_i)=\E g_Q(Y_i)=0$ gives exactly
+$v(m)=Q\E L_m$.  Formula \eqref{eq:m-actual} gives
+$|\nabla\E L_u|\le C\log(u+2)$ by splitting its dyadic sum at
+$2^r=u+1$, while \eqref{eq:difference-d} gives, by telescoping,
+$|\nabla\E L_u-\nabla\E L_w|\le
+ C|u-w|/(1+\min(u,w))$.  Hence
+$|\nabla v(u)|\le C_Q\log(u+2)$ and
+$|\nabla v(u)-\nabla v(w)|\le
+ C_Q|u-w|/(1+\min(u,w))$.
+Subtract the two midpoint values in the first covariance.  On
+$|J-m/2|\le m/4$, midpoint pairing (with the two middle integers retained
+when $m$ is odd) and the preceding estimates bound the two centered factors
+by respectively
+\[
+ C_Q(1+|J-m/2|)^2/m,\qquad
+ C_{Q,\beta}(1+|J-m/2|)^2m^{-\beta}.
+\]
+Binomial eighth moments are $O(m^4)$; on the complementary event the bounded
+increments and the Chernoff bound absorb every polynomial and logarithm.
+Taking $\beta$ arbitrarily close to one (and weakening the resulting power)
+therefore gives
+\begin{equation}
+ |\Cov\{v(J)+v(m-J),a(J)+a(m-J)\}|
+ \le C_{Q,\epsilon}m^{1/2+\epsilon}.                  \label{eq:childmeans-mix-d}
+\end{equation}
+This deliberately records the weaker summable exponent needed below.
+
+The stopped second-moment theorem gives $\Var A=O_Q(m)$, while Proposition
+\ref{prop:defect-moments-d} gives $\sup_m\Var\bar D_m<\infty$.
+Cauchy--Schwarz therefore bounds $|\Cov(A,\bar D_m)|$ by $C_Q\sqrt m$.
+For the last term the constant $Qm$ drops out and
+$F_{2/Q}-Q=g_Q-g_Q\circ T$; hence another Cauchy--Schwarz estimate gives
+\begin{equation}
+ |\Cov(\bar\Phi_m,\bar D_m)|
+ \le\sqrt{m}\,\|g_Q-g_Q\circ T\|_2
+       \sup_r\|\bar D_r-\E\bar D_r\|_2.               \label{eq:rootroot-mix-d}
+\end{equation}
+
+It remains to control $\Cov(\bar\Phi_m,B)$, the term where an unsigned
+domination would lose the Perron cancellation.  For every $f\in L^2$ put
+\[
+ p_f(m)=\Cov(G_{f,m},\Delta_{Q,m}),\qquad
+ \rho_f(m)=\Cov(G_{f,m},\bar D_m).
+\]
+These definitions depend only on $f-\E f$, because constants have zero
+covariance with either centered second argument; thus they also apply to the
+not necessarily centered branch restrictions used below.
+Splitting each $X_i=(b+\xi_i)/2$ by its labelled first bit and retaining the
+conditional means gives exactly
+\begin{equation}p_f(m)=2\E p_{Pf}(B_m)+\rho_f(m).       \label{eq:pf-system-d}\end{equation}
+Indeed the same-child centered terms give $P f$, the cross-child terms vanish
+by conditional independence, and the remaining conditional-mean covariance
+is odd in $J-m/2$ whereas $a(J)+a(m-J)$ is even.  Thus it cancels by
+$J\leftrightarrow m-J$, not by independence.  Also
+\begin{equation}|\rho_f(m)|\le C_Q\sqrt m\,\|f\|_2.    \label{eq:rho-f-d}\end{equation}
+
+Here are the two parity systems, now based on the explicit calculation in
+Lemma~\ref{lem:explicit-perron-parity-d}.  Put $L=L_Q=R_Q+1$; zero vectors
+at the end may harmlessly be deleted.  For odd $Q$, let
+$W_Q=Pg_Q-g_Q/2=-K_Q/2$.  Then $P^LW_Q=0$, and in the ordered list
+$e_0=g_Q,e_1=W_Q,e_2=PW_Q,\ldots,e_L=P^{L-1}W_Q$,
+\eqref{eq:pf-system-d} reads
+\begin{align*}
+ p_{e_0}(m)&=\E p_{e_0}(B_m)+2\E p_{e_1}(B_m)+\rho_{e_0}(m),\\
+ p_{e_i}(m)&=2\E p_{e_{i+1}}(B_m)+\rho_{e_i}(m)\quad(1\le i<L),\\
+ p_{e_L}(m)&=\rho_{e_L}(m),
+\end{align*}
+and
+\begin{equation}u_Q:=2P(F_{2/Q}-Q)=-g_Q+2W_Q.          \label{eq:odd-sign-d}\end{equation}
+For even $Q$, put $K_Q=g_Q-2Pg_Q$, which
+Lemma~\ref{lem:explicit-perron-parity-d} identifies with the finite sum
+\eqref{eq:g-explicit-d}; directly, $P^LK_Q=0$.  In the list
+$e_0=g_Q,e_1=K_Q,e_2=PK_Q,\ldots,e_L=P^{L-1}K_Q$, the system is instead
+\begin{align*}
+ p_{e_0}(m)&=\E p_{e_0}(B_m)-\E p_{e_1}(B_m)+\rho_{e_0}(m),\\
+ p_{e_i}(m)&=2\E p_{e_{i+1}}(B_m)+\rho_{e_i}(m)\quad(1\le i<L),\\
+ p_{e_L}(m)&=\rho_{e_L}(m),
+\end{align*}
+and
+\begin{equation}u_Q=2P(F_{2/Q}-Q)=-g_Q-K_Q.             \label{eq:even-sign-d}\end{equation}
+Thus the odd $+2W_Q$ and even $-K_Q$ signs have not been conflated.
+
+Backward induction using \eqref{eq:rho-f-d} and
+$\E\sqrt{B_m+1}\le\sqrt{m/2+1}$ gives $p_{e_i}(m)=O_Q(\sqrt{m+1})$
+for $i\ge1$.  For $p_{e_0}$, isolate the self-atom $B_m=m$ and use the
+strict square-root contraction
+$\E\sqrt{B_m+1}/\sqrt{m+1}<1$ after finitely many $m$; enlarging the
+constant over that finite set closes strong induction.  In both parities,
+\begin{equation}|p_{g_Q}(m)|+|p_{u_Q}(m)|\le C_Q\sqrt{m+1}.\label{eq:p-sqrt-d}\end{equation}
+
+For completeness, expose all four entrance/terminal signs.  If
+$g_b(x)=g_Q((b+x)/2)$, conditional first-bit expansion gives
+\begin{align*}
+ \Cov(\bar\Phi_m,B)=\E[&p_{g_0}(J)-p_{g_Q}(J)
+ +p_{g_1}(m-J)-p_{g_Q}(m-J)]\\
+ &=\E p_{2Pg_Q-2g_Q}(B_m)=\E p_{u_Q}(B_m).             \label{eq:four-endpoints-d}
+\end{align*}
+The first and third terms are the two entrance covariances and the second
+and fourth are the two terminal covariances.  Cross-branch covariances vanish
+only after conditioning; the occupancy-mean term cancels by the odd/even
+reflection just used.  Formula \eqref{eq:p-sqrt-d} bounds this term by
+$C_Q\sqrt{m+1}$.  Combining this with
+\eqref{eq:childmeans-mix-d}, \eqref{eq:rootroot-mix-d}, and the bound on
+$\Cov(A,\bar D_m)$ proves \eqref{eq:mixed-force-bound-d} noncircularly.
+\end{proof}
+
+\begin{theorem}[Signed renewal, explicit $\kappa_Q$, and uniform phase tails]
+\label{thm:mixed-kappa-d}
+Define, for $t\in\mathbb R$,
+\begin{align}
+ \kappa_Q(t)
+ &:=\sum_{j\in\mathbb Z}{\E s_Q(\operatorname {Pois}(2^{t-j}))\over2^{t-j}}
+                                                               \label{eq:kappa-pois-d}\\
+ &=\sum_{m\ge2}{s_Q(m)\over m!}
+   \sum_{j\in\mathbb Z}(2^{t-j})^{m-1}e^{-2^{t-j}}.    \label{eq:kappa-series-d}
+\end{align}
+The series converge normally on the phase circle.  Consequently $\kappa_Q$
+is finite, bounded, continuous and one-periodic.  Moreover
+\begin{equation}
+ {\widetilde h_Q(m)\over m}\longrightarrow\kappa_Q(t)
+ \quad\hbox{whenever }\{\log_2m\}\to t,               \label{eq:h-phase-d}
+\end{equation}
+and in fact
+\begin{equation}
+ \sup_{m\ge M}\left|{\widetilde h_Q(m)\over m}
+       -\kappa_Q(\{\log_2m\})\right|\longrightarrow0. \label{eq:h-uniform-phase-d}
+\end{equation}
+The same conclusions hold for the actual block entry $C_Q(m)_{12}$.
+\end{theorem}
+\begin{proof}
+Fix $\alpha\in(1/2,1)$ in \eqref{eq:mixed-force-bound-d}.  Iterating
+\eqref{eq:mixed-renew-d} through $R$ independent thinnings gives
+\begin{equation}
+ \widetilde h_Q(m)=\sum_{r<R}2^r\E s_Q(\operatorname {Bin}(m,2^{-r}))
+ +2^R\E\widetilde h_Q(\operatorname {Bin}(m,2^{-R})). \label{eq:h-iterate-d}
+\end{equation}
+For fixed $m$ the last term tends to zero.  Indeed
+$\widetilde h_Q(0)=\widetilde h_Q(1)=0$ and
+$\Pr\{\operatorname {Bin}(m,p)\ge2\}\le m(m-1)p^2/2$;
+the maximum of $|\widetilde h_Q(k)|$ over $2\le k\le m$ is finite.  This
+proves the boundary limit without assuming $\widetilde h_Q=O(m)$.
+
+The resulting infinite sum is absolutely convergent.  With
+$\lambda=m2^{-r}$, its normalized summand is bounded, uniformly in $m$, by
+\begin{equation}
+ {\E|s_Q(\operatorname {Bin}(m,\lambda/m))|\over\lambda}
+ \le C_{Q,\alpha}\begin{cases}\lambda,&0<\lambda\le1,\\
+ \lambda^{\alpha-1},&\lambda\ge1.
+ \end{cases}                                           \label{eq:renew-majorant-d}
+\end{equation}
+For the first line use $s_Q(0)=s_Q(1)=0$ and
+$k^\alpha\le k(k-1)$ for $k\ge2$; for the second use concavity,
+$\E B^\alpha\le(\E B)^\alpha$.  Thus both dyadic tails are geometric.
+
+Write $m=2^{M_m+t_m}$ with $M_m=\lfloor\log_2m\rfloor$ and $t_m\in[0,1)$,
+and reindex $j=r-M_m$.  For fixed $j$, the binomial variable converges to
+$\operatorname {Pois}(2^{t-j})$ when $t_m\to t$; its $\alpha$-moments are
+uniformly integrable, so the corresponding expectation converges.  The
+majorant \eqref{eq:renew-majorant-d} permits passage through the bilateral
+sum and proves \eqref{eq:kappa-pois-d} and \eqref{eq:h-phase-d}.
+Expanding the Poisson expectation and using the same absolute majorant gives
+\eqref{eq:kappa-series-d}.
+
+More explicitly, uniformly for $t\in[0,1]$, the terms with $j>R$ are at
+most $C_Q\sum_{j>R}2^{-j}$, while those with $j<-R$ are at most
+$C_Q\sum_{j<-R}2^{-(1-\alpha)|j|}$.  This is the required uniform phase-tail
+estimate, not merely pointwise convergence.  The Weierstrass test and
+continuity of each Poisson term prove continuity and boundedness; replacing
+$t$ by $t+1$ and reindexing $j$ proves one-periodicity.  The same uniform
+two-tail argument shows that convergence along every phase sequence is
+uniform in the compactness sense \eqref{eq:h-uniform-phase-d} (otherwise a
+counterexample sequence has a convergent phase subsequence).
+
+Finally \eqref{eq:p-sqrt-d} gives
+$|\widetilde p_Q(m)|/m\le C_Q/\sqrt{m+1}$.  By
+\eqref{eq:mixed-bridge-d},
+\begin{equation}
+ {C_Q(m)_{12}\over m}={\widetilde h_Q(m)-\widetilde p_Q(m)\over m}
+ \longrightarrow\kappa_Q(t),                           \label{eq:block-mixed-phase-d}
+\end{equation}
+with the uniform tail \eqref{eq:block-uniform-tail}.  Also, for $K$ cells,
+$n^{-1}\sum_I|\widetilde p_Q(N_I)|\le C_Q\sqrt{K/n}$ by
+Cauchy--Schwarz.  Hence the terminal/entrance correction is controlled both
+at fixed size and after the half-log multinomial cut.  This proves the exact
+mixed hypothesis consumed by Lemma~\ref{lem:block-occupancy-transfer}; no
+convergence-in-law assertion has been used as covariance convergence.
+\end{proof}
+
+\paragraph{Parity-specific mixed-covariance dependencies.}
+For odd $Q$, Lemma~\ref{lem:explicit-perron-parity-d} gives the explicit
+transfer, $W_Q=-K_Q/2$, and the finite Perron orbit; Proposition~\ref{prop:mixed-force-d}
+then gives the four-term forcing used by Theorem~\ref{thm:mixed-kappa-d}.
+For even $Q$, the same lemma gives $K_Q=g_Q-2Pg_Q$ and its finite Perron
+orbit, while the same proposition and theorem give the even forcing and
+phase limit with $u_Q=-g_Q-K_Q$.  Thus the parity-specific algebra enters
+only through the internally stated Perron identities; after nilpotence both
+systems obey the signed renewal of Theorem~\ref{thm:mixed-kappa-d}.
+
+
+The joint stopped-vector theorem, Theorem~\ref{thm:joint-stopped-vector}, yields, along
+$\{\log_2n\}\to t$,
+\begin{equation}
+ n^{-1}\operatorname{Var}V_{2/Q,n}\to Q^2v_L(t)+2\operatorname{Var}(g_Q), \label{eq:res-vphase}
+\end{equation}
+and the corresponding CLT.  Its proof must retain jointly $L_n$, the initial
+sum $\sum g_Q(X_i)$, and the terminal sum $\sum g_Q(T^{\tau_i}X_i)$; the two
+endpoint variances each converge to $\operatorname{Var}(g_Q)$ and all omitted
+cross-covariances converge to the values asserted by that theorem.
+
+We now prove, rather than merely invoke, the upper-discrepancy estimate used
+at the half-log cut.  Write
+$\bar D_Q(S)=D_{2/Q}(S){\bf1}_{\{|S|\ge2\}}$ and
+$d_Q(m)=\mathbb E\bar D_{Q,m}$; in particular $d_Q(0)=d_Q(1)=0$.
+For $I\in\mathcal D_r$, let $S_I$ be the labelled points in $I$ transported
+to $[0,1)$ by the increasing affine map, let $N_I=|S_I|$, and let
+$\Delta^I_{Q,N_I}$ be the canonical discrepancy of the subtree
+rooted at $I$ (including the defect at $I$), after affine rescaling.  Iterating
+\eqref{eq:delta-rec-d}, with one-child chains retained, gives the pathwise
+identity, for every integer $\ell\ge0$,
+\begin{align}
+ R_{n,\ell}&:=\sum_{r=0}^{\ell-1}U_{r,n},&
+ U_{r,n}&:=\sum_{I\in\mathcal D_r}\bar D_Q(S_I),
+                                                        \label{eq:halfres-d}\\
+ \Delta_{Q,n}&=\sum_{I\in\mathcal D_\ell}\Delta^I_{Q,N_I}
+                  +R_{n,\ell}.                         \label{eq:halfres-identity-d}
+\end{align}
+Thus this is the actual top-tree term in the cut decomposition, not a
+surrogate residual.
+
+\begin{proposition}[upper-discrepancy residual]
+\label{prop:halfres-d}
+For fixed $Q\ge3$, all $n,\ell\ge0$ satisfy
+\begin{equation}
+ \|R_{n,\ell}-\mathbb ER_{n,\ell}\|_2\le C_Q2^{\ell/2},
+ \qquad \operatorname {Var}R_{n,\ell}\le C_Q2^\ell.     \label{eq:halfres-bound-d}
+\end{equation}
+In particular, for
+$\ell_n=\lfloor\frac12\log_2n\rfloor$ this norm is
+$O_Q(n^{1/4})=o(\sqrt n)$.
+\end{proposition}
+\begin{proof}
+Fix any $\beta\in(1/2,1)$.  The already proved smoothing estimate
+\eqref{eq:dreg-d}, including its explicitly checked finite initial range,
+says
+\begin{equation}
+ |d_Q(k+1)-d_Q(k)|\le C_{Q,\beta}(k+1)^{-\beta}\quad(k\ge0).       \label{eq:halfres-diff-d}
+\end{equation}
+At level $r$ set
+\begin{equation}
+ F_{r,n}:=\sum_{I\in\mathcal D_r}\{\bar D_Q(S_I)-d_Q(N_I)\},
+ \qquad M_{r,n}:=\sum_{I\in\mathcal D_r}d_Q(N_I),
+ \qquad U_{r,n}=F_{r,n}+M_{r,n}.                         \label{eq:halfres-split-d}
+\end{equation}
+Let $\mathcal P_r$ be the sigma-field generated by the labelled allocation
+of every point to its depth-$r$ cell.  Given $\mathcal P_r$, the binary
+suffixes belonging to distinct cells are disjoint subfamilies of independent
+bits.  After affine rescaling, the cell samples are therefore independent
+canonical samples of the fixed sizes $N_I$.  Consequently
+$\mathbb E(F_{r,n}\mid\mathcal P_r)=0$, and conditional independence and
+Proposition~\ref{prop:defect-moments-d} give
+\begin{equation}
+ \mathbb E(F_{r,n}^2\mid\mathcal P_r)
+ =\sum_{I\in\mathcal D_r}\operatorname {Var}(\bar D_{Q,N_I})
+ \le C_Q2^r,
+ \qquad \|F_{r,n}\|_2\le C_Q2^{r/2}.                    \label{eq:halfres-fluc-d}
+\end{equation}
+
+Here is the missing influence calculation for $M_{r,n}$.  Replace label
+$X_i$ by an independent $X_i'$.  If their depth-$r$ cells coincide, the
+statistic does not change.  Otherwise call those cells $A,B$, and let
+$K_A,K_B$ be their occupancies among the other $n-1$ labels.  Exactly two
+occupancies change, each by one, and
+\[
+ M_{r,n}-M_{r,n}^{(i)}
+ =\{d_Q(K_A+1)-d_Q(K_A)\}
+  -\{d_Q(K_B+1)-d_Q(K_B)\}.
+\]
+Each of $K_A,K_B$ has the marginal law
+$K\sim\operatorname {Bin}(n-1,2^{-r})$ (no independence between them is
+claimed or needed).  Thus \eqref{eq:halfres-diff-d}, $(x-y)^2\le2x^2+2y^2$,
+and replacement Efron--Stein yield
+\begin{equation}
+ \operatorname {Var}M_{r,n}
+ \le C_{Q,\beta}n\,\mathbb E(K+1)^{-2\beta}.             \label{eq:halfres-es-d}
+\end{equation}
+Put $\mu=(n-1)2^{-r}$.  If $\mu\ge1$, then on
+$\{K\ge\mu/2\}$ the integrand is at most $C\mu^{-2\beta}$,
+whereas Chernoff bounds the complementary probability by $e^{-c\mu}$.
+Hence $\mathbb E(K+1)^{-2\beta}\le C_\beta\mu^{-2\beta}$.
+Since $n\le2\mu2^r$ for $n\ge2$ and $1-2\beta<0$,
+\eqref{eq:halfres-es-d} is at most $C_Q2^r$.  If $\mu\le1$, use the
+elementary bound $(K+1)^{-2\beta}\le1$ and
+$n\le2^r+1\le2^{r+1}$; the same conclusion follows.  The cases $n=0,1$
+are immediate because every barred defect vanishes.  We have proved
+\begin{equation}
+ \|M_{r,n}-\mathbb EM_{r,n}\|_2\le C_Q2^{r/2}.            \label{eq:halfres-mean-d}
+\end{equation}
+
+Defects at different levels are not asserted to be independent or
+orthogonal.  Instead, using $\mathbb EF_{r,n}=0$, the exact split is
+\[
+ R_{n,\ell}-\mathbb ER_{n,\ell}
+ =\sum_{r<\ell}F_{r,n}
+   +\sum_{r<\ell}\{M_{r,n}-\mathbb EM_{r,n}\}.
+\]
+Minkowski's inequality, \eqref{eq:halfres-fluc-d}, and
+\eqref{eq:halfres-mean-d} now give
+\[
+ \|R_{n,\ell}-\mathbb ER_{n,\ell}\|_2
+ \le C_Q\sum_{r<\ell}2^{r/2}\le C_Q2^{\ell/2}.
+\]
+Squaring proves the variance assertion.  At the literal cut,
+$2^{\ell_n/2}\le n^{1/4}$, which proves the stated $o(\sqrt n)$ bound.
+This proof uses only the root-defect moment bound, mean first-difference
+regularity, binomial occupancy estimates, and Efron--Stein.  In particular it
+uses neither the resonant CLT, any limiting variance phase, the present
+residual estimate, nor the positivity argument.
+\end{proof}
+
+Write $r_Q(m)$ for the exact signed forcing in
+\eqref{eq:signed-force-d}, so that
+$q_Q(m)=2\mathbb E q_Q(\operatorname {Bin}(m,1/2))+r_Q(m)$ and
+$r_Q(0)=r_Q(1)=0$.  The signed-renewal construction of the discrepancy
+phase is the explicit normally convergent series
+\begin{equation}
+ \gamma_Q(t)=\sum_{m\ge2}{r_Q(m)\over m!}
+ \sum_{j\in\mathbb Z}(2^{t-j})^{m-1}e^{-2^{t-j}}.       \label{eq:gamma-series-d}
+\end{equation}
+Indeed \eqref{eq:rsub-d} permits $|r_Q(m)|\le C_Qm^\alpha$ with
+$\alpha<1$.  For $x=2^{t-j}$ the Poisson expectation form of this series
+has the same two tails as in Theorem~\ref{thm:mixed-kappa-d}: for $x\le1$
+the facts $r_Q(0)=r_Q(1)=0$ give a bound $C_Qx$, while for $x\ge1$ the
+bound is $C_Qx^{\alpha-1}$.  Both dyadic tails are summable uniformly in
+$t\in[0,1]$.  Thus the series is continuous and one-periodic, its renewal
+boundary vanishes as in Theorem~\ref{thm:renew-d}, and compactness upgrades
+phasewise convergence to
+\begin{equation}
+ \sup_{m\ge M}
+ \left|{q_Q(m)\over m}-\gamma_Q(\{\log_2m\})\right|\longrightarrow0.
+                                                               \label{eq:gamma-uniform-d}
+\end{equation}
+The mixed phase $\kappa_Q$ is the explicit, normally convergent series
+\eqref{eq:kappa-pois-d}--\eqref{eq:kappa-series-d}.
+Proposition~\ref{prop:mixed-force-d} retains its
+child-mean, child/root, entrance/terminal, and root/root terms and proves the
+shared-descendant estimate from the parity-specific finite Perron systems.
+Then
+\begin{equation}
+ n^{-1}\operatorname{Cov}(V_{2/Q,n},\Delta_{2/Q,n})\to\kappa_Q(t),\qquad
+ n^{-1}\operatorname{Var}\Delta_{2/Q,n}\to\gamma_Q(t).       \label{eq:res-phases-d}
+\end{equation}
+Normal convergence makes both phases continuous and one-periodic.
+
+\subsection{Ingredient 5: adaptive fourth moments and the half-log block CLT}
+\label{sec:ingredient-five-d}
+Put $a(m)=\mathbb E\Delta_{Q,m}$, $Z_m=\Delta_{Q,m}-a(m)$,
+$q(m)=\mathbb EZ_m^2$, and $M_4(m)=\mathbb E|Z_m|^4$.  We use the
+literal cut
+\[
+ \ell_n=\left\lfloor\tfrac12\log _2n\right\rfloor,
+ \qquad K_n=2^{\ell_n},\qquad
+ \mathcal P_{\ell_n}=\sigma\{(i,X_i(1)\cdots X_i(\ell_n)):1\le i\le n\},
+\]
+and write $N_I$ for the occupancy of $I\in\mathcal D_{\ell_n}$.  Thus
+$K_n\asymp\sqrt n$ and $\lambda_n=n/K_n\asymp\sqrt n$.  On the event
+$E_{n,\ell_n}$ that no cut cell is a singleton, the exact lower-block
+variables are
+\[
+ W_{N_I}^{I}=QL_{N_I}^{I}-\sum_{i\in I}g_Q(Y_i),\qquad
+ \Delta_{Q,N_I}^{I},\qquad
+ \mathcal Z_I=\binom{W_{N_I}^{I}-\mathbb EW_{N_I}}
+ {\Delta_{Q,N_I}^{I}-a(N_I)}.                         \tag{5.1}\label{eq:i5-block}
+\]
+Here and below expectations indexed by $N_I$ mean expectation in a canonical
+sample of that fixed size.  Lemma~\ref{lem:res-suffix-factor} says that,
+conditionally on $\mathcal P_{\ell_n}$, the vectors in \eqref{eq:i5-block}
+are independent and have exactly those canonical laws.  The variables above,
+not complete stopped costs, are the conditional array.
+
+\begin{lemma}[adaptive discrepancy fourth moment]\label{lem:i5-fourth}
+For every $Q\ge3$, odd or even,
+\begin{equation}
+ \mathbb E|\Delta_{Q,m}-a(m)|^4\le C_Q(m+1)^2\qquad(m\ge0).       \tag{5.2}\label{eq:i5-delta-fourth}
+\end{equation}
+\end{lemma}
+\begin{proof}
+Let $J\sim\operatorname {Bin}(m,1/2)$.  The exact barred recursion
+\eqref{eq:delta-rec-d}, including $m=0,1$ and empty children, gives
+\begin{align}
+ Z_m&=X+Y+H_m,\qquad X=Z_J^{(0)},\quad Y=Z_{m-J}^{(1)},             \tag{5.3}\label{eq:i5-centered-rec}\\
+ H_m&=\bar D_{2/Q,m}+a(J)+a(m-J)-a(m).                              \tag{5.4}\label{eq:i5-H}
+\end{align}
+The root term is allowed to depend on both children.  If
+$d(m)=\mathbb E\bar D_{2/Q,m}$ and $f_m(j)=a(j)+a(m-j)$, the exact mean
+recurrence \eqref{eq:amean-exact-d} rewrites it as
+\[
+ H_m=\{\bar D_{2/Q,m}-d(m)\}+\{f_m(J)-\mathbb Ef_m(J)\}.           \tag{5.5}\label{eq:i5-Hcenter}
+\]
+Proposition~\ref{prop:defect-moments-d} bounds the fourth moment of the first
+brace uniformly.  For the second, choose any $\beta\in(1/2,1)$.  The even
+and odd midpoint identities preceding \eqref{eq:pair-d} give, on
+$|J-m/2|\le m/4$,
+\[
+ |f_m(J)-c_m|\le C_\beta(1+|J-m/2|)^2m^{-\beta}.
+\]
+Since the eighth centered binomial moment is $O(m^4)$, its fourth moment is
+$O(1+m^{4-4\beta})=O((m+1)^2)$ because $\beta>1/2$.  Off that event bounded first differences give
+$|f_m(J)-c_m|\le C(m+1)$ and Chernoff gives probability $O(e^{-cm})$.
+Finally $\|U-\mathbb EU\|_4\le2\|U-c\|_4$.  Enlarging the constant over
+small $m$ therefore proves
+\begin{equation}\mathbb E|H_m|^4\le C_Q(m+1)^2.                    \tag{5.6}\label{eq:i5-H4}\end{equation}
+This argument explicitly uses the separate odd midpoint pair in
+\eqref{eq:pair-d}; it does not assume that $\nabla a$ decays.
+
+Conditionally on $J$, $X,Y$ are independent and centered, so the complete
+child expansion is
+\begin{equation}
+ \mathbb E\{(X+Y)^4\mid J\}=M_4(J)+M_4(m-J)+6q(J)q(m-J).           \tag{5.7}\label{eq:i5-child4}
+\end{equation}
+Indeed the $X^3Y$ and $XY^3$ terms vanish by conditional centering, while the
+$6X^2Y^2$ term displayed above does not vanish.  With $S=X+Y$, no term
+involving $H_m$ may be discarded:
+\begin{equation}
+ M_4(m)=\mathbb ES^4+4\mathbb E(S^3H_m)+6\mathbb E(S^2H_m^2)
+       +4\mathbb E(SH_m^3)+\mathbb EH_m^4.                         \tag{5.8}\label{eq:i5-full4}
+\end{equation}
+For $0<\epsilon\le1$, the three weighted Young inequalities
+\[
+4|S|^3|H|\le3\epsilon|S|^4+\epsilon^{-3}|H|^4,
+\quad6|S|^2|H|^2\le3\epsilon|S|^4+3\epsilon^{-1}|H|^4,
+\quad4|S||H|^3\le\epsilon|S|^4+3\epsilon^{-1/3}|H|^4
+\]
+control every mixed term.  By the independently proved linear bound
+\eqref{eq:renew-result-d}, $q(j)\le C_Q(j+1)$.  Hence
+\begin{equation}
+ M_4(m)\le(1+7\epsilon)\,2\mathbb EM_4(B_m)+C_{Q,\epsilon}(m+1)^2. \tag{5.9}\label{eq:i5-rec4}
+\end{equation}
+This uses the second moment only to bound the retained product in
+\eqref{eq:i5-child4}, never to infer a fourth moment.
+
+We finish the strong induction, including its self-atoms.  Choose a fixed
+$\epsilon>0$ so small that $(1+7\epsilon)/2<\rho<1$.  Since
+\[
+ {2\mathbb E(B_m+1)^2\over(m+1)^2}\longrightarrow\tfrac12,
+\]
+for all $m\ge m_0$ the same ratio multiplied by $1+7\epsilon$ is at most
+$\rho$.  Before applying the induction hypothesis, remove $B_m=m$ from both
+reflected child terms in \eqref{eq:i5-rec4}; the two atoms $J=0,m$ contribute
+exactly $(1+7\epsilon)2^{1-m}M_4(m)$.  Thus
+\[
+ [1-(1+7\epsilon)2^{1-m}]M_4(m)
+ \le (1+7\epsilon)2\mathbb E[M_4(B_m);B_m<m]+C_{Q,\epsilon}(m+1)^2.
+\]
+Increase $m_0$ so that the left coefficient and the contraction leave a
+fixed positive margin.  Assuming $M_4(j)\le A(j+1)^2$ for $j<m$, choose $A$
+large enough to absorb the last term in that margin, and then enlarge it over
+the finite range $m<m_0$.  Strong induction proves \eqref{eq:i5-delta-fourth}.
+The atoms at $0$ and $1$ are genuine: $Z_0=Z_1=0$; none was silently put
+under the induction hypothesis.
+\end{proof}
+
+The stopped-block estimate proved in Theorem~\ref{thm:joint-stopped-vector}
+and \eqref{eq:i5-delta-fourth}, together with
+$|u+v|^4\le8(|u|^4+|v|^4)$, give, for every
+$\lambda=(\lambda_1,\lambda_2)$,
+\begin{equation}
+ \mathbb E|\lambda_1(W_m-\mathbb EW_m)+\lambda_2Z_m|^4
+ \le C_Q(|\lambda_1|+|\lambda_2|)^4(m+1)^2.             \tag{5.10}\label{eq:i5-cw4}
+\end{equation}
+The constant is therefore uniform for $\lambda$ in a compact set.
+
+For fixed $\lambda$ define
+$X_{I,n}(\lambda)=\lambda^{\mathsf T}\mathcal Z_I$.  Conditional on
+$\mathcal P_{\ell_n}$ these variables are independent and centered, and
+\begin{equation}
+ \sum_I\mathbb E(|X_{I,n}(\lambda)|^4\mid\mathcal P_{\ell_n})
+ \le C_{Q,\lambda}\sum_I(N_I+1)^2.                       \tag{5.11}\label{eq:i5-numerator}
+\end{equation}
+There is no replacement of occupancies by their mean.  Direct multinomial
+calculation gives
+\begin{equation}
+ \mathbb E\sum_I(N_I+1)^2={n^2\over K_n}+n(1-K_n^{-1})+2n+K_n,
+                                                                    \tag{5.12}\label{eq:i5-occ2}
+\end{equation}
+so Markov's inequality and $K_n\asymp\sqrt n$ give a numerator
+$O_{\mathbb P}(n^{3/2})=o_{\mathbb P}(n^2)$.
+
+Let
+\[
+ B_Q(t)=\begin{pmatrix}
+ Q^2v_L(t)+\sigma_Q^2&\kappa_Q(t)\\
+ \kappa_Q(t)&\gamma_Q(t)
+ \end{pmatrix}.
+\]
+The conditional variance denominator is exactly
+\begin{equation}
+ S_n^2(\lambda)=\sum_I\operatorname {Var}(X_{I,n}(\lambda)\mid\mathcal P_{\ell_n})
+ =\lambda^{\mathsf T}\!\left\{\sum_IC_Q(N_I)\right\}\lambda.    \tag{5.13}\label{eq:i5-denom}
+\end{equation}
+Lemma~\ref{lem:block-occupancy-transfer}, with the stopped entry supplied by
+Theorem~\ref{thm:joint-stopped-vector}, the mixed entry $\kappa_Q$ supplied
+by Theorem~\ref{thm:mixed-kappa-d}, and the signed variance phase $\gamma_Q$
+from \eqref{eq:res-phases-d}, proves, whenever
+$\{\log_2n\}\to t$,
+\begin{equation}S_n^2(\lambda)/n\longrightarrow_{\mathbb P}
+ v_\lambda(t):=\lambda^{\mathsf T}B_Q(t)\lambda.          \tag{5.14}\label{eq:i5-varlimit}\end{equation}
+Notice that the block $(1,1)$ entry has only one $\sigma_Q^2$; the other is
+the upper-prefix entrance projection below.  The matrix is positive
+semidefinite because it is a limit of covariance matrices.  If
+$v_\lambda(t)>0$, \eqref{eq:i5-numerator}--\eqref{eq:i5-varlimit} yield the
+conditional Lyapunov ratio
+\begin{equation}
+ {\sum_I\mathbb E(|X_{I,n}(\lambda)|^4\mid\mathcal P_{\ell_n})
+  \over S_n^4(\lambda)}=O_{\mathbb P}(n^{-1/2})\longrightarrow0.  \tag{5.15}\label{eq:i5-lyap}
+\end{equation}
+If $v_\lambda(t)=0$, we do not divide: conditional Chebyshev and
+\eqref{eq:i5-varlimit} show $n^{-1/2}\sum_IX_{I,n}(\lambda)\to0$ in
+conditional probability, in probability.  Explicitly, if $\det B_Q(t)>0$
+only $\lambda=0$ is exceptional; if $\det B_Q(t)=0$, the null space is the
+kernel of the displayed matrix (when its first diagonal entry is positive it
+is spanned by $(-\kappa_Q(t),Q^2v_L(t)+\sigma_Q^2)$).
+
+For positive directions, conditional Lyapunov implies conditional Lindeberg
+because
+\[
+ {1\over S_n^2}\sum_I\mathbb E[X_{I,n}^2{\bf1}_{\{|X_{I,n}|>\varepsilon S_n\}}
+ \mid\mathcal P_{\ell_n}]
+ \le{1\over\varepsilon^2S_n^4}\sum_I\mathbb E(|X_{I,n}|^4\mid\mathcal P_{\ell_n}).
+\]
+To state the random-environment conclusion precisely, take any subsequence;
+from it extract a further subsequence on which \eqref{eq:i5-varlimit} and
+\eqref{eq:i5-lyap} hold almost surely.  The deterministic Lindeberg--Feller
+theorem in almost every conditional environment, followed by the subsequence
+principle, gives for every real $u$
+\begin{equation}
+ \mathbb E\!\left[\exp\{iu n^{-1/2}\sum_IX_{I,n}(\lambda)\}
+       \mid\mathcal P_{\ell_n}\right]
+ \longrightarrow_{\mathbb P}\exp\{-\tfrac12u^2v_\lambda(t)\}.   \tag{5.16}\label{eq:i5-condcf}
+\end{equation}
+The zero directions have the same formula by conditional Chebyshev.  Since
+the conditional characteristic functions in \eqref{eq:i5-condcf} have modulus
+at most one, convergence in probability to the deterministic Gaussian
+characteristic function implies convergence in $L^1$.  Taking expectations
+therefore gives unconditional characteristic-function convergence; then
+Cram\'er--Wold proves
+\begin{equation}
+ {1\over\sqrt n}\sum_I\mathcal Z_I\Longrightarrow N_2(0,B_Q(t)). \tag{5.17}\label{eq:i5-blockclt}
+\end{equation}
+
+We finally record every bridge needed to interpret this block theorem.  The
+exact upper discrepancy term is $R_{n,\ell_n}$ in \eqref{eq:halfres-d}.
+Iteration of \eqref{eq:delta-rec-d}, with one-child chains retained, gives
+pathwise
+\begin{align}
+ \Delta_{Q,n}-\mathbb E\Delta_{Q,n}
+ ={}&\sum_I\{\Delta_{Q,N_I}^{I}-a(N_I)\}
+   +\{R_{n,\ell_n}-\mathbb ER_{n,\ell_n}\}\notag\\
+ &+\left\{\sum_Ia(N_I)-\mathbb E\sum_Ia(N_I)\right\}.       \tag{5.18}\label{eq:i5-delta-cut}
+\end{align}
+The top term need not be $\mathcal P_{\ell_n}$-measurable and is not
+inserted into the conditionally independent array.  Instead,
+\eqref{eq:halfres-bound-d} gives
+$\mathbb E|R_{n,\ell_n}-\mathbb ER_{n,\ell_n}|^2=O(K_n)=o(n)$.
+For the discrepancy block means, a one-label replacement changes
+$\sum_Ia(N_I)$ by $z_w-z_{u-1}$, where $z_j=a(j+1)-a(j)$.  On the central
+occupancy event, \eqref{eq:zreg-d} bounds the squared change by
+$C\lambda_n^{1-2\beta}$ after averaging $|u-w|^2=O(\lambda_n)$; bounded
+$z_j$ and Chernoff handle its complement.  Efron--Stein therefore gives,
+for any $\beta\in(1/2,1)$,
+\begin{equation}
+ \operatorname {Var}\!\left(\sum_Ia(N_I)\right)
+ \le C_Q n\lambda_n^{1-2\beta}=o(n).                   \tag{5.19}\label{eq:i5-amean}
+\end{equation}
+The stopped occupancy mean has $L^2$ norm $O(\sqrt {K_n})=o(\sqrt n)$ by
+\eqref{eq:actual-occ}.  On $E_{n,\ell_n}$ the stopped identity and
+\eqref{eq:joint-cut} give exactly
+\[
+ V_{2/Q,n}=Qn\ell_n+\sum_IW_{N_I}^{I}+A_n,
+ \qquad A_n=\sum_{i=1}^ng_Q(X_i).
+\]
+The upper entrance projection is
+$M_{n,\ell_n}=\sum_i\mathbb E(g_Q\mid X_i(1),\ldots,X_i(\ell_n))$;
+its omitted tail has variance $n\|g_Q-g_{Q,\ell_n}\|_2^2=o(n)$.
+It is measurable at the cut and has variance $n\sigma_Q^2+o(n)$.  The
+conditional characteristic function of the lower-block linear combination in
+\eqref{eq:i5-condcf} is deterministic in the limit.  More explicitly, for
+every fixed linear combination, that conditional characteristic function
+converges in probability
+to the corresponding Gaussian characteristic function by
+\eqref{eq:i5-condcf}; these conditional characteristic functions have modulus
+at most one, so the convergence also holds in $L^1$.  Multiplication by the
+bounded characteristic-function factor of the cut-measurable entrance
+projection and taking expectations therefore changes the joint
+characteristic function by $o(1)$.  The iid prefix CLT identifies the
+remaining expectation, which proves the asserted unconditional joint limit.  The exceptional event satisfies
+$\mathbb P(E_{n,\ell_n}^c)\le n(1-K_n^{-1})^{n-1}$; the fourth moments above
+and Cauchy--Schwarz make its deletion $o_{L^2}(\sqrt n)$.
+Consequently the top-tree, occupancy-centering, truncation-tail, and
+singleton residuals are all $o_{\mathbb P}(\sqrt n)$ (indeed the first two
+are $o_{L^2}(\sqrt n)$), and
+\begin{equation}
+ {1\over\sqrt n}\binom{V_{2/Q,n}-\mathbb EV_{2/Q,n}}
+ {\Delta_{Q,n}-\mathbb E\Delta_{Q,n}}
+ \Longrightarrow N_2\!\left(0,
+ \begin{pmatrix}Q^2v_L(t)+2\sigma_Q^2&\kappa_Q(t)\\
+ \kappa_Q(t)&\gamma_Q(t)\end{pmatrix}\right).          \tag{5.20}\label{eq:jointphase-d}
+\end{equation}
+The proof after the exact recursion is parity-neutral.  Odd and even $Q$ use
+the same barred endpoints, binomial split, induction, occupancy bounds and
+conditional CLT; parity occurs only inside the parity-specific constructions of $\kappa_Q$ in
+Theorem~\ref{thm:mixed-kappa-d} and of $\gamma_Q$ in
+\eqref{eq:res-phases-d}.
+
+\paragraph{Conclusion of the block argument.}
+Lemma~\ref{lem:i5-fourth}, the covariance transfer of
+Lemma~\ref{lem:block-occupancy-transfer}, the conditional argument
+\eqref{eq:i5-condcf}--\eqref{eq:i5-blockclt}, and the half-log bridges
+\eqref{eq:i5-delta-cut}--\eqref{eq:jointphase-d} prove the adaptive block CLT
+for both parities, including zero covariance directions.
+
+
+\subsection{Final uniform-resonant synthesis}
+\label{sec:final-uniform-resonant-d}
+For this subsection fix $Q\ge3$, put $\theta=2/Q$, and abbreviate
+$T_{Q,n}:=T_{2/Q,n}$ and $\Delta_{Q,n}=T_{Q,n}-V_{2/Q,n}$.
+Let $\ell_n=\lfloor\frac12\log_2n\rfloor$ and
+$K_n=2^{\ell_n}\asymp\sqrt n$.  All endpoint conventions are those of
+\eqref{eq:stopped-vector-id}: $A_n=\sum_i g_Q(X_i)$ is the entrance sum,
+$B_n=\sum_i g_Q(T^{\tau_i}X_i)$ is the terminal sum, and empty and singleton
+blocks have the conventions in Ingredient~2.
+
+\paragraph{Exact centered decomposition.}
+On the no-exceptional-singleton event $E_{n,\ell_n}$, the two exact cut
+identities \eqref{eq:i5-delta-cut} and \eqref{eq:joint-cut} give
+\begin{align}
+ T_{Q,n}-\E T_{Q,n}
+={}&\sum_{I\in\mathcal D_{\ell_n}}
+ \{W_{N_I}^{I}-\E W_{N_I}+\Delta_{Q,N_I}^{I}-a(N_I)\}
+       +M_{n,\ell_n}                                           \notag\\
+ &+\left\{\sum_I\E W_{N_I}-\E\sum_I\E W_{N_I}\right\}
+   +(A_n-M_{n,\ell_n})                                         \notag\\
+ &+(R_{n,\ell_n}-\E R_{n,\ell_n})
+   +\left\{\sum_Ia(N_I)-\E\sum_Ia(N_I)\right\}.       \label{eq:final-cut-d}
+\end{align}
+Here $W_m=QL_m-\sum_{i=1}^mg_Q(Y_i)$ is the stopped resonant suffix
+contribution, $a(m)=\E\Delta_{Q,m}$, $M_{n,\ell_n}$ is the entrance-prefix
+projection, and $R_{n,\ell_n}$ is the exact top-tree discrepancy
+\eqref{eq:halfres-d}.  The deterministic $Qn\ell_n$ cancels on centering.
+Every brace and every displayed difference in \eqref{eq:final-cut-d} is
+centered; conditional on the labelled prefix allocation the first-line block
+vectors are independent and conditionally centered.  Off $E_{n,\ell_n}$,
+define $\Xi_n$ to be the centered difference between the two sides.  Thus
+\eqref{eq:final-cut-d} plus $\Xi_n$ is a pathwise identity on the whole
+space, not a schematic decomposition.
+
+All omitted pieces are negligible at the required second-moment scale:
+\begin{align*}
+ \E|R_{n,\ell_n}-\E R_{n,\ell_n}|^2&=O(K_n)=o(n),\\
+ \Var\!\left(\sum_Ia(N_I)\right)&=o(n),\\
+ \E\left|\sum_I\E W_{N_I}-\E\sum_I\E W_{N_I}\right|^2
+     &=O(K_n)=o(n),\\
+ \E|A_n-M_{n,\ell_n}|^2
+     &=n\|g_Q-g_{Q,\ell_n}\|_2^2=o(n),\\
+ \E|\Xi_n|^2&=o(n).
+\end{align*}
+The third line is the actual-occupancy centering estimate
+\eqref{eq:actual-occ}; the last follows from
+$\Pp(E_{n,\ell_n}^c)\le n(1-K_n^{-1})^{n-1}$ and the fourth-moment bound of Lemma~\ref{lem:i5-fourth}.  Hence their sum is $o_{L^2}(\sqrt n)$, therefore
+$o_{\Pp}(\sqrt n)$.  Cauchy--Schwarz makes its covariance with every
+$O_{L^2}(\sqrt n)$ principal term $o(n)$: no top-tree, truncation,
+occupancy, entrance-tail, or singleton correction hides an order-$n$
+covariance.
+
+\paragraph{The explicit phase covariance.}
+For completeness, every component is defined here.  Put
+\[
+ m_L(k)=k\sum_{r\ge0}\{1-(1-2^{-r})^{k-1}\},\qquad m_L(0)=m_L(1)=0,
+\]
+and, for $B_k\sim\operatorname{Bin}(k,1/2)$, put
+\[
+ r_L(k)=\Var\{m_L(B_k)+m_L(k-B_k)\},\qquad
+ v_L(t)=\sum_{j\in\mathbb Z}
+ {\E r_L(\operatorname {Pois}(2^{t-j}))\over2^{t-j}}.
+\]
+This is the stopped-trie phase series of Theorem~\ref{thm:stopped-trie-phase}.  Its summands are bounded
+by $C\min(2^{t-j},2^{j-t})$, so it converges normally; reindexing proves
+one-periodicity and normal convergence proves continuity.
+Put $\sigma_Q^2=\Var(g_Q)$ and define
+\begin{equation}
+ \Sigma_Q^{\rm full}(t)=
+ \begin{pmatrix}
+ Q^2v_L(t)+2\sigma_Q^2&\kappa_Q(t)\\
+ \kappa_Q(t)&\gamma_Q(t)
+ \end{pmatrix},\qquad
+ \tau_Q^2(t)=(1,1)\Sigma_Q^{\rm full}(t)(1,1)^{\mathsf T}.
+ \label{eq:final-sigma-tau-d}
+\end{equation}
+In particular, with no implicit ``limiting variance'' definition,
+\begin{equation}
+ \boxed{\ \tau_Q^2(t)=Q^2v_L(t)+2\sigma_Q^2+
+              \gamma_Q(t)+2\kappa_Q(t)\ }.              \label{eq:final-tau-explicit-d}
+\end{equation}
+Here $\gamma_Q$ is the explicit normally convergent bilateral series
+\eqref{eq:gamma-series-d}, and $\kappa_Q$ is the explicit Poisson/bilateral
+series \eqref{eq:kappa-pois-d}--\eqref{eq:kappa-series-d}.  The stopped
+phase theorem makes $v_L$ continuous and one-periodic.  Normal convergence
+and reindexing $j$ prove the same facts for $\gamma_Q$ and $\kappa_Q$;
+$\sigma_Q^2$ is constant.  Thus every summand and $\tau_Q^2$ are continuous
+and one-periodic.  Notice that the lower-block covariance has only one
+$\sigma_Q^2$; the independent entrance-prefix projection supplies the
+second one.  Also the block mixed entry is
+$(\widetilde h_Q-\widetilde p_Q)/m$, and
+$\widetilde p_Q=O(\sqrt m)$, so its normalization agrees exactly with the
+full-cost $\kappa_Q$.
+
+\paragraph{Phasewise Gaussian limit.}
+Ingredient~5 first applies conditional Cram\'er--Wold to the lower block
+vector in \eqref{eq:final-cut-d}.  Its conditional characteristic function
+has a deterministic limit; deconditioning and the stable iid prefix CLT
+therefore give \eqref{eq:jointphase-d}.  This is not an illicit promotion of
+a random conditional limit.  For the exact full-cost linear functional
+$\lambda=(1,1)$, Cram\'er--Wold and the continuous mapping theorem yield,
+whenever $\{\log_2n\}\to t$,
+\begin{equation}
+ {T_{Q,n}-\E T_{Q,n}\over\sqrt n}
+ =(1,1){1\over\sqrt n}
+ \binom{V_{2/Q,n}-\E V_{2/Q,n}}
+       {\Delta_{Q,n}-\E\Delta_{Q,n}}
+ \Longrightarrow N(0,\tau_Q^2(t)).                    \label{eq:final-phase-clt-d}
+\end{equation}
+The $L^2$ bounds above independently justify every residual removal.
+
+\paragraph{Second moments, independently of the CLT.}
+The fixed-size covariance theorems \eqref{eq:res-vphase} and
+\eqref{eq:res-phases-d}, not convergence in law, give the exact expansion
+\begin{align}
+ {\Var T_{Q,n}\over n}
+ &={\Var V_{2/Q,n}\over n}+{\Var\Delta_{Q,n}\over n}
+       +{2\Cov(V_{2/Q,n},\Delta_{Q,n})\over n}\\
+ &\longrightarrow Q^2v_L(t)+2\sigma_Q^2+\gamma_Q(t)+2\kappa_Q(t)
+ =\tau_Q^2(t).                                         \label{eq:final-var-d}
+\end{align}
+Thus every mixed term is present.  The preceding $L^2$ estimates also give the
+same conclusion by expanding \eqref{eq:final-cut-d}, since every covariance
+involving its residual sum is $o(n)$.
+
+\subsubsection{Parity-specific quantitative nondegeneracy}
+We give the insulation argument node by node; in particular, the word
+``guard'' below is not a claim that is being left to a picture.  Let $d$ be
+fixed, put $w=2^{-d}$, and let $I=[u,u+w)$ be a depth-$d$ cell.  Write
+$H$ for its open left half (discarding its two endpoints, which have
+probability zero).  The use of $H$ rather than all of $I$ is convenient in
+the even case and will be used in both cases.
+
+\begin{lemma}[exact guarded-block insulation]\label{lem:exact-insulation-d}
+Suppose that three sample points lie in $H$, no other sample point lies in
+$I$, and the following guard cells are empty.
+\begin{itemize}
+\item If $Q=2k+1$, the $k$ depth-$d$ cells immediately to each side of $I$
+are empty.
+\item If $Q=2k$, the $k$ depth-$d$ cells immediately to each side of $I$
+are empty.
+\end{itemize}
+Condition on every point outside $H$.  If the three coordinates in $H$ are
+changed arbitrarily (while remaining distinct and in $H$), then every
+Barnes--Hut accept/open decision having a target outside the guarded run is
+unchanged; and, for a target in $H$, every decision at a source cell not
+contained in $I$ is unchanged.  Source cells containing $I$ are always
+opened when their target is in $H$.  Consequently the only variable
+directed interactions have both target and source in $I$.  The assertion
+continues to hold simultaneously for disjoint guarded runs.
+\end{lemma}
+\begin{proof}
+Dyadic cells are either nested or disjoint, so the cases considered below
+exhaust every source node, including every node on a one-child chain.
+
+First let $Q=2k+1$ and let
+$R=[u-kw,u+(k+1)w)$ be the guarded run.  For a sample target $y\notin R$,
+the distance from $y$ to the midpoint of $I$ is at least
+$(k+1/2)w=Qw/2$.  Thus the occupied nonsingleton $I$ is accepted, including
+at equality.  Any source ancestor containing both $I$ and $y$ is opened
+because it contains the target; any disjoint ancestor has unchanged width,
+midpoint, occupancy and multiplicity.  If its traversal reaches the child
+on the path to $I$, it eventually accepts $I$, and hence never observes a
+descendant of $I$.  This proves the assertion for outside targets, whether
+they lie in a sibling cell, in the nearest neighboring ancestor branch, or
+arbitrarily far away.
+
+Now take $x\in H$ and a disjoint dyadic source $S=[a,a+s)$ to the right of
+$I$.  Since $\theta=2/(2k+1)$, its acceptance inequality is exactly
+\[
+ {s\over a+s/2-x}\le {2\over2k+1}
+ \quad\Longleftrightarrow\quad x\le a-ks.              \tag{P.1}
+\]
+Equality is on the accepting side.  If $s\ge w$, dyadic alignment gives
+$s=2^rw$ and $a-ks$ on the $w$-grid.  It therefore cannot lie in the open
+interior of $I$; if it is an endpoint, every $x\in H$ is strictly on the
+same side.  If $s<w$, then $s\le w/2$ and guard emptiness forces
+$a\ge u+(k+1)w$, whence
+$a-ks\ge u+(k/2+1)w>u+w$.  Reflection proves the assertion for left
+sources.  These inequalities apply separately at every visited exterior
+node, regardless of whether it is empty, a singleton, a nonsingleton, or
+part of a one-child chain.  Empty/singleton status is fixed by the exterior
+conditioning.  A source ancestor containing $I$ contains $x$ and is
+therefore obligatorily opened; its sibling is one of the exterior sources
+just treated.
+
+For $Q=2k$, an outside target has distance at least $(k+1/2)w>kw$ from the
+midpoint of $I$, so it strictly accepts $I$.  For $x\in H$ and a right
+source $S=[a,a+s)$, the exact switch is
+\[
+ {s\over a+s/2-x}\le {1\over k}
+ \quad\Longleftrightarrow\quad x\le a-(k-1/2)s.        \tag{P.2}
+\]
+If $s\ge2w$, its switch is on the $w$-grid.  It may equal $u$ or $u+w$,
+but cannot enter the open interior, and all $x\in H$ are on the same side;
+this explicitly covers the equality convention.  If $s=w$, the right guard
+gives $a\ge u+(k+1)w$, so the switch is at least $u+3w/2$.  If $s<w$, then
+$s\le w/2$ and the switch is at least
+$u+(k/2+5/4)w>u+w$.  Reflection gives the left-source inequalities.  The
+same ancestor, singleton, empty-node and one-child arguments used above now
+apply verbatim.
+
+Finally, a different guarded block is exterior to this one.  The conclusions
+just proved say that changing this triple changes neither the traversal into
+that block nor any decision made by a target in that block.  Thus the
+statement holds for all blocks at once.
+\end{proof}
+
+Here are fixed, rather than configuration-dependent, witnesses for a local
+cost change.  In the odd case choose once and for all a dyadic
+$J=[v,v+s)\Subset H$, with midpoint $c$, sufficiently small that there is
+room in $H$ to its right.  Put two labelled points in small open intervals
+inside the opposite children of $J$.  In an open box $A_Q$ put the third
+point $z$ to the right with
+$s/2<z-c<Qs/2$; in a disjoint open box $B_Q$ put it with
+$z-c>Qs/2$.  The boxes may be shrunk so all displayed inequalities are
+strict and their closures remain in $H$, and so that on $B_Q$ also
+$z-c<(Q/2+\epsilon)s$ for a fixed sufficiently small $\epsilon>0$.
+The traversal really reaches $J$: below the least common ancestor of $z$
+and $J$, any disjoint source ancestor of $J$ has width $S\ge2s$ and midpoint
+distance at most $S/2+(Q/2+\epsilon)s<QS/2$ after decreasing $\epsilon$.
+It is therefore opened; ancestors containing $z$ are opened by definition.
+For target $z$, the two-point source $J$ opens on $A_Q$ and costs two
+singleton leaves, whereas it is
+accepted on $B_Q$ and costs one leaf.  The two reverse queries see $z$ as a
+singleton and cost two in total; the two ordered queries between the paired
+points cost two.  Hence the complete ordered internal costs are exactly
+\[
+ C(A_Q)=2+2+2=6,\qquad C(B_Q)=1+2+2=5.                 \tag{P.3}
+\]
+
+In the even case use a fixed dyadic $J\Subset H$ of width $s$ and midpoint
+$c$.  Put two points in small open intervals about $c-s/4$ and $c+s/4$.
+Choose $s$ sufficiently small and put the third point in a small interval
+about $c+(k-1/4)s$ for $A_Q$, and about $c+(k+1/4)s$ for $B_Q$.
+Both boxes lie in $H$.  The distance from the third target to $J$ is
+respectively less and greater than $ks$, so (P.3) again holds.  No coarser
+source cell hides $J$: a disjoint ancestor of width $S\ge2s$ has midpoint
+distance at most $S/2+(k+1/4+\epsilon)s<kS$ for the small witness boxes
+($k\ge2$), and hence opens; an ancestor containing the target also opens.
+The reverse
+queries and paired queries are singleton interactions in both boxes.
+In either parity let $a_Q,b_Q>0$ be the probabilities of these labelled open
+boxes for three iid uniform points in $H$ (including their label
+permutations if the boxes are regarded as unlabelled).  They depend only on
+$Q$, not on $d,n$, or phase.  Lemma~\ref{lem:exact-insulation-d} therefore
+proves, for fixed exterior data, the exact identity
+\[
+ T(\hbox{block in }A_Q)-T(\hbox{block in }B_Q)=6-5=1. \tag{P.4}
+\]
+No ancestor or exterior contribution is suppressed in this identity: the
+lemma proves that each such contribution is the same on its two sides.
+
+We next make the simultaneous conditioning precise.  Choose $d$ with
+$n\le2^d<2n$ and partition depth-$d$ cells into disjoint runs of
+$m_Q=2k+1$ consecutive cells, discarding at most $m_Q-1$ cells.  Use the
+middle cell as $I_j$ and its left half as $H_j$.  There are
+$M_d=\lfloor2^d/m_Q\rfloor\ge n/(2m_Q)$ candidates for all sufficiently
+large $n$.  The candidate family is the deterministic collection
+$\{(R_j,I_j,H_j):1\le j\le M_d\}$ just constructed.  Let
+\[
+ E_j=\{N(H_j)=3,\ N(R_j\setminus H_j)=0\},\qquad
+ N_{\rm el}=\sum_{j=1}^{M_d}{\bf1}_{E_j}.
+\]
+Thus the complete guard of the lemma, including $I_j\setminus H_j$, is
+empty.  With $w=2^{-d}$,
+\begin{equation}
+ p_{n,Q}:=\Pp(E_j)={(n)_3\over6}(w/2)^3
+       \{1-m_Qw\}^{n-3}\ge p_Q:={e^{-2m_Q}\over768}>0             \label{eq:final-eligible-d}
+\end{equation}
+for $n\ge\max(6,2m_Q)$.  Indeed $nw\in(1/2,1]$,
+$(n)_3w^3\ge1/16$, $m_Qw\le1/2$, and
+$\log(1-m_Qw)\ge-2m_Qw$.  In particular
+\begin{equation}
+ \E N_{\rm el}=M_dp_{n,Q}\ge {p_Q\over2m_Q}n.          \tag{P.5}
+\end{equation}
+This direct expectation bound is all that is needed; no concentration or
+Efron--Stein lower bound is being used.
+
+Let $\mathcal A$ be the first-stage allocation sigma-field generated, for every
+label, by which set among $H_1,R_1\setminus H_1,\ldots,H_{M_d},
+R_{M_d}\setminus H_{M_d}$ and the complement contains it.  Then
+$\mathcal E:=\{j:E_j\}$ is $\mathcal A$-measurable.  Define $\mathcal F$ by
+adjoining to $\mathcal A$ the exact coordinates of every label outside
+$\bigcup_{j\in\mathcal E}H_j$; thus $\mathcal F$ records the identities, but
+not the coordinates, of the three labels in each eligible $H_j$.  Conditional
+on $\mathcal F$, the remaining local triples $U_j$, $j\in\mathcal E$, are
+mutually independent, and the three labelled coordinates in each $U_j$ are
+iid uniform on $H_j$.
+
+For completeness, fix a deterministic reference triple in every $H_j$.
+Lemma~\ref{lem:exact-insulation-d} says that for distinct eligible $i,j$ the
+mixed finite difference $\Delta_i\Delta_jT$ is zero: changing $U_i$ changes
+only directed interactions internal to $I_i$, independently of $U_j$.
+Telescoping from the all-reference configuration consequently gives the
+pathwise, exact representation
+\begin{equation}
+ T_{Q,n}=C_{\rm ext}+\sum_{j:E_j}X_j(U_j),              \tag{P.6}
+\end{equation}
+where $C_{\rm ext}$ is $\mathcal F$-measurable, the index set
+$\mathcal E$ is $\mathcal F$-measurable, and each $X_j$ is a function only
+of its displayed triple.  This also proves the assertion for arbitrary
+triple outcomes, not merely for the two witness boxes.  Consequently the variables $X_j(U_j)$, $j\in\mathcal E$, are conditionally independent given $\mathcal F$.  If $X_j'$ is an independent conditional copy,
+then (P.3)--(P.4) and
+$\Var X_j=\frac12\E(X_j-X_j')^2$ give
+\[
+ \Var(X_j\mid\mathcal F)\ge a_Qb_Q(6-5)^2=:v_Q>0.      \tag{P.7}
+\]
+Thus conditional variance, (P.5), and conditional independence give
+\begin{equation}
+ \Var T_{Q,n}\ge\E\Var(T_{Q,n}\mid\mathcal F)
+ \ge v_Q\E N_{\rm el}\ge\eta_Qn,\qquad
+ \eta_Q:={v_Qp_Q\over2m_Q}>0,                          \label{eq:final-linear-lb-d}
+\end{equation}
+for all sufficiently large $n$, where $\eta_Q>0$ depends only on $Q$, not
+on $n$ or phase.  For each $t$, take integers nearest $2^{m+t}$ and pass to
+the limit in \eqref{eq:final-linear-lb-d} using the independently proved
+\eqref{eq:final-var-d}.  Therefore
+\begin{equation}\inf_{t\in\mathbb R/\mathbb Z}\tau_Q^2(t)\ge\eta_Q>0.
+                                                               \label{eq:final-uniform-positive-d}
+\end{equation}
+
+\subsubsection{True-variance normalization and theorem}
+On every phase subsequence, \eqref{eq:final-phase-clt-d},
+\eqref{eq:final-var-d}, and \eqref{eq:final-uniform-positive-d} give by
+Slutsky
+\begin{equation}
+ {T_{Q,n}-\E T_{Q,n}\over\sqrt{\Var T_{Q,n}}}
+ ={{(T_{Q,n}-\E T_{Q,n})}/{\sqrt n}
+    \over\sqrt{\Var(T_{Q,n})/n}}\Longrightarrow N(0,1). \label{eq:final-truevar-d}
+\end{equation}
+This holds on the full sequence.  Indeed, otherwise a subsequence would
+stay a positive weak-convergence distance from $N(0,1)$.  Compactness of
+$\mathbb R/\mathbb Z$ supplies a further subsequence on which
+$\{\log_2n\}\to t$, contradicting \eqref{eq:final-truevar-d}.
+
+\begin{theorem}[Full uniform resonant theorem]\label{thm:final-uniform-resonant-d}
+For every integer $Q\ge3$ and $\theta=2/Q$, the explicit function
+\eqref{eq:final-tau-explicit-d} is continuous, one-periodic, and satisfies
+$\inf_t\tau_Q^2(t)>0$.  Along $\{\log_2n\}\to t$,
+$\Var(T_{Q,n})/n\to\tau_Q^2(t)$ and \eqref{eq:final-phase-clt-d} holds.
+The true-variance normalization \eqref{eq:final-truevar-d} holds as
+$n\to\infty$ without restriction on phase.
+\end{theorem}
+
+\paragraph{Odd/even consistency.}
+The coboundary identity has the common sign
+$F_{2/Q}-Q=g_Q-g_Q\circ T$.  For odd $Q$, the Perron reduction
+$u_Q=-g_Q+2W_Q$ is \eqref{eq:odd-sign-d}; for even $Q$, the reduction
+$u_Q=-g_Q-K_Q$ is \eqref{eq:even-sign-d}.  Lemma~\ref{lem:explicit-perron-parity-d},
+Proposition~\ref{prop:mixed-force-d}, and Theorem~\ref{thm:mixed-kappa-d}
+carry these two reductions into the common phase $\kappa_Q$.  The signed
+discrepancy renewal gives $\gamma_Q$ in \eqref{eq:res-phases-d}.  Thereafter
+the barred endpoints, binomial recursion, half-log transfer, and final linear
+functional are parity-neutral.  Lemma~\ref{lem:exact-insulation-d} and the
+two parity-specific witness constructions prove positivity separately.
+
+\paragraph{Mathematical dependency graph.}
+\begin{center}\begin{tabular}{p{.29\textwidth}p{.62\textwidth}}
+Conclusion&Theorem, lemma, and proposition inputs\\ \hline
+Exact stopped cut&Labelled stopped-line cylinder factorization (Lemma~\ref{lem:res-suffix-factor}); joint stopped-vector Cram\'er--Wold theorem (Theorem~\ref{thm:joint-stopped-vector})\\
+Stopped phase and entrance CLT&Stopped-trie phase variance and uniform tail (Theorem~\ref{thm:stopped-trie-phase}); joint stopped-vector Cram\'er--Wold theorem (Theorem~\ref{thm:joint-stopped-vector})\\
+Random block covariance&Uniform phase tails imply the block occupancy limit (Lemma~\ref{lem:block-occupancy-transfer}); signed renewal, explicit $\kappa_Q$, and uniform phase tails (Theorem~\ref{thm:mixed-kappa-d})\\
+Mixed entry&Explicit parity-specific Perron reduction (Lemma~\ref{lem:explicit-perron-parity-d}); exact four-term mixed forcing (Proposition~\ref{prop:mixed-force-d}); signed renewal, explicit $\kappa_Q$, and uniform phase tails (Theorem~\ref{thm:mixed-kappa-d})\\
+Adaptive entry and block CLT&Adaptive discrepancy fourth moment (Lemma~\ref{lem:i5-fourth}); half-log upper-discrepancy residual (Proposition~\ref{prop:halfres-d}); uniform phase tails imply the block occupancy limit (Lemma~\ref{lem:block-occupancy-transfer})\\
+Variance convergence&Joint stopped-vector Cram\'er--Wold theorem (Theorem~\ref{thm:joint-stopped-vector}); signed renewal, explicit $\kappa_Q$, and uniform phase tails (Theorem~\ref{thm:mixed-kappa-d})\\
+Nondegeneracy&Exact guarded-block insulation (Lemma~\ref{lem:exact-insulation-d})
+\end{tabular}\end{center}
+The ordering is acyclic: the uniform phase tails precede the occupancy
+transfer; the covariance renewals do not use the final variance limit; the
+conditional block CLT handles zero covariance directions by conditional
+Chebyshev and does not use positivity; positivity is proved afterward; and
+second-moment convergence follows from fixed-size covariance identities,
+not from convergence in distribution.  Lemma~\ref{lem:res-suffix-factor}
+gives exactly the conditional prefix--suffix independence used throughout.
+Together these results prove Theorem~\ref{thm:final-uniform-resonant-d}; no
+nonuniform resonant theorem is asserted.
+
+\part{Nonuniform input}
+
+
+\section{Scope, notation, and dependency ledger}
+Fix $0<\theta<1$ and a probability density
+\begin{equation}\label{eq:f-ass}
+f\in C^1[0,1],\qquad 0<m_f\le f(x)\le M_f<\infty,
+\qquad L_f=\norm{f'}_\infty .
+\end{equation}
+Dyadic intervals are half open, except that the last interval contains $1$.
+Let $T x=2x\pmod 1$.  For iid $X_1,\ldots,X_n$ with density $f$, let
+$I_r(x)$ be the depth-$r$ dyadic interval containing $x$, $N_I$ its
+occupancy, and
+\begin{equation}\label{eq:tau}
+ \tau_i=\min\{r\ge0:N_{I_r(X_i)}=1\}.
+\end{equation}
+Thus a label is active at depth $r$ precisely when $r<\tau_i$.
+Write $L_n=\sum_i\tau_i$.  The deterministic model identity established in
+the uniform part of the dossier is used in the form
+\begin{equation}\label{eq:decomp}
+ V_{\theta,n}={2\over\theta}L_n+M_{\theta,n}+H_{\theta,n},\qquad
+ M_{\theta,n}=\sum_i\sum_{r<\tau_i}d_\theta(T^rX_i),
+\end{equation}
+where $P d_\theta=0$, $c(\theta)=\norm{d_\theta}_2^2$, and
+\begin{equation}\label{eq:endpoint}
+ H_{\theta,n}=\sum_i\{h_\theta(T^{\tau_i}X_i)-h_\theta(X_i)\}.
+\end{equation}
+The adaptive discrepancy is $\Delta_{\theta,n}=T_{\theta,n}-V_{\theta,n}$.
+The nonuniform argument depends, in order, on the profile lemma
+(Theorem~\ref{thm:profiles}), external-path estimates
+(Theorem~\ref{thm:path}), finite Walsh approximation
+(Theorem~\ref{thm:finite}), tail transfer (Theorem~\ref{thm:tail}), endpoint
+control (Theorem~\ref{thm:endpoint}), and stabilization
+(Theorem~\ref{thm:delta}).  No result below concerns resonant nonuniform
+input.  In particular, the words ``nonresonant'' in the final theorem cannot
+be deleted.
+
+\section{Conditional physical-cell profiles}
+For $I=[a,a+s)$ put
+\begin{equation}\label{eq:profile}
+p_I=\int_I f(x)\,dx,\qquad f_I(u)={s f(a+su)\over p_I},\quad 0\le u\le1.
+\end{equation}
+These are physical dyadic cells; no quantile change of coordinates is made.
+
+\begin{theorem}[Profile factorization and quantitative flatness]\label{thm:profiles}
+For every dyadic $I$,
+\begin{align}
+ &\int_0^1f_I=1,\qquad m_fs\le p_I\le M_fs,\label{eq:profile-basic}\\
+ &\norm{f_I-1}_\infty\le {L_f s\over2m_f},\qquad
+ \norm{f_I-1}_1,\norm{f_I-1}_2\le {L_fs\over2m_f}.
+ \label{eq:flat}
+\end{align}
+Conditional on $N_I=k$ and on the identities of the labels in $I$, their
+affine coordinates are iid with density $f_I$.  Conditional on the complete
+label allocation among all cells at a fixed depth, the coordinate families
+in distinct cells are independent.  If $I_0,I_1$ are the children of $I$,
+then the next bit has parameter
+\begin{equation}\label{eq:q}
+q_I={p_{I_1}\over p_I},\qquad |q_I-\tfrac12|\le {L_fs\over8m_f},
+\end{equation}
+and the two child profiles are
+\begin{equation}\label{eq:children}
+ (f_I)_0(u)={f_I(u/2)\over2(1-q_I)},\qquad
+ (f_I)_1(u)={f_I((1+u)/2)\over2q_I}.
+\end{equation}
+They must not be identified with one another or with the uniform density.
+\end{theorem}
+\begin{proof}
+The substitution $x=a+su$ proves normalization.  The bounds for $p_I$
+follow by integrating \eqref{eq:f-ass}.  With
+$\bar f_I=s^{-1}\int_I f$, for every $u$,
+\[
+ |f(a+su)-\bar f_I|
+ \le\int_0^1|f(a+su)-f(a+sv)|\,dv
+ \le L_fs\int_0^1|u-v|\,dv\le L_fs/2.
+\]
+Divide by $\bar f_I\ge m_f$; the $L^1,L^2$ estimates follow because the
+underlying interval has measure one.
+
+Fix a set $A$ of $k$ labels.  On the event that exactly $A$ lies in $I$, the
+joint density contains
+$\prod_{i\in A}f(x_i)\1_I(x_i)/p_I$ for these coordinates and a factor
+involving only labels outside $A$.  It therefore factorizes.  Affine change
+of variables gives \eqref{eq:profile}.  Repeating this calculation for a
+complete allocation among disjoint cells gives conditional independence.
+The probability of bit one is $p_{I_1}/p_I$, and restriction followed by
+affine rescaling gives \eqref{eq:children}.  Finally,
+\[
+ |p_{I_1}-p_{I_0}|
+ =\left|\int_0^{s/2}\{f(a+s/2+v)-f(a+v)\}\,dv\right|
+ \le L_fs^2/4.
+\]
+Since $p_I\ge m_fs$, division by $2p_I$ proves \eqref{eq:q}.
+\end{proof}
+
+\begin{remark}
+Conditional independence requires the labelled allocation, not merely an
+informal assertion that counts are independent.  Fixed-depth counts are
+multinomial.  Likewise, after a stopped prefix configuration is fixed, unused
+suffixes are independent with their respective profiles $f_I$, not fair-bit
+laws.
+\end{remark}
+
+\section{External path length}
+\begin{theorem}[Expectation and linear variance]\label{thm:path}
+Under \eqref{eq:f-ass},
+\begin{equation}\label{eq:path-result}
+ \E_fL_n=n\log_2n+O_f(n),\qquad \Var_fL_n=O_f(n).
+\end{equation}
+\end{theorem}
+\begin{proof}
+A label at $x$ is active at depth $r$ iff one of the other $n-1$ labels lies
+in $I_r(x)$.  Tonelli gives the exact formula
+\begin{equation}\label{eq:path-exact}
+ \E_fL_n=n\sum_{r\ge0}\int_0^1f(x)
+ [1-(1-p_r(x))^{n-1}]\,dx,\quad p_r(x)=\int_{I_r(x)}f.
+\end{equation}
+The Lipschitz estimate gives
+$p_r(x)=2^{-r}f(x)+O_f(2^{-2r})$.  Put
+$R_x=\lfloor\log_2(nf(x))\rfloor$.  For $r\le R_x-C$ use
+$(1-p)^{n-1}\le e^{-(n-1)p}$; the sum of the omissions from $1$ is bounded
+by $\sum_{j\ge C}e^{-c2^j}$.  For $r\ge R_x+C$ use
+$1-(1-p)^{n-1}\le(n-1)p$; the tail is bounded by a geometric series.
+The finitely many middle terms are bounded.  Uniformly in $x$,
+\[
+ \sum_r[1-(1-p_r(x))^{n-1}]=\log_2(nf(x))+O_f(1).
+\]
+Insertion in \eqref{eq:path-exact} proves the expectation statement (indeed
+there is the additional displayed term $n\int f\log_2 f$).
+
+For variance, let $\phi(k)=k\1_{\{k\ge2\}}$.  Pathwise,
+\begin{equation}\label{eq:Loccup}
+L(Y)=\sum_{r\ge0}\sum_{I\in\D_r}\phi(N_I(Y)).
+\end{equation}
+For an old sample $Y$ of size $N$ and a new point $x$, if
+$K_r=N_{I_r(x)}(Y)$, the add-one cost equals
+\begin{equation}\label{eq:addL}
+ A(x;Y)=\sum_{r\ge0}b(K_r),\quad b(0)=0, b(1)=2, b(k)=1\ (k\ge2).
+\end{equation}
+The coefficient two is the increment $\phi(2)-\phi(1)$.  Set
+$R=\lfloor\log_2(N\vee1)\rfloor$.  Termwise comparison with one gives
+\begin{equation}\label{eq:Lcenter}
+ |A-R|\le\sum_{r<R}\1_{\{K_r\le1\}}+2\sum_{r\ge R}\1_{\{K_r\ge1\}}+C.
+\end{equation}
+Conditional on $x$, $K_r\sim\mathrm{Bin}(N,p_r(x))$ and
+$m_f2^{-r}\le p_r(x)\le M_f2^{-r}$.  For $Np\ge1$,
+$\Pp\{K\le1\}\le(1+Np)e^{-cNp}\le C e^{-c' Np}$; for all $Np$,
+$\Pp\{K\ge1\}\le\min(1,Np)$.  Minkowski applied to
+\eqref{eq:Lcenter} (no independence across depths is asserted) yields
+\[
+ \norm{A-R}_2\le C_f\sum_{j\ge0}e^{-c_f2^j}
+ +C_f\sum_{j\ge0}2^{-j/2}+C_f\le C_f.
+\]
+Replace $X_k$ by an independent $X_k'$ and let $Y$ be the other points.
+Then
+$L(X)-L(X^{(k)})=A(X_k;Y)-A(X_k';Y)$; the same deterministic $R$ cancels.
+Thus $\E(L-L^{(k)})^2\le C_f$.  Efron--Stein,
+$\Var L\le\frac12\sum_k\E(L-L^{(k)})^2$, proves the variance bound.
+\end{proof}
+
+\section{Finite Walsh centering under nonfair bits}
+Let $d^{(m)}=\E(d_\theta\mid\sigma(B_1,\ldots,B_m))$.  In Walsh notation
+\begin{equation}\label{eq:walsh}
+d^{(m)}(u)=\sum_{\varnothing\ne S\subseteq\{1,\ldots,m\}}a_S
+ \prod_{j\in S}(1-2B_j(u)).                                      \tag{N.1}
+\end{equation}
+Since $Pd^{(m)}=0$, $a_S=0$ unless $1\in S$.  Write $j(S)=\max S$,
+$K_m=\sum_S|a_S|$, $\epsilon_{i,s}=1-2B_s(X_i)$, and
+$A_{i,r}={\bf1}_{\{\tau_i>r\}}$ (with $A_{i,r}=0$ for $r<0$).  The
+finite-window statistic is, exactly,
+\begin{equation}\label{eq:nu-Mm}
+ M_n^{(m)}=\sum_{i=1}^n\sum_{r\ge0}A_{i,r}
+                  \sum_{S\ni1}a_S\prod_{s\in S}\epsilon_{i,r+s}.
+                                                                    \tag{N.2}
+\end{equation}
+No bit is suppressed when a label becomes isolated; stopping affects only
+$A_{i,r}$.  This convention is important for the filtration below.
+
+\subsection{The layer filtration and exact nonfair centering}
+Reveal complete bit columns, not labels successively within a column:
+\begin{equation}\label{eq:nu-filtration}
+ \F_t=\sigma(B_s(X_i):1\le i\le n,\ 1\le s\le t),\qquad t\ge0.
+                                                                    \tag{N.3}
+\end{equation}
+If $I_{i,t-1}=I_{t-1}(X_i)$ and $q_{i,t}=q_{I_{i,t-1}}$, then, conditional
+on $\F_{t-1}$, the variables $B_t(X_i)$ are independent Bernoulli variables
+with their respective parameters $q_{i,t}$.  This follows directly by
+factorizing the iid density over the labelled depth-$(t-1)$ allocation; it
+does not assert that multinomial cell counts are independent.  Put
+\begin{equation}\label{eq:nu-eta}
+ \mu_{i,t}=1-2q_{i,t},\quad \eta_{i,t}=\epsilon_{i,t}-\mu_{i,t},
+ \quad v_{i,t}=\E(\eta_{i,t}^2\mid\F_{t-1})=4q_{i,t}(1-q_{i,t}).
+                                                                    \tag{N.4}
+\end{equation}
+Thus $\E(\eta_{i,t}\mid\F_{t-1})=0$.  Moreover, from
+\eqref{eq:profile-basic} and \eqref{eq:q},
+\begin{equation}\label{eq:nu-qbounds}
+ q_*:={m_f\over2M_f}\le q_{i,t}\le1-q_*,\qquad
+ |\mu_{i,t}|\le C_f2^{-t},\qquad |1-v_{i,t}|=\mu_{i,t}^2\le C_f4^{-t}.
+                                                                    \tag{N.5}
+\end{equation}
+(The harmless change from $2^{-(t-1)}$ is absorbed in $C_f$.)
+
+Assign $(i,r,S)$ to $t=r+j(S)$ and define the predictable coefficient
+\begin{equation}\label{eq:nu-C}
+ C_{i,t-1}=\sum_{S\ni1}a_S A_{i,t-j(S)}
+ \prod_{s\in S\setminus\{j(S)\}}
+       \epsilon_{i,t-j(S)+s},                                    \tag{N.6}
+\end{equation}
+where terms with $t<j(S)$ are absent.  Every displayed bit has index at
+most $t-1$, while $A_{i,t-j(S)}$ is decided by all prefixes of length
+$t-j(S)\le t-1$.  Hence it is genuinely $\F_{t-1}$ measurable.  Substitution
+of $\epsilon_{i,t}=\eta_{i,t}+\mu_{i,t}$ in \eqref{eq:nu-Mm} gives the
+pathwise identity
+\begin{equation}\label{eq:nu-decomposition}
+ M_n^{(m)}=N_n^{(m)}+R_n^{(m)},\quad
+ N_n^{(m)}=\sum_{t\ge1}\Delta_t,\quad
+ \Delta_t=\sum_iC_{i,t-1}\eta_{i,t},\quad
+ R_n^{(m)}=\sum_{t,i}C_{i,t-1}\mu_{i,t}.                       \tag{N.7}
+\end{equation}
+Thus $(\Delta_t,\F_t)$ is a martingale-difference array and its predictable
+bracket is
+\begin{equation}\label{eq:nu-bracket}
+ Q_n^{(m)}=\sum_tB_t,\qquad B_t=\sum_i v_{i,t}C_{i,t-1}^2.       \tag{N.8}
+\end{equation}
+This is cell-by-cell, depth-by-depth centering; no fair-bit assertion remains.
+
+\subsection{Activity formulae, including two labels}
+For a dyadic cell $I$ write $p_I=\int_I f$, and put
+$g_N(p)=1-(1-p)^N$.  Conditional on $X_i=x$,
+\begin{equation}\label{eq:nu-oneactivity}
+ \P(A_{i,r}=1\mid X_i=x)=g_{n-1}(p_{I_r(x)}),qquad
+ \P(A_{i,r}=1)\le \min(1,(n-1)M_f2^{-r}).                    \tag{N.9}
+\end{equation}
+This is exact: one of the other $n-1$ points must enter $I_r(x)$.
+
+Here is the promised calculation with two labels and fixed total sample size.
+Fix $i\ne j$, condition on $X_i=x,X_j=y$, put $I=I_r(x)$, $J=I_s(y)$,
+and $N=n-2$.  Let $E_I$ (respectively $E_J$) say that one of the remaining
+$N$ labels enters $I$ (respectively $J$).  Then
+\begin{equation}\label{eq:nu-twoactivity}
+ \P(A_{i,r}A_{j,s}=1\mid x,y)=
+ \begin{cases}
+ 1,&y\in I,\ x\in J,\\
+ g_N(p_J),&y\in I,\ x\notin J,\\
+ g_N(p_I),&y\notin I,\ x\in J,\\
+ 1-(1-p_I)^N-(1-p_J)^N+(1-p_I-p_J)^N,
+     &y\notin I,\ x\notin J,\ I\cap J=\varnothing,\\
+ g_N(p_I),&y\notin I,\ x\notin J,\ I\subset J,\\
+ g_N(p_J),&y\notin I,\ x\notin J,\ J\subset I.
+ \end{cases}                                                   \tag{N.10}
+\end{equation}
+Empty alternatives are simply ignored.  Indeed the first three lines account
+for direct companionship by $i$ or $j$; in the fourth line inclusion--exclusion
+is applied to the multinomial probabilities of avoiding two disjoint cells;
+in the last two lines the event for the smaller cell implies that for the
+larger.  Dyadic cells are equal, nested, or disjoint, so this enumerates same
+cell, nested cells, disjoint cells, equal depths, and unequal depths.  In the
+equal-cell case $x\in J,y\in I$ and the first line applies.  In particular,
+using $p_I\le M_f2^{-r}$ and integrating the direct-companion alternatives,
+\begin{equation}\label{eq:nu-pairbound}
+ \P(A_{i,r}A_{j,s}=1)\le C_f\{\min(1,n2^{-\max(r,s)})
+                              +2^{-\min(r,s)}\}.               \tag{N.11}
+\end{equation}
+For $|r-s|\le m$ this is at most $C_{f,m}\min(1,n2^{-\max(r,s)})$ (for
+$n\ge2$).  Thus, with $A_r=\sum_iA_{i,r}$,
+\begin{align}
+ \E A_r&\le C_fn\min(1,n2^{-r}),\label{eq:nu-Asum1}\\
+ \E(A_rA_s)&\le C_{f,m}n^2\min(1,n2^{-\max(r,s)})
+       \quad(|r-s|\le m),\label{eq:nu-Asum2}\\
+ \sum_r\E A_r&=O_f(n\log(n+1)),\qquad
+ \sum_r\E A_r^2=O_f(n^2\log(n+1)).                            \tag{N.12}
+\end{align}
+The diagonal $i=j$ in the second moment uses $A_{i,r}A_{i,s}=A_{i,\max(r,s)}$;
+the off-diagonal part uses \eqref{eq:nu-twoactivity}--\eqref{eq:nu-pairbound}.
+This explicitly retains, rather than hides, fixed-$n$ dependence.
+
+\subsection{A finite-window cancellation lemma}
+We isolate the elementary estimate which makes profile errors summable.
+Let $0\le r\le R\le U\le r+m$, let $I=I_r(x)$ and $J=I_R(x)$, and let $w$ be a
+Walsh monomial in bits $r+1,\ldots,U$ which is nonconstant on $I$.  Then
+\begin{equation}\label{eq:nu-cancellation}
+ \left|\int_0^1 f(x)w(x)g_{n-1}(p_{I_R(x)})\,dx\right|
+ \le C_{f,m}2^{-r}\min(1,n2^{-R}).                             \tag{N.13}
+\end{equation}
+The same estimate holds after multiplying by $v_{I_V(x)}$ for any
+$R\le V\le r+m$.  In that case partition at depth $\max(U,V)$ below;
+the right side changes only by a fixed factor.
+
+To prove this without a hidden orthogonality claim, partition a fixed $I$ into
+its at most $2^m$ depth-$U$ descendants $K$.  Put $h=|K|$ and let $J$
+be the depth-$R$ ancestor of $K$; write $p_J=|J|\bar f_J$.  The mean-value theorem and $C^1$ regularity give, for
+$J,J'\subset I$,
+\begin{equation}\label{eq:nu-localvariation}
+ |\bar f_J-\bar f_{J'}|\le L_f|I|,\qquad
+ |g_{n-1}(p_J)-g_{n-1}(p_{J'})|
+ \le C_{f,m}|I|\min(1,nh).                                       \tag{N.14}
+\end{equation}
+For the second inequality use
+$g_N'(p)=N(1-p)^{N-1}$ and
+$p\,g_N'(p)\le C\min(1,Np)$, together with
+$p_J/p_{J'}=1+O_f(|I|)$.  Likewise
+$\int_Kf$ differs from $h\bar f_I$ by
+$O_f(h|I|)$, and \eqref{eq:nu-qbounds} makes the variation of $v$ smaller.
+Subtract from every descendant weight its common value on $I$.  The common
+part sums to zero because the nonconstant Walsh row has equally many signs
+(the identical assertion follows by pairing descendants across its first
+changing bit).  The remaining absolute sum is
+$C_{f,m}|I|\min(1,nh)\int_If$.  Summing over the depth-$r$ cells and using
+$h\asymp_m2^{-r}$ proves \eqref{eq:nu-cancellation}.  Notice the factor
+$2^{-r}$: summing it over depths is bounded, not logarithmic.
+
+\subsection{Bracket mean and its Lebesgue constant}
+Squaring \eqref{eq:nu-C} gives the complete, finite expansion
+\begin{equation}\label{eq:nu-Csquare}
+ C_{i,t-1}^2=\sum_{S,S'\ni1}a_Sa_{S'}
+ A_{i,t-j(S)}A_{i,t-j(S')}
+ \prod_{s\in S\setminus\{j(S)\}}\epsilon_{i,t-j(S)+s}
+ \prod_{s'\in S'\setminus\{j(S')\}}\epsilon_{i,t-j(S')+s'} . \tag{N.15}
+\end{equation}
+This enumerates every diagonal Walsh mode $S=S'$ and every ordered cross pair
+$S\ne S'$.  Conditional on $X_i=x$, the product of the two activity indicators
+has mean $g_{n-1}(p_{I_R(x)})$, where
+$R=\max(t-j(S),t-j(S'))$, since activity cells along one label are nested.
+Consequently the exact contribution of the ordered pair $(S,S')$ to
+$\E Q_n^{(m)}$ is
+\begin{equation}\label{eq:nu-pairintegral}
+ n a_Sa_{S'}\sum_{t\ge\max(j(S),j(S'))}
+ \int_0^1 f(x)v_{I_{t-1}(x)}g_{n-1}(p_{I_R(x)})W_{S,S',t}(x)\,dx, \tag{N.16}
+\end{equation}
+where $W_{S,S',t}$ is precisely the two sign products in \eqref{eq:nu-Csquare}.
+Thus no independence between activity and the label's bits has been assumed.
+
+If $S=S'$, $W=1$, $R=t-j(S)$, and \eqref{eq:nu-qbounds} gives
+\begin{align}
+ &n\sum_{t\ge j(S)}\int f\,v_{I_{t-1}}g_{n-1}(p_{I_{t-j(S)}})
+ =\E L_n+O_f(n),                                             \tag{N.17}
+\end{align}
+because the error is at most
+$C_fn\sum_{r\ge0}4^{-r}\min(1,n2^{-r})=O_f(n)$, while
+\eqref{eq:path-exact} is exactly the expression with $v$ replaced by one.
+
+If $S\ne S'$, $W_{S,S',t}$ is nonconstant on the shallower cell of depth
+$r=\min(t-j(S),t-j(S'))$.  If the maxima agree this is ordinary Walsh
+orthogonality after the terminal bit has been removed; if they differ, the
+bit at depth $r+1$ occurs in only the character with the larger maximum and
+again makes the product nonconstant.  Apply \eqref{eq:nu-cancellation} with $U=t-1$; since
+$U-r\le m$,
+\begin{equation}\label{eq:nu-crosssum}
+ n\sum_{r\ge0}C_{f,m}2^{-r}\min(1,n2^{-r})=O_{f,m}(n).        \tag{N.18}
+\end{equation}
+There are only finitely many ordered pairs (at most $(2^{m-1})^2$).  Combining
+\eqref{eq:nu-Csquare}--\eqref{eq:nu-crosssum}, Parseval, and
+Theorem~\ref{thm:path},
+\begin{equation}\label{eq:nu-bracketmean}
+ \E Q_n^{(m)}=\Big(\sum_{S\ni1}a_S^2\Big)\E L_n+O_{f,m}(n)
+ =\|d^{(m)}\|_{L^2(du)}^2n\log_2n+O_{f,m}(n).                 \tag{N.19}
+\end{equation}
+This derivation proves that the leading norm is Lebesgue $L^2$, not an
+$f$-weighted or profile-averaged norm.  The local errors cost
+$n\sum_r2^{-r}\min(1,n2^{-r})=O(n)$; this is the promised summability
+mechanism.
+
+\subsection{Drift, bracket concentration, and fourth moments}
+In a replacement $X_k\mapsto X_k'$ compare both samples inside their augmented
+$(n+1)$-point set and put
+\begin{equation}\label{eq:nu-H}
+ H=1+\max_{x\ne y}\operatorname {lcp}(x,y).                   \tag{N.20}
+\end{equation}
+At any depth only the old and new prefix cells change occupancy.  Besides
+label $k$, at most one old companion can lose activity and at most one new
+companion can gain it: if two labels occupied either cell, neither could have
+$k$ as sole companion.  No activity changes at depths $r\ge H$.  A
+label--depth activity occurs for at most $m$ terminal offsets in
+\eqref{eq:nu-C}.  The replaced coefficient chain contributes at most $H+m$
+entries and the two companion chains at most $2mH$.  Since $|C|\le K_m$ and
+$v$ is deterministic given a prefix and lies in $[0,1]$,
+\begin{equation}\label{eq:nu-Qinfluence}
+ |Q_n^{(m)}-Q_n^{(m,k)}|\le C_m(H+m).                          \tag{N.21}
+\end{equation}
+Cell-dependent $q_I$ creates no further changed labels: $q_I$ is a fixed
+number attached to the physical cell, not an empirical proportion.
+
+For two independent $f$-points,
+$\P(\operatorname {lcp}\ge h)=\sum_{I\in\D_h}p_I^2
+\le M_f2^{-h}$.  A union bound over the augmented pairs yields
+\begin{equation}\label{eq:nu-Htail}
+ \P(H>h+1)\le {n+1\choose2}M_f2^{-h},\qquad
+ \E(H+m)^2=O_{f,m}(\log^2(n+1)).                              \tag{N.22}
+\end{equation}
+The moment statement follows by splitting the tail sum at
+$\lceil2\log_2(n+1)\rceil$.  Efron--Stein and \eqref{eq:nu-Qinfluence} give
+\begin{equation}\label{eq:nu-bracketvar}
+ \Var Q_n^{(m)}=O_{f,m}(n\log^2(n+1)).                        \tag{N.23}
+\end{equation}
+For the drift, each affected entry at base depth $r$ is bounded by
+$C_{f,m}2^{-r}$ by \eqref{eq:nu-qbounds}.  Summing the replaced and companion
+chains, including their at most $m$ offsets, gives the deterministic influence
+$C_{f,m}\sum_{r\ge0}2^{-r}=C_{f,m}$.  Efron--Stein therefore proves
+\begin{equation}\label{eq:nu-driftvar}
+ \Var R_n^{(m)}=O_{f,m}(n).                                   \tag{N.24}
+\end{equation}
+
+For completeness we now do the Lyapunov summation rather than cite activity.
+From \eqref{eq:nu-C},
+\begin{equation}\label{eq:nu-Bbound}
+ B_t\le K_m^2\sum_{j=1}^m A_{t-j}.
+\end{equation}
+Squaring and separating equal and unequal labels inside the activity counts,
+\eqref{eq:nu-Asum2} gives
+\begin{align}
+ \sum_t\E B_t^2
+ &\le K_m^4m\sum_t\sum_{j=1}^m\E A_{t-j}^2\\
+ &=K_m^4m\sum_{t,j}\left\{\sum_i\E A_{i,t-j}
+       +\sum_{i\ne k}\E(A_{i,t-j}A_{k,t-j})\right\}\\
+ &=O_{f,m}(n^2\log(n+1)).                                    \tag{N.25}
+\end{align}
+The first brace is evaluated by \eqref{eq:nu-oneactivity}; the second is the
+same-cell, same-depth first line of \eqref{eq:nu-twoactivity}, followed by
+\eqref{eq:nu-pairbound}.  Thus both the $i=k$ and $i\ne k$ terms have been
+included explicitly.
+
+Given $\F_{t-1}$, the summands $C_{i,t-1}\eta_{i,t}$ are independent and
+centered.  Expanding the fourth power leaves only the index patterns $4$ and
+$2+2$.  Since $v_{i,t}\ge4q_*(1-q_*)>0$, $|\eta|\le2$, and $|C|\le K_m$,
+\begin{equation}\label{eq:nu-fourthconditional}
+ \E(\Delta_t^4\mid\F_{t-1})
+ \le3B_t^2+C_{f,m}B_t.                                       \tag{N.26}
+\end{equation}
+Equations \eqref{eq:nu-Asum1}, \eqref{eq:nu-Bbound}, and \eqref{eq:nu-Bbound}
+--\eqref{eq:nu-fourthconditional} imply
+\begin{equation}\label{eq:nu-fourth}
+ \sum_t\E\Delta_t^4=O_{f,m}(n^2\log(n+1)).                   \tag{N.27}
+\end{equation}
+For every $\varepsilon>0$, conditional Markov and expectation now give
+\begin{equation}\label{eq:nu-lindeberg}
+ \E\sum_t{\E[\Delta_t^2{\bf1}_{\{|\Delta_t|>
+ \varepsilon\sqrt{n\log_2n}\}}\mid\F_{t-1}]\over n\log_2n}
+ \le {\sum_t\E\Delta_t^4\over
+ \varepsilon^2n^2\log_2^2n}\longrightarrow0.                \tag{N.28}
+\end{equation}
+
+\begin{theorem}[Nonuniform fixed-window theorem]\label{thm:finite}
+Under \eqref{eq:f-ass}, for every fixed $m$,
+\begin{align*}
+ \Var R_n^{(m)}&=O_{f,\theta,m}(n),\\
+ \E Q_n^{(m)}&=\|d_\theta^{(m)}\|_{L^2(du)}^2n\log_2n+O_{f,\theta,m}(n),\\
+ \Var Q_n^{(m)}&=O_{f,\theta,m}(n\log^2(n+1)),\\
+ \sum_t\E|\Delta_t|^4&=O_{f,\theta,m}(n^2\log(n+1)).
+\end{align*}
+If $\|d_\theta^{(m)}\|_2>0$, then
+\begin{equation}\label{eq:nu-fixedclt}
+ {M_n^{(m)}-\E_fM_n^{(m)}\over
+  \|d_\theta^{(m)}\|_2\sqrt{n\log_2n}}\Longrightarrow N(0,1). \tag{N.29}
+\end{equation}
+\end{theorem}
+\begin{proof}
+The four estimates are \eqref{eq:nu-driftvar}, \eqref{eq:nu-bracketmean},
+\eqref{eq:nu-bracketvar}, and \eqref{eq:nu-fourth}.  The first three imply
+$Q_n^{(m)}/(n\log_2n)\to\|d^{(m)}\|_2^2$ in probability, and
+\eqref{eq:nu-lindeberg} is conditional Lindeberg in probability.  Truncate
+at $T_n=\lceil4\log_2(n+1)\rceil+m$.  By \eqref{eq:nu-oneactivity} and
+\eqref{eq:nu-Bbound}, the expected omitted bracket is
+$O_{f,m}(n^2 2^{-T_n})=o(1)$; hence the finite triangular-array martingale
+CLT applies to $N_n^{(m)}$.  Finally \eqref{eq:nu-driftvar} and Chebyshev show
+that $(R_n^{(m)}-\E R_n^{(m)})/\sqrt{n\log n}\to0$ in probability.
+The pathwise decomposition \eqref{eq:nu-decomposition} and Slutsky prove
+\eqref{eq:nu-fixedclt}.
+
+It remains to record the fixed-window variance, which does not follow merely
+from this weak convergence.  Since $N_n^{(m)}$ is a martingale sum with
+predictable bracket $Q_n^{(m)}$, martingale orthogonality and
+\eqref{eq:nu-bracketmean} give
+\[
+ \Var_f N_n^{(m)}=\E_f Q_n^{(m)}
+ =\|d_\theta^{(m)}\|_{L^2(du)}^2 n\log_2 n+O_{f,\theta,m}(n).
+\]
+Here the base-two logarithm, and hence its coefficient without any hidden
+factor $1/\log 2$, comes from $\E_fL_n=n\log_2n+O_f(n)$ in
+Theorem~\ref{thm:path}.  By \eqref{eq:nu-driftvar} and Cauchy--Schwarz,
+\[
+ \left|\Cov_f(N_n^{(m)},R_n^{(m)})\right|
+ \le \sqrt{\Var_fN_n^{(m)}\,\Var_fR_n^{(m)}}
+ =O_{f,\theta,m}(n\sqrt{\log(n+1)})=o(n\log n).
+\]
+Consequently \eqref{eq:nu-decomposition} yields the explicit asymptotic
+\begin{equation}\label{eq:nu-fixedvar}
+ \Var_f M_n^{(m)}
+ =\|d_\theta^{(m)}\|_{L^2(du)}^2 n\log_2 n
+   +O_{f,\theta,m}(n\sqrt{\log(n+1)})
+ =\|d_\theta^{(m)}\|_{L^2(du)}^2 n\log_2 n+o(n\log n).       \tag{N.29a}
+\end{equation}
+This is the variance of the statistic in \eqref{eq:nu-Mm}; equivalently it is
+the variance of its deterministically centered version in
+\eqref{eq:nu-fixedclt}.
+\end{proof}
+
+\section{Infinite-tail transfer and the all-depth covariance sum}
+Put $e=e_m=d_\theta-d^{(m)}$.  Thus
+$\E(e\mid\D_m)=0$, $Pe=0$, and $\norm e_2\to0$.
+
+\begin{theorem}[Stopped-energy exhaustion]\label{thm:tail}
+There are explicit numbers $b_m\to0$ such that, uniformly in $n\ge2$,
+\begin{equation}\label{eq:tailvar}
+ \Var_f M_n(e_m)\le b_m n\log(n+1)+C_{f,\theta}n.
+\end{equation}
+Consequently, if $c(\theta)=\norm{d_\theta}_{L^2(du)}^2>0$,
+\begin{equation}\label{eq:canonical}
+ \Var_fM_{\theta,n}\sim c(\theta)n\log_2n,\qquad
+ {M_{\theta,n}-\E_fM_{\theta,n}\over\sqrt{c(\theta)n\log_2n}}
+ \Longrightarrow N(0,1).
+\end{equation}
+\end{theorem}
+\begin{proof}
+\emph{Finite-cutoff starting point.}
+No infinite depth sum is used initially.  For $0\le r\le R$ set
+\[
+ Y_{i,r}=e(T^rX_i)\1_{\{r<\tau_i\}},\qquad
+ Z_R=\sum_{i=1}^n\sum_{r=0}^RY_{i,r}.
+\]
+The literal finite-sum identity is
+\begin{equation}\label{eq:tail-finite-cov}
+ \Var Z_R=\sum_{i,j=1}^n\sum_{r,s=0}^R
+ \Cov(Y_{i,r},Y_{j,s}).
+\end{equation}
+Here is the exhaustive, disjoint partition of its summands:
+\[
+\begin{array}{c|c|c}
+\hbox{labels}&\hbox{depth/cell geometry}&\hbox{pieces} \\ \hline
+ i=j&r=s&\hbox{diagonal activity} \\
+ i=j&r<s&\hbox{shifted product, stopping correction, product correction} \\
+ i=j&r>s&\hbox{transpose of the preceding line} \\ \hline
+ i\ne j&A=B&\hbox{two direct witnesses minus product} \\
+ i\ne j&B\subsetneq A&\hbox{direct witness and centered coincidence} \\
+ i\ne j&A\subsetneq B&\hbox{transposed direct witness and coincidence} \\
+ i\ne j&A\cap B=\varnothing&\hbox{multinomial product correction} \\
+\end{array}                                                    \tag{N.30}
+\]
+In the last four lines $A=I_r(X_i)$ and $B=I_s(X_j)$.  Two intersecting
+physical dyadic intervals are comparable.  Equality forces $r=s$, while
+each strict inclusion fixes the displayed depth order.  Thus equality, the
+two strict inclusions, and disjointness are mutually exclusive and exhaustive;
+together with the three same-label depth relations, (N.30) accounts for every
+index in \eqref{eq:tail-finite-cov}.
+
+\emph{The exact fixed-size activity kernel.}
+Condition on $(X_i,X_j)=(x,y)$ with $i\ne j$, put $N=n-2$,
+$p=\mu_f(A)$, $q=\mu_f(B)$, $u=\mu_f(A\cap B)$, and
+\[
+ a=\1_{\{y\in A\}},\qquad b=\1_{\{x\in B\}}.
+\]
+The first activity fails precisely if $a=0$ and the other $N$ labels avoid
+$A$, and similarly for the second.  Inclusion--exclusion, not an independence
+assumption, therefore gives
+\begin{equation}\label{eq:tail-K}
+ K=1-(1-a)(1-p)^N-(1-b)(1-q)^N
+ +(1-a)(1-b)(1-p-q+u)^N.
+\end{equation}
+A one-label activity has $N+1$ possible witnesses, so its centered kernel is
+\begin{equation}\label{eq:tail-G}
+ G=K-[1-(1-p)^{N+1}][1-(1-q)^{N+1}].
+\end{equation}
+Consequently the different-label part at depths $(r,s)$ is exactly
+\begin{equation}\label{eq:tail-two-label}
+ n(n-1)\iint e(T^rx)e(T^sy)f(x)f(y)G_{r,s}(x,y)\,dx\,dy.
+\end{equation}
+Direct substitution gives all specializations used below:
+\begin{align}
+ A=B:\quad&G=1-[1-(1-p)^{N+1}]^2,                         \label{eq:Gsame}\\
+ B\subsetneq A:\quad&G=(1-p)^{N+1}\{1-(1-q)^{N+1}\}
+                    +(b-q)(1-q)^N,                       \label{eq:Gnest}\\
+ A\cap B=\varnothing:\quad&G=(R_0-PQ)-pP(1-Q)-qQ(1-P)-pqPQ, \label{eq:Gdis}
+\end{align}
+where $P=(1-p)^N$, $Q=(1-q)^N$, and $R_0=(1-p-q)^N$.
+The other nesting orientation is obtained by interchanging the letters.
+
+We repeatedly use the following cell moment.  If
+$A=[a_A,a_A+2^{-r})$ and
+\[
+ E_r(A)=\int_Ae(T^rx)f(x)\,dx,
+\]
+then affine substitution and subtraction of $f$ at the left endpoint of
+each depth-$m$ cell give
+\begin{equation}\label{eq:tail-cellmoment}
+ E_r(A)=2^{-r}\int_0^1e(u)f(a_A+2^{-r}u)\,du,\quad
+ |E_r(A)|\le \norm{f'}_\infty2^{-2r-m}\norm e_1,
+\end{equation}
+whence
+\begin{equation}\label{eq:tail-cellenergy}
+ \sum_{A\in\D_r}|E_r(A)|^2
+ \le C_f4^{-m}2^{-3r}\norm e_1^2.
+\end{equation}
+
+\emph{Same label.}
+Write $p_I=\int_I f$ and
+$q_r(x)=1-(1-p_{I_r(x)})^{n-1}$.  If $r<s$, deeper activity implies
+shallower activity, and conditioning on $X_i=x$ proves the exact formula
+\begin{equation}\label{eq:tail-samelabel-exact}
+ \E(Y_{i,r}Y_{i,s})=\int e(T^rx)e(T^sx)f(x)
+ [1-(1-p_{I_s(x)})^{n-1}]\,dx.
+\end{equation}
+For $h=s-r$, put $v_h(u)=e(u)e(T^hu)$ and $w_s=fq_s$.  Transfer in the
+correct direction yields
+\[
+ \int v_h(T^rx)w_s(x)\,dx=\int v_h(u)P^rw_s(u)\,du,
+\]
+and its Lebesgue comparator vanishes because
+\begin{equation}\label{eq:tail-perron-cancel}
+ \int v_h=\langle e,e\circ T^h\rangle
+ =\langle P^he,e\rangle=0.
+\end{equation}
+Moreover $\norm{v_h}_1\le\norm e_2^2$.  On depth-$s$ cells $q_s$ is
+constant.  Adjacent masses differ by $O_f(2^{-2s})$, and
+$|(1-(1-z)^{n-1})'|\le(n-1)e^{-c_fn2^{-s}}$ on their mass range.
+Adding the variation of $f$ gives
+\[
+ \operatorname {Var}(w_s)\le C_f\min(1,n2^{-s}).
+\]
+The BV Perron estimate
+$\norm{P^rw_s-\int w_s}_\infty\le2^{-r}\operatorname {Var}(w_s)$ and
+\eqref{eq:tail-perron-cancel} therefore give
+\begin{equation}\label{eq:tail-samelabel-bound}
+ |\E(Y_{i,r}Y_{i,s})|
+ \le C_f2^{-r}\min(1,n2^{-s})\norm e_2^2.
+\end{equation}
+The same depth-$m$ subtraction used in \eqref{eq:tail-cellmoment}, now with
+the activity weight, gives, for $\mu_r=\E Y_{1,r}$,
+\begin{equation}\label{eq:tail-mu}
+ |\mu_r|\le C_f2^{-r-m}\min(1,n2^{-r})\norm e_1.
+\end{equation}
+Finally, $q_r\le\min(1,C_fn2^{-r})$ implies
+\begin{align}
+ n\sum_r\E Y_{1,r}^2
+ &\le C_f\norm e_2^2n\log(n+1)+C_fn\norm e_2^2,          \label{eq:tail-diag}\\
+ n\sum_{r<s}|\E Y_{1,r}Y_{1,s}|
+ &\le C_f\norm e_2^2n\log(n+1)+C_fn\norm e_2^2,          \label{eq:tail-offdiag}\\
+ n\Big(\sum_r|\mu_r|\Big)^2
+ &\le C_fn4^{-m}\norm e_1^2.                              \label{eq:tail-product}
+\end{align}
+Indeed $\sum_{r<s}2^{-r}\le2$, depths $s\le L_n:=\lfloor
+\log_2(n\vee2)\rfloor$ give the logarithm, and
+$\sum_{s>L_n}n2^{-s}=O(1)$.  Covariance symmetry gives the $r>s$ case
+with exactly the same bounds.
+
+\emph{Different labels, same cell.}
+In \eqref{eq:Gsame}, $1-[1-(1-p)^{N+1}]^2\le
+C_f e^{-c_fn2^{-r}}$ in the range relevant after the cell moment (enlarging
+the constant handles $n<4$).  Thus \eqref{eq:tail-cellenergy} gives, with
+$\lambda_r=n2^{-r}$,
+\begin{equation}\label{eq:tail-samecell}
+ C_fn^24^{-m}\norm e_1^2\sum_r2^{-3r}e^{-c_fn2^{-r}}
+ ={C_f4^{-m}\norm e_1^2\over n}
+ \sum_r\lambda_r^3e^{-c_f\lambda_r}
+ \le {C_f4^{-m}\norm e_1^2\over n}.
+\end{equation}
+This is the complete same-cell depth sum, including both direct witnesses
+and their centered product.
+
+\emph{Strict nesting and the density-weighted Haar estimate.}
+Suppose $B\subsetneq A$, $A\in\D_r$, $B\in\D_s$, and $h=s-r$.
+The first term in \eqref{eq:Gnest} is the direct-witness product.  With
+$\alpha=2^{-r}$ and $\beta=2^{-s}$ its fixed-depth contribution is at most
+\[
+ C_f4^{-m}\norm e_1^2n^2\alpha^2\beta
+ e^{-c_fn\alpha}\min(1,n\beta).
+\]
+Writing $\lambda=n\alpha$, $\eta=n\beta$ and summing $s>r$ gives
+\begin{equation}\label{eq:tail-nest-direct}
+ {C_f4^{-m}\norm e_1^2\over n}
+ \sum_r\lambda_r^2e^{-c_f\lambda_r}
+ \sum_{\eta_s<\lambda_r}\eta_s\min(1,\eta_s)
+ \le {C_f4^{-m}\norm e_1^2\over n}
+ \sum_r\lambda_r^3e^{-c_f\lambda_r}=O_f(4^{-m}\norm e_1^2/n).
+\end{equation}
+
+The second term of \eqref{eq:Gnest} integrates exactly to
+\begin{equation}\label{eq:tail-nest-centered}
+ (1-p_B)^{n-2}E_s(B)
+ \left[\int_Be(T^rx)f(x)\,dx-p_BE_r(A)\right].
+\end{equation}
+We now prove, rather than cite, the aggregate Haar bound for its bracket.
+Write $A=[a,a+2^{-r})$, $x=a+2^{-r}u$, and let
+$J=[j2^{-h},(j+1)2^{-h})$ correspond to $B$.  Put
+$F_A(u)=f(a+2^{-r}u)$, $f_A=\int_0^1F_A$, and
+$\rho_A=F_A-f_A$.  Then
+\[
+ \norm{\rho_A}_\infty\le\norm{f'}_\infty2^{-r},\qquad
+ \int\rho_A=0.
+\]
+For
+$a_J=\int_Je$, $c_J=\int_Je\rho_A$, $d_J=\int_J\rho_A$, and
+$R_A=\int_0^1e\rho_A$, direct substitution gives the exact expansion
+\begin{align}
+ \int_Be(T^rx)f(x)\,dx-p_BE_r(A)
+ &=2^{-r}f_Aa_J+2^{-r}c_J
+   -2^{-2r}f_A|J|R_A-2^{-2r}d_JR_A.             \label{eq:tail-haar-expand}
+\end{align}
+No weighted-centering remainder is suppressed.  Conditional centering gives
+\begin{equation}\label{eq:tail-deepmoment}
+ |E_s(B)|\le\norm{f'}_\infty2^{-2s-m}\norm e_1=:D_s,
+\end{equation}
+while
+\[
+ |c_J|\le C_f2^{-r}\int_J|e|,\quad |d_J|\le C_f2^{-r}|J|,
+ \quad |R_A|\le C_f2^{-r}\norm e_1.
+\]
+Since $Q_he$ is constant on $J$,
+\begin{equation}\label{eq:tail-haar-square}
+ \sum_{J\in\D_h}|a_J|^2=2^{-h}\norm{Q_he}_2^2,\qquad
+ \sum_J|a_J|\le\norm{Q_he}_2.
+\end{equation}
+The second relation is Cauchy--Schwarz: the $2^{h/2}$ descendant count
+cancels the $2^{-h/2}$ square-sum factor.  Summing the frozen term in
+\eqref{eq:tail-haar-expand} first over descendants and then over the $2^r$
+ancestors gives
+\[
+ C_f2^{-2s-m}\norm e_1\norm{Q_he}_2.
+\]
+For the other three terms, use
+$\sum_J\int_J|e|=\norm e_1$ and $\sum_J|J|=1$ before summing ancestors.
+They total at most $C_fD_s2^{-r}\norm e_1$.  We have therefore proved
+\begin{equation}\label{eq:tail-haar-full}
+ \sum_A\sum_{B\subsetneq A}|E_s(B)|
+ \left|\int_Be(T^rx)f-p_BE_r(A)\right|
+ \le C_f\left[2^{-2s-m}\norm e_1\norm{Q_{s-r}e}_2
+       +2^{-s-2r-m}\norm e_1^2\right].
+\end{equation}
+(The calculation actually gives the smaller second power
+$2^{-2s-r-m}$.)  If $h\le m$, $Q_he=0$; if $h>m$, use
+$\norm{Q_he}_2\le\norm e_2$.  Restoring
+$n(n-1)(1-p_B)^{n-2}\le C_fn^2e^{-c_fn2^{-s}}$ and using
+\begin{align}
+ n^2\sum_{s\ge0}(s+1)4^{-s}e^{-cn2^{-s}}&\le C_c\log(n+1), \label{eq:tail-occ1}\\
+ n^2\sum_{s\ge0}2^{-s}e^{-cn2^{-s}}\sum_{r<s}4^{-r}&\le C_cn, \label{eq:tail-occ2}
+\end{align}
+proves that \eqref{eq:tail-nest-centered}, over all depths, is at most
+\begin{equation}\label{eq:tail-nest-total}
+ C_f\{2^{-m}\norm e_1\norm e_2\log(n+1)
+             +2^{-m}\norm e_1^2n\}.
+\end{equation}
+To verify the scalar estimates, write $s=L_n+k$.  For $k\ge0$ their
+summands are bounded respectively by
+$C(L_n+k+1)4^{-k}$ and $Cn2^{-k}$; for $k=-j<0$ they are bounded by
+$C(L_n+1)4^je^{-c'2^j}$ and $Cn2^je^{-c'2^j}$.  Both pairs sum as claimed.
+For $A\subsetneq B$, integration first in the shallow variable gives
+\[
+ (1-p_A)^{n-2}E_r(A)
+ \left[\int_Ae(T^sy)f(y)\,dy-p_AE_s(B)\right].
+\]
+Thus the preceding affine calculation applies with the shallow and deep
+letters interchanged.  This exact algebraic transpose, not a presumed
+pointwise symmetry of $G$, proves \eqref{eq:tail-nest-direct} and
+\eqref{eq:tail-nest-total} in the other orientation.
+
+\emph{Disjoint-cell Schur calculation.}
+For disjoint $A,B$, \eqref{eq:Gdis} is constant on $A\times B$.  Define
+\[
+ M_{A,B}=G(p_A,p_B)\1_{\{A\cap B=\varnothing\}}.
+\]
+Then the full fixed-depth contribution is the explicit bilinear form
+\begin{equation}\label{eq:tail-schur-form}
+ C^{\rm dis}_{r,s}=n(n-1)\sum_{A,B}M_{A,B}E_r(A)E_s(B).
+\end{equation}
+Put $\alpha=2^{-r}$, $\beta=2^{-s}$,
+$\lambda=n\alpha$, $\eta=n\beta$, and
+$H_{r,s}=\max_{A\cap B=\varnothing}|G(p_A,p_B)|$.
+There are at most $\beta^{-1}$ entries in each row and $\alpha^{-1}$ in
+each column, so the actual row and column calculations are
+\begin{equation}\label{eq:tail-schur-rows}
+ \sup_A\sum_B|M_{A,B}|\le H_{r,s}/\beta,\qquad
+ \sup_B\sum_A|M_{A,B}|\le H_{r,s}/\alpha.
+\end{equation}
+Schur's test now, and only now, gives
+$\norm M_{2\to2}\le H_{r,s}/\sqrt{\alpha\beta}$; with
+\eqref{eq:tail-cellenergy},
+\begin{equation}\label{eq:tail-schur-applied}
+ |E_r^TME_s|\le C_f4^{-m}\norm e_1^2\alpha\beta H_{r,s}.
+\end{equation}
+Expanding \eqref{eq:Gdis} and applying the mean-value theorem to $PQ-R_0$
+without imposing false independence gives
+\begin{equation}\label{eq:tail-H}
+ H_{r,s}\le C_f\{n\alpha\beta e^{-c(\lambda+\eta)}
+ +\alpha e^{-c\lambda}\min(1,\eta)
+ +\beta e^{-c\eta}\min(1,\lambda)
+ +\alpha\beta e^{-c(\lambda+\eta)}\}.
+\end{equation}
+After the label factor, the first two depth sums are respectively
+\begin{align*}
+ {C_f4^{-m}\norm e_1^2\over n}
+ (\sum_r\lambda_r^2e^{-c\lambda_r})^2,&\qquad
+ {C_f4^{-m}\norm e_1^2\over n}
+ (\sum_r\lambda_r^2e^{-c\lambda_r})
+ (\sum_s\eta_s\min(1,\eta_s)).
+\end{align*}
+The first scalar sum is $O(1)$ and the last is $O(n)$, by splitting at
+$L_n$; the third term of \eqref{eq:tail-H} is the transpose and the fourth
+is smaller than the first.  Hence
+\begin{equation}\label{eq:tail-disjoint-total}
+ \sum_{r,s}|C^{\rm dis}_{r,s}|\le C_f4^{-m}\norm e_1^2.
+\end{equation}
+
+\emph{Critical strips and global ledger.}
+The preceding dyadic splits visibly cover: both depths below $L_n$ (avoidance
+is exponentially small), one shallow and one critical (the shallow
+$2^je^{-c2^j}$ sum), both critical (finitely many offsets), one critical and
+one deep (the $2^{-k}$ tails, including $s=L_n+O(1)$ and $s-r>m$ in
+\eqref{eq:tail-haar-full}), and both deep (geometric tails in $\lambda,
+\eta<1$).  Thus no mixed strip is omitted.  Collecting the estimates gives
+the promised explicit ledger:
+\[
+\begin{array}{c|c|c}
+\hbox{geometry}&n\log(n+1)\hbox{ coefficient}&O(n)\hbox{ remainder} \\ \hline
+ i=j,\ r=s& C_f\norm e_2^2&C_f\norm e_2^2\,n \\
+ i=j,\ r\ne s&C_f\norm e_2^2&C_f(\norm e_2^2+4^{-m}\norm e_1^2)n \\
+ A=B&0&C_f4^{-m}\norm e_1^2/n \\
+ \hbox{nested direct, both ways}&0&C_f4^{-m}\norm e_1^2/n \\
+ \hbox{nested centered, both ways}&C_f2^{-m}\norm e_1\norm e_2&C_f2^{-m}\norm e_1^2n \\
+ A\cap B=\varnothing&0&C_f4^{-m}\norm e_1^2 \\
+\end{array}                                                    \tag{N.31}
+\]
+Constants absorb duplication of the two off-diagonal orientations.  Hence,
+uniformly in finite $R$,
+\begin{equation}\label{eq:tail-finite-bound}
+ \Var Z_R\le b_m n\log(n+1)+C_{f,\theta}n,\qquad
+ b_m=C_f\{\norm e_2^2+2^{-m}\norm e_1\norm e_2
+                         +2^{-m}\norm e_1^2\}.
+\end{equation}
+Lebesgue martingale convergence (equivalently Walsh Parseval) gives
+$\norm{e_m}_2\to0$, and on the unit interval $\norm{e_m}_1\le\norm{e_m}_2$.
+The coefficient in the displayed ledger therefore proves, rather than merely
+announces, $b_m\to0$.
+
+\emph{Signed cutoff removal.}
+Let $R_2>R_1$ and
+$W_{R_1,R_2}=Z_{R_2}-Z_{R_1}=\sum_i\sum_{R_1<r\le R_2}Y_{i,r}$.
+Its exact variance expansion is
+\[
+ \Var W_{R_1,R_2}=\sum_{i,j=1}^n
+ \sum_{R_1<r,s\le R_2}\Cov(Y_{i,r},Y_{j,s}).
+\]
+This contains all pairs with \emph{both} depths in the tail window; there are
+no cross terms with $r\le R_1$ because this is the variance of the difference,
+not a subtraction of two variance formulae.  Apply
+\eqref{eq:tail-diag}--\eqref{eq:tail-disjoint-total} with both depth indices
+so restricted.  For fixed $n,m$, every resulting nonnegative scalar
+majorant is a tail of the convergent series explicitly displayed above
+(the diagonal uses $\sum_{r>R_1}n2^{-r}$ once $R_1>L_n$).  Therefore
+\begin{equation}\label{eq:tail-var-cauchy}
+ \Var W_{R_1,R_2}\longrightarrow0
+ \quad(R_1,R_2\to\infty).
+\end{equation}
+The means also converge absolutely, not monotonically.  Since $e_m$ is
+bounded and $1-(1-z)^{n-1}\le\min(1,(n-1)z)$,
+\begin{equation}\label{eq:tail-mean-cauchy}
+ \E|W_{R_1,R_2}|\le n\norm{e_m}_\infty
+ \sum_{r>R_1}\min(1,C_fn2^{-r})\longrightarrow0.
+\end{equation}
+Equations \eqref{eq:tail-var-cauchy}--\eqref{eq:tail-mean-cauchy} prove
+$Z_R$ Cauchy in $L^2$.  Almost-sure isolation makes its pathwise eventual
+value the finite stopped sum $M_n(e_m)$, so that is its $L^2$ limit.
+Variance is continuous under $L^2$ convergence; passing in
+\eqref{eq:tail-finite-bound} proves \eqref{eq:tailvar}.
+
+\emph{Centered transfer and reassembly.}
+Linearity gives exactly
+\begin{equation}\label{eq:tail-centered-identity}
+ [M_n(d_\theta)-\E_fM_n(d_\theta)]
+ -[M_n(d^{(m)})-\E_fM_n(d^{(m)})]
+ =M_n(e_m)-\E_fM_n(e_m).
+\end{equation}
+Thus, for every $\epsilon>0$, Chebyshev gives
+\[
+ \Pp_f\{|M_n(e_m)-\E_fM_n(e_m)|>\epsilon\sqrt{n\log n}\}
+ \le {\Var_fM_n(e_m)\over\epsilon^2n\log n}.
+\]
+First letting $n\to\infty$ and then $m\to\infty$ proves centered converging
+together.  The fixed-$m$ theorem and
+$\norm{d^{(m)}}_2^2\to\norm{d_\theta}_2^2=c(\theta)$ then give the CLT in
+\eqref{eq:canonical}.  No uncentered transfer is asserted.
+
+The variance conclusion is proved separately.  The $L^2$ triangle inequality
+for centered variables gives
+\[
+ \left|\sqrt{\Var M_n(d_\theta)}-
+ \sqrt{\Var M_n(d^{(m)})}\right|\le\sqrt{\Var M_n(e_m)}.
+\]
+Divide by $\sqrt{n\log_2n}$, let $n\to\infty$ and then $m\to\infty$, and
+use \eqref{eq:tailvar}, the proved fixed-$m$ variance asymptotic
+\eqref{eq:nu-fixedvar}, and Parseval.
+This proves the variance asymptotic in \eqref{eq:canonical} independently of
+weak convergence.
+\end{proof}
+
+
+\section{The endpoint term}
+\begin{theorem}\label{thm:endpoint}
+$\Var_fH_{\theta,n}=O_{f,\theta}(n)$ and $\E_f|H_{\theta,n}|=O_{f,\theta}(n)$.
+\end{theorem}
+\begin{proof}
+The entrance variables $h_\theta(X_i)$ are iid and
+$\int h_\theta^2f\le M_f\norm{h_\theta}_2^2$.  For terminal variables,
+condition on the exact labelled prefix-free family of terminal cells.
+Their intervals are disjoint, their affine suffixes are conditionally
+independent with densities $f_I\le M_f/m_f$, and hence the conditional
+variance sum is at most $C_{f,\theta}n$.  If
+$\bar h=\int_0^1h_\theta$, flatness gives
+\[
+ |\E(h_\theta(T^{\tau_i}X_i)\mid I_i)-\bar h|
+ \le C_f|I_i|\norm{h_\theta}_1.
+\]
+Prefix freeness gives $\sum_i|I_i|\le1$, so the conditional mean of the
+terminal sum differs from $n\bar h$ by a bounded quantity.  Total variance
+proves the variance assertion.  The first-moment assertion follows directly
+from $\E|h(X_i)|\le M_f\norm h_1$ and the analogous conditional terminal
+bound.
+\end{proof}
+
+\section{Nonuniform stopped-LISTER theorem}
+\begin{theorem}\label{thm:stopped}
+If $c(\theta)>0$, then
+\[
+ \Var_fV_{\theta,n}\sim c(\theta)n\log_2n,\qquad
+ {V_{\theta,n}-\E_fV_{\theta,n}\over\sqrt{c(\theta)n\log_2n}}
+ \Rightarrow N(0,1),
+\]
+and the same convergence holds with the true standard deviation.
+\end{theorem}
+\begin{proof}
+Combine \eqref{eq:decomp}, Theorems \ref{thm:path}, \ref{thm:tail}, and
+\ref{thm:endpoint}.  The centered $L_n$ and $H_n$ have $L^2$ norm
+$O(\sqrt n)$ and are negligible on the $\sqrt{n\log n}$ scale.  Their
+covariances with $M_n$ are $O(n\sqrt{\log n})$ by Cauchy--Schwarz, hence
+$o(n\log n)$.  Slutsky and variance equivalence give both conclusions.
+\end{proof}
+
+\section{Root stabilization and adaptive discrepancy}
+For stabilization enlarge the profile family to normalized restrictions
+$f_I$ on every interval obtained from a physical dyadic cell by finitely many
+middle-half restrictions.  If $s=|I|$, uniformly over this family
+\[
+ {m_f\over M_f}\le f_I\le {M_f\over m_f},\qquad
+ \|f_I'\|_\infty={s^2\over p_I}\|f'\|_{L^\infty(I)}
+ \le {L_f\over m_f}s.
+\]
+Thus normalization loses no physical-depth uniformity; every relative
+interval of length $b$ has conditional mass between $(m_f/M_f)b$ and
+$(M_f/m_f)b$.
+
+Let $D(Y)$ denote the root defect in the deterministic coefficient-one
+inward-copy identity and put $\bar D(Y)=D(Y){\bf1}_{\{|Y|\ge2\}}$.
+The geometric theorem gives a fixed dyadic guard of width
+$M=M(\theta)\ge4$.  Uniformly over the enlarged profile family,
+\begin{equation}\label{eq:Dmom}
+ \sup_{I,n}\E_{f_I}|D(X_1,\ldots,X_n)|^p<\infty
+ \quad(p<\infty).
+\end{equation}
+To prove this, every affine guard atom has conditional mass at least
+$c_0=m_f/(M_fM)$, so guard failure has probability at most
+$M(1-c_0)^n$.  On the good guard the coefficient-one identity leaves one
+middle-half copy with inward occupancy $K\le n-M/2$.  Conditional only on
+$K=k$ (not on the guard), the inward affine points are iid with the
+corresponding restricted profile.  Removing the guard indicator gives
+\[
+ \E_{f_I}(|D_n|^p;G_n)\le
+ \sum_{k\le n-M/2}\Pp(K=k)\E_{f_{I^*}}|D_k|^p.
+\]
+On $G_n^c$ the cross cost is polynomial in $n$.  The filled toll has only
+fixed logarithmic endpoint singularities, whose fixed moments are uniform
+because $f_I\le M_f/m_f$.  H\"older with a higher fixed moment bounds the
+bad part by $e_n\le Cn^C(1-c_0)^{n/q}$, with $\sum_ne_n<\infty$.
+Taking the running maximum over profiles and sizes, isolating its old
+maximum, and iterating $A_n\le A_{n-1}+e_n$ proves \eqref{eq:Dmom}.
+The guard is removed before the iid inward law is invoked, and arbitrary
+one-child chains remain inside the pathwise copy identity.
+
+\begin{lemma}[Support inclusion]\label{lem:support}
+Let $Y_1,\ldots,Y_n,X$ be iid with any profile in the enlarged family.
+Put $Z_n=\bar D(Y_1,\ldots,Y_n,X)-\bar D(Y_1,\ldots,Y_n)$.  Let $I^{*j}$ be the $j$-fold
+middle half, $S_j=\{X\in I^{*j}\}$, and $G_j$ the event that the old sample
+fills the guard for the configuration in $I^{*j}$.  For every $L$,
+\begin{equation}\label{eq:support}
+ \{Z_n\ne0\}\subset S_L\cup\bigcup_{j<L}(S_j\cap G_j^c).
+\end{equation}
+\end{lemma}
+\begin{proof}
+Induct on $L$.  For $L=0$ the right side is the whole space.  Suppose the
+claim holds to level $L$.  On $S_L^c$ insertion has already left the inward
+copy and cannot affect the root defect when all preceding guards hold.  On
+$S_L\cap G_L$, the coefficient-one identity says that both old and inserted
+defects equal the corresponding defects after affine transport to the next
+middle half; their difference is therefore the next inward increment, which
+can be nonzero only on $S_{L+1}$.  The bars cause no exception: the filled
+guard has at least $M/2\ge2$ old labels in its middle half, so both
+configurations are above the bar threshold before and after copying.  If the
+old size is zero or one, the guard fails and that event is retained.  The
+remaining possibility is $S_L\cap G_L^c$.  Substitution in the induction
+hypothesis proves the claim
+at $L+1$.
+\end{proof}
+
+\begin{lemma}[Local add-one stabilization]\label{lem:localstab}
+For every $0<\alpha<1$,
+\begin{equation}\label{eq:localstab}
+ \norm{Z_n}_2\le C_{f,\theta,\alpha}(n+1)^{-\alpha/2}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Density ratios give $\Pp(S_j)\le C_f2^{-j}$.  The fixed guard contains a
+fixed number of subcells, each of conditional mass at least $c_f2^{-j}$ in
+the original profile, so a union bound gives
+$\Pp(G_j^c)\le C_{f,\theta}e^{-c_{f,\theta}n2^{-j}}$.
+Here $S_j$ depends only on the new point and $G_j$ only on the old sample;
+they are independent.  Letting $L\to\infty$ in \eqref{eq:support},
+\[
+ \Pp(Z_n\ne0)\le C\sum_{j\ge0}2^{-j}e^{-cn2^{-j}}le {C\over n+1}.
+\]
+For the last inequality split where $n2^{-j}$ crosses one; on either side
+the terms form a geometric sequence after writing them as
+$n^{-1}(n2^{-j})e^{-cn2^{-j}}$.  Since $|\bar D|\le|D|$, \eqref{eq:Dmom} gives uniform $p$th moments
+of $Z_n$.  Choose $p>2/(1-\alpha)$.  H\"older gives
+$\E Z_n^2\le(\E|Z_n|^p)^{2/p}\Pp(Z_n\ne0)^{1-2/p}
+\le C(n+1)^{-\alpha}$.
+\end{proof}
+
+\begin{theorem}[Adaptive discrepancy]\label{thm:delta}
+For every fixed $\theta$, $\Var_f\Delta_{\theta,n}=O_{f,\theta}(n)$.
+\end{theorem}
+\begin{proof}
+Insert a point into an old sample of size $m$.  The exact finite-tree identity
+expresses its discrepancy add-one cost as
+$A^+=\sum_{r\ge0}\delta_r$ along its dyadic ancestor chain.  Conditional on the depth-$r$ cell and its old occupancy $K_r=k$,
+$\delta_r$ is exactly the barred local increment in
+Lemma~\ref{lem:localstab}, including when $k=1$.  With
+$\lambda_r=m2^{-r}$, density bounds and the binomial estimate
+$\E(K+1)^{-\alpha}\le C_\alpha(1+\lambda_r)^{-\alpha}$ give
+\[
+ \norm{\delta_r}_2\le C(1+\lambda_r)^{-\alpha/2}.
+\]
+For completeness, if $K\sim\mathrm{Bin}(m,p)$ and $\mu=mp$, the negative
+moment estimate is immediate for $\mu\le1$; for $\mu>1$, split at
+$K\ge\mu/2$ and use
+$\Pp(K<\mu/2)\le e^{-\mu/8}\le C_\alpha\mu^{-\alpha}$.
+For $\lambda_r\le1$, $\delta_r=0$ when $K_r=0$.  Choose a high moment in
+\eqref{eq:Dmom}; H\"older and $\Pp(K_r\ge1)\le C\lambda_r$ give
+$\norm{\delta_r}_2\le C\lambda_r^{\alpha/2}$.  Therefore
+\[
+ \sum_r\norm{\delta_r}_2\le C\sum_r
+ \min(\lambda_r,\lambda_r^{-1})^{\alpha/2}\le C.
+\]
+Apply Minkowski to finite sums; almost-sure isolation makes the pathwise sum
+finite, and the displayed domination gives the $L^2$ limit.  Thus
+$\sup_m\E|A^+|^2<\infty$.  Replacing one input is one removal followed by
+one insertion into the common remaining sample, so its squared influence is
+uniformly bounded.  Efron--Stein proves the theorem.
+\end{proof}
+
+\section{Mean remainders and the full generic theorem}
+\begin{lemma}[Linear first moments]\label{lem:means}
+\begin{equation}\label{eq:means}
+ |\E_fM_{\theta,n}|+\E_f|H_{\theta,n}|+\E_f|\Delta_{\theta,n}|
+ =O_{f,\theta}(n).
+\end{equation}
+\end{lemma}
+\begin{proof}
+For $M$, use the exact activity formula, with
+$q_r(x)=1-(1-p_{I_r(x)})^{n-1}$:
+\[
+ {1\over n}\E_fM_{\theta,n}
+ =\sum_{r\ge0}\sum_{I=[a_I,a_I+2^{-r})\in\D_r}
+ q_r(I)2^{-r}\int_0^1d_\theta(u)f(a_I+2^{-r}u)\,du.
+\]
+Here $q_r$ is constant on $I$.  Since $Pd_\theta=0$ implies
+$\int d_\theta=0$, subtracting the nonrandom constant $f(a_I)$ inside
+each integral and using the nonnegative majorant
+\[
+ 2^{-r}|d_\theta(u)|
+ |f(a_I+2^{-r}u)-f(a_I)|
+ \le \norm{f'}_\infty 2^{-2r}|d_\theta(u)|
+\]
+gives, after summing the $2^r$ cells and using $0\le q_r(I)\le1$,
+\[
+ \left|{1\over n}\E_fM_{\theta,n}\right|
+ \le \norm{f'}_\infty\norm{d_\theta}_1\sum_{r\ge0}2^{-r}
+ \le2\norm{f'}_\infty\norm{d_\theta}_1.
+\]
+The displayed nonnegative geometric majorant is integrable, so Tonelli
+justifies the all-depth bound without any monotone passage for the signed
+observable.  Thus $|\E M|\le C_{f,\theta}n$.  The endpoint assertion was proved in
+Theorem~\ref{thm:endpoint}.
+
+For discrepancy, the deterministic tree identity is
+$\Delta=\sum_{I:N_I\ge2}D_I$, with one root defect for every occupied
+internal cell.  Conditional on $N_I$ and its labelled allocation,
+\eqref{eq:Dmom} with $p=1$ gives $\E(|D_I|\mid N_I)\le C$.  Hence
+\[
+ \E|\Delta|\le C\sum_{r,I}\Pp(N_I\ge2).
+\]
+Since $N_I\sim\mathrm{Bin}(n,p_I)$,
+$\Pp(N_I\ge2)\le\min(1,n(n-1)p_I^2/2)$.  Using
+$p_I\le M_f2^{-r}$ and $\sum_{I\in\D_r}p_I=1$ gives at level $r$
+\[
+ \sum_I\Pp(N_I\ge2)\le\min(2^r,C_fn^22^{-r}).
+\]
+Splitting at $2^r\asymp n$ and summing the two geometric series gives
+$O_f(n)$.  This proves \eqref{eq:means} without using a variance bound as a
+substitute for an expectation estimate.
+\end{proof}
+
+\begin{theorem}[Full nonuniform generic theorem]\label{thm:full}
+Assume \eqref{eq:f-ass} and $c(\theta)>0$ (equivalently, $\theta$ is
+nonresonant).  Then
+\begin{align*}
+ \E_fT_{\theta,n}&={2\over\theta}n\log_2n+O_{f,\theta}(n),\\
+ \Var_fT_{\theta,n}&\sim c(\theta)n\log_2n,\\
+ {T_{\theta,n}-\E_fT_{\theta,n}\over\sqrt{c(\theta)n\log_2n}}
+ &\Rightarrow N(0,1),\qquad
+ {T_{\theta,n}-\E_fT_{\theta,n}\over\sqrt{\Var_fT_{\theta,n}}}
+ \Rightarrow N(0,1).
+\end{align*}
+\end{theorem}
+\begin{proof}
+The mean follows from \eqref{eq:decomp}, Theorem~\ref{thm:path},
+Lemma~\ref{lem:means}, and $T=V+\Delta$.  For variance,
+Theorems~\ref{thm:stopped} and \ref{thm:delta} give
+\[
+ |\Cov(V,\Delta)|\le\sqrt{\Var V\Var\Delta}
+ =O(n\sqrt{\log n})=o(n\log n).
+\]
+Thus $\Var T\sim\Var V$.  Moreover
+$(\Delta-\E\Delta)/\sqrt{n\log n}\to0$ in $L^2$, so Slutsky gives the first
+CLT.  Variance equivalence gives true-variance normalization.
+\end{proof}
+
+\section{Explicit open boundary}
+No nonuniform resonant theorem is proved here.  At $\theta=2/Q$ the canonical
+coefficient vanishes, so every error retained only as $O(n)$ becomes a
+leading-order term.  The present tail transfer, endpoint estimate, external
+path estimate, and adaptive stabilization do not determine their joint
+phase covariance, do not establish a positive phase variance, and do not
+supply a resonant true-variance CLT.  These are open obligations rather than
+consequences of Theorem~\ref{thm:full}.
+
+
+\end{document}

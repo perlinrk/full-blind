@@ -1,267 +1,410 @@
-# Fresh blind re-audit: nonuniform nonresonant theorem
+# Final fresh blind audit: nonuniform nonresonant theorem
 
 ## 1. Executive verdict
 
-**VERIFIED AFTER MINOR REPAIR**
+**VERIFIED**
 
-The complete nonuniform nonresonant argument is mathematically coherent and the claimed theorem follows from the estimates proved in the manuscript. I found no structural gap, circularity, illicit fixed-​(n) independence assumption, or hidden reversion to uniform input. I found one local auditability defect: the proof of the tail theorem invokes a “fixed-​(m) variance asymptotic,” but Theorem N.29 states only the fixed-window CLT and four estimates, not that variance asymptotic. The missing conclusion follows immediately from those displayed estimates by one covariance calculation, so this is a minor repair rather than a failure of the theorem.
+I audited the theorem as a fresh, self-contained argument, using only
+`barnes-hut-clt.tex`.  In particular, I did not use the uniform-input conclusions
+as substitutes for any of the nonuniform estimates: the physical-profile lemma,
+nonfair-bit martingale construction, fixed-window variance calculation,
+all-depth covariance exhaustion, signed cutoff passage, and nonuniform adaptive
+stabilization were each checked on their own terms.
+
+The manuscript proves the stated nonuniform, nonresonant variance asymptotic and
+centered CLT, including normalization by the true variance.  It also proves the
+claimed first-moment asymptotic by a separate absolute-majorant argument.  I found
+no mathematical defect requiring repair.
 
 ## 2. Exact theorem audited
 
-The audited setting is the following.
+The theorem actually proved has the following scope.
 
-* (0<\theta<1) is fixed and nonresonant:
-  
+* The Barnes--Hut parameter is fixed with \(0<\theta<1\).
+* \(X_1,\ldots,X_n\) are iid on \([0,1]\) with probability density
   \[
-  \theta\ne 2/Q\qquad(Q=3,4,5,\ldots).
+  f\in C^1([0,1]),\qquad 0<m_f\leq f\leq M_f<\infty.
   \]
-* (X_1,\ldots,X_n) are iid on ([0,1]) with density
-  
+* Dyadic cells are half open, with the final cell containing 1.  Empty cells cost
+  zero; a nontarget singleton costs one; a target singleton costs zero; a
+  nonsingleton target cell is opened; an admissible disjoint cell is accepted
+  when \(w/D\leq\theta\), including equality; and one-child chains are retained.
+* The parameter is nonresonant:
   \[
-  f\in C^1([0,1]),\qquad 0<m_f\le f\le M_f<\infty.
+  \theta\ne 2/Q\quad(Q=3,4,5,\ldots).
   \]
-* The Barnes--Hut conventions are those fixed in Section 1: dyadic cells are half open (with the final endpoint convention later stated explicitly), equality (w/D=\theta) is accepted, empty cells cost zero, a source singleton distinct from the target costs one, a singleton containing the target costs zero, and one-child chains are retained.
-* (T_{\theta,n}) is the adaptive cost, (V_{\theta,n}) is the strict-stopped/filled cost, and (T_{\theta,n}=V_{\theta,n}+\Delta_{\theta,n}).
-* The canonical Perron--Gordin innovation is (d_\theta), with Lebesgue norm
-  
-  \[
-  c(\theta)=\|d_\theta\|_{L^2(du)}^2.
-  \]
+  Equivalently, the canonical Perron--Gordin martingale difference
+  \(d_\theta\) is nonzero, and
+  \(c(\theta)=\|d_\theta\|_{L^2(du)}^2>0\).
 
-The audited conclusions are
-
+Under those hypotheses, as \(n\to\infty\), the manuscript proves
 \[
-\mathbb E_fT_{\theta,n}={2\over\theta}n\log_2n+O_{f,\theta}(n),
+ \mathbb E_fT_{\theta,n}={2\over\theta}n\log_2n+O_{f,\theta}(n),
 \]
-
 \[
-\operatorname{Var}_fT_{\theta,n}\sim c(\theta)n\log_2n,
-\qquad c(\theta)>0,
+ \operatorname {Var}_fT_{\theta,n}
+ \sim c(\theta)n\log_2n,
 \]
-
 and
-
 \[
-{T_{\theta,n}-\mathbb E_fT_{\theta,n}\over
- \sqrt{c(\theta)n\log_2n}}\Rightarrow N(0,1),
-\qquad
-{T_{\theta,n}-\mathbb E_fT_{\theta,n}\over
- \sqrt{\operatorname{Var}_fT_{\theta,n}}}\Rightarrow N(0,1).
+ {T_{\theta,n}-\mathbb E_fT_{\theta,n}
+  \over\sqrt{c(\theta)n\log_2n}}
+ \Longrightarrow N(0,1).
+\]
+Because the variance ratio tends to one, it also proves
+\[
+ {T_{\theta,n}-\mathbb E_fT_{\theta,n}
+  \over\sqrt{\operatorname {Var}_fT_{\theta,n}}}
+ \Longrightarrow N(0,1).
 \]
 
-The first-moment statement is not needed for the centered CLT, but it is also supported independently.
+The manuscript expressly does **not** assert a nonuniform resonant theorem.
 
 ## 3. Dependency graph
 
-The logical chain reconstructed from the manuscript is:
+The proof dependency graph is the following directed acyclic chain.  Branches
+that later recombine are shown explicitly.
 
-1. **Model conventions and exact root toll.** Section 1 fixes empty, singleton, equality, and one-child behavior and proves the filled-half toll (F_\theta), including (int F_\theta=2/\theta) and all finite moments.
-2. **Perron--Gordin algebra.** Section 2 first obtains (F_\theta-\mathbb EF_\theta=H^0+A\circ T-A), then constructs (k), (d_\theta), and (h_\theta) so that
-   
+1. **Exact filled-half root toll.**  The stopping, equality, empty-cell,
+   singleton, and one-child conventions give the pathwise toll \(F_\theta\), its
+   finite moments, and \(\int F_\theta=2/\theta\).
+2. **Perron--Gordin algebra.**  The row identity and inverse-branch calculation
+   give
    \[
    F_\theta-\mathbb EF_\theta=d_\theta+h_\theta\circ T-h_\theta,
    \qquad Pd_\theta=0.
    \]
-3. **Nonresonance.** Section 3 computes the odd Fourier coefficients, collapses the endpoint tree, proves the simultaneous odd-chain lemma, and concludes
-   
+3. **Resonance criterion.**  Fourier reduction, the endpoint-collapse tree, and
+   the simultaneous odd-chain lemma prove
+   \(\|d_\theta\|_2=0\) exactly for \(\theta=2/Q\), \(Q\ge3\).
+4. **Deterministic stopped decomposition.**  Finite pathwise telescoping yields
    \[
-   \|d_\theta\|_2^2=0\iff \theta=2/Q,\quad Q\ge3.
+   V_{\theta,n}=(2/\theta)L_n+M_{\theta,n}+H_{\theta,n}.
    \]
-4. **Deterministic stopped decomposition.** Applying the exact toll and the coboundary identity along each active label path yields
-   
-   \[
-   V_{\theta,n}={2\over\theta}L_n+M_{\theta,n}+H_{\theta,n}.
-   \]
-5. **Nonuniform profiles.** The physical-cell profile theorem supplies exact conditional iid factorization, labelled-allocation conditional independence, nonfair child parameters, flatness (O(|I|)), and uniform bounds.
-6. **External path.** Exact activity probabilities give (mathbb EL_n=n\log_2n+O(n)); an add-one calculation and Efron--Stein give (operatorname{Var}L_n=O(n)).
-7. **Finite Walsh window.** Whole-column filtration + exact nonfair centering gives a martingale (N_n^{(m)}), predictable bracket (Q_n^{(m)}), and drift (R_n^{(m)}). Activity and cancellation estimates give bracket mean/concentration, fourth moments, Lindeberg, truncation, and the fixed-window CLT with leading Lebesgue constant (|d_\theta^{(m)}|_2^2).
-8. **Infinite Walsh tail.** Starting at finite depth (R), the proof expands (operatorname{Var}Z_R), partitions every covariance geometry, uses the exact fixed-size activity kernel, and establishes the global (b_m) ledger with (b_m\to0).
-9. **Signed cutoff removal.** The same covariance majorants, restricted to a tail window, prove (Z_R) is (L^2)-Cauchy; absolute first-moment control identifies the limit with the stopped sum.
-10. **Stopped canonical theorem.** Centered converging together gives the CLT for (M_{\theta,n}), and the (L^2) triangle inequality gives its variance asymptotic independently of weak convergence.
-11. **Endpoint and path remainders.** Their centered (L^2) sizes are (O(\sqrt n)), giving the stopped variance and CLT for (V_{\theta,n}).
-12. **Adaptive discrepancy.** The deterministic coefficient-one inward-copy theorem gives uniform root-defect moments; support stabilization gives a decaying local add-one moment; ancestor-chain Minkowski and Efron--Stein give (operatorname{Var}\Delta_{\theta,n}=O(n)).
-13. **Final transfer.** (T=V+\Delta), Cauchy--Schwarz makes the mixed covariance (o(n\log n)), and centered Slutsky yields both deterministic and true-variance normalization.
+5. **Physical-cell profile framework.**  Exact labelled conditional
+   factorization supplies the nonuniform suffix densities and nonfair child-bit
+   parameters used in all subsequent nonuniform arguments.
+6. **External path estimates.**  Exact activity probabilities give
+   \(\mathbb EL_n=n\log_2n+O(n)\); an add-one/Efron--Stein argument gives
+   \(\operatorname {Var}L_n=O(n)\).
+7. **Finite Walsh window.**  Whole-column revelation and exact Bernoulli
+   centering split \(M_n^{(m)}=N_n^{(m)}+R_n^{(m)}\).
+8. **Fixed-window bracket and CLT.**  Profile cancellation, bracket
+   concentration, fourth moments, Lindeberg, and time truncation give the
+   fixed-window centered CLT.
+9. **Fixed-window variance.**  Martingale isometry plus the separately bounded
+   drift and covariance gives the explicit variance asymptotic.
+10. **Infinite-Walsh tail at finite cutoff.**  The exact covariance identity is
+    partitioned by label and dyadic-cell geometry; the activity kernel and all
+    geometry-specific estimates give a uniform finite-cutoff bound.
+11. **Signed cutoff removal.**  The same nonnegative majorants restricted to a
+    tail window prove an \(L^2\)-Cauchy estimate; a separate absolute first-moment
+    bound identifies the limit with the stopped sum.
+12. **Full canonical stopped sum.**  Centered converging together gives the full
+    canonical CLT, while an independent centered \(L^2\) triangle argument gives
+    its variance asymptotic.
+13. **Endpoint and path remainders.**  Their variances are \(O(n)\), so the
+    canonical result transfers to \(V_{\theta,n}\).
+14. **Adaptive stabilization.**  The arithmetic-free guard, coefficient-one
+    inward copy, uniform root-defect moments, support inclusion, dense/sparse
+    ancestor bounds, Minkowski, and Efron--Stein give
+    \(\operatorname {Var}\Delta_{\theta,n}=O(n)\).
+15. **Adaptive variance and CLT transfer.**  With \(T=V+\Delta\), covariance
+    control transfers both the leading variance and centered CLT.
+16. **True-variance normalization.**  The proved variance equivalence, not weak
+    convergence alone, supplies the final Slutsky replacement.
+17. **First moment (separate branch).**  The external-path mean, endpoint bound,
+    absolutely controlled canonical mean, and root-defect sum give the stated
+    expectation before recombining with \(T=V+\Delta\).
 
-This graph is acyclic. The uniform geometric inward-copy result is used only as a deterministic local identity in the later profile-uniform stabilization argument; the nonuniform theorem is not used to prove any of its own inputs. The manuscript's large resonant-uniform dossier is not a dependency of the nonuniform nonresonant theorem.
+Every arrow points from an earlier identity or estimate to a later one.  The
+fixed-window CLT is not used to prove fixed-window variance; the final CLT is not
+used to prove full variance; and the discrepancy mean is not inferred from its
+variance.  I found no circular dependency.
 
 ## 4. Component-by-component audit
 
 ### Exact toll / Perron--Gordin — **PASS**
 
-The toll derivation honors strict opening versus accepted equality, explicitly includes clipped initial depths, proves the Kraft identity used in the mean, and controls endpoint singularities in every finite (L^p). The row identity is obtained by a finite truncation before passage to (L^p). The series defining (k) is uniformly convergent, (Pd_\theta=0) is obtained by direct index shifting, and the stopped coboundary telescopes with the correct entrance/terminal signs. Empty, singleton, and one-child conventions are fixed before the calculation.
+The root toll follows the declared strict-opening/weak-acceptance convention.
+The residue-tree argument handles the clipping depths and equality cases and
+proves the Kraft identity used to obtain \(\int F_\theta=2/\theta\).  The row
+identity is obtained first for finite rows and passed in finite \(L^p\); the
+Perron correction \(k\) is uniformly convergent.  The displayed definitions
+then give the exact coboundary decomposition and \(Pd_\theta=0\).  The stopped
+decomposition is finite and pathwise, so it makes no optional-stopping
+assumption.
 
 ### Nonresonance — **PASS**
 
-The proof does not assume a scalar zero-set assertion for the lacunary series. It proves simultaneous vanishing for all positive odd frequencies only at (0) and (1/2), treating irrational, odd-denominator, and power-of-two denominator cases. Together with the exact endpoint-collapse tree and Parseval, this gives precisely
-
-\[
-c(\theta)>0\iff\theta\ne2/Q\quad(Q\ge3).
-\]
+The Fourier coefficients reduce to the simultaneous family
+\(\Psi_u(\{b\})\).  Endpoint collapse is proved with a finite prefix tree and
+retains coincident numerical labels with their multiplicities.  Irrational,
+odd-denominator rational, and power-of-two denominator cases are separately
+covered.  Thus \(d_\theta=0\) iff \(b\in\frac12\mathbb Z\), equivalently iff
+\(\theta=2/Q\), \(Q\ge3\).  Therefore the claimed coefficient is strictly
+positive at every parameter in the audited scope.
 
 ### Profile framework — **PASS**
 
-The profile is correctly normalized as
-
+For a physical interval \(I=[a,a+s)\), the manuscript uses exactly
 \[
-f_I(u)={|I|f(a_I+|I|u)\over \mu_f(I)}.
+ p_I=\int_I f,
+ \qquad f_I(u)={s f(a+su)\over p_I}.
 \]
+Substitution proves normalization, while \(m_fs\le p_I\le M_fs\) and the
+Lipschitz estimate give uniform \(L^\infty,L^1,L^2\) flatness.  Child
+restriction is normalized by the actual physical masses and gives the exact
+nonfair parameter \(q_I=p_{I_1}/p_I\).  The derivative scaling for dyadic and
+iterated middle-half restrictions is recorded and remains uniform in physical
+depth.  Conditional iid suffix laws are proved only after conditioning on the
+labelled allocation; distinct fixed-depth coordinate families are then
+independent.  No physical mass is replaced by dyadic length.
 
-The manuscript proves (m_f|I|\le\mu_f(I)\le M_f|I|), flatness and derivative scaling, exact child restrictions, and labelled conditional iid statements. For inward/middle-half restrictions it enlarges the family explicitly and obtains bounds independent of physical depth. It consistently uses physical mass (p_I), not dyadic length, in occupancy probabilities.
+### Fixed-window CLT — **PASS**
 
-### Fixed-window nonuniform CLT — **PASS AFTER MINOR REPAIR**
+The filtration reveals complete columns.  Conditional on its past, the next
+bits are independent Bernoulli variables with cell-specific parameters; they
+are centered by \(\eta_{i,t}=\epsilon_{i,t}-(1-2q_{i,t})\), not by a fair-bit
+fiction.  Activity is predictable because its base depth is at most \(t-1\).
+The exact two-label formula distinguishes direct witnesses, nesting, equality,
+and disjoint multinomial avoidance.
 
-The whole-column filtration is correct: at time (t), all new bits are conditionally independent but nonfair Bernoulli variables with physical-cell parameters. The centered innovations (eta_{i,t}) are used, while the nonzero conditional means are retained in a drift. Predictability follows because stopping is known by the relevant earlier depth and every remaining bit index is at most (t-1).
+The bracket mean expansion retains all ordered Walsh cross-pairs.  Its diagonal
+is the external path mean up to \(O(n)\), while the finite-window cancellation
+lemma makes all profile cross-errors summable with a \(2^{-r}\) gain.  The
+bracket variance is \(O(n\log^2n)\), and the fourth-moment sum is
+\(O(n^2\log n)\).  These imply bracket convergence and conditional Lindeberg.
+The omitted bracket after deterministic time truncation has expectation
+\(o(1)\), and the centered drift is negligible.  Deconditioning is therefore
+valid.  No fair-Rademacher premise remains.
 
-The one- and two-label activity formulae retain fixed-size multinomial dependence and cover direct companionship, equal cells, both nesting orientations, and disjoint cells. The finite-window cancellation lemma supplies the necessary (2^{-r}) profile-error factor. Diagonal Walsh terms give (mathbb EL_n); cross terms cost only (O(n)). Hence the leading bracket constant is the Lebesgue norm (|d_\theta^{(m)}|_2^2). Replacement bounds give bracket concentration and (O(n)) drift variance. Conditional fourth moments imply Lindeberg, and the infinite time axis is cut off with vanishing expected omitted bracket before applying a finite triangular-array martingale CLT.
+### Fixed-window variance asymptotic — **PASS**
 
-The one missing sentence is the fixed-window variance asymptotic; see Defect 1.
+The manuscript explicitly proves, rather than infers from weak convergence,
+\[
+ \operatorname {Var}_fN_n^{(m)}=\mathbb E_fQ_n^{(m)}
+ =\|d_\theta^{(m)}\|_{L^2(du)}^2n\log_2n+O(n)
+\]
+and \(\operatorname {Var}_fR_n^{(m)}=O(n)\).  It then uses
+\[
+ |\operatorname {Cov}(N_n^{(m)},R_n^{(m)})|
+ \leq O(\sqrt{n\log n})O(\sqrt n)
+ =O(n\sqrt{\log n})=o(n\log n)
+\]
+to conclude
+\[
+ \operatorname {Var}_fM_n^{(m)}
+ =\|d_\theta^{(m)}\|_{L^2(du)}^2n\log_2n+o(n\log n).
+\]
+The coefficient comes from \(\mathbb EL_n=n\log_2n+O(n)\); hence it is the
+Lebesgue \(L^2\) norm with base-two logarithm and no missing \(1/\log2\).
 
 ### Infinite-Walsh tail — **PASS**
 
-The proof genuinely begins with finite (R): it defines (Y_{i,r}), (Z_R), and writes the literal finite covariance identity. Its partition is disjoint and exhaustive:
+The argument begins at finite \(R\) with the exact identity
+\(\operatorname {Var}Z_R=\sum_{i,j,r,s}\operatorname {Cov}(Y_{i,r},Y_{j,s})\).
+Its partition is disjoint and exhaustive:
 
-* same label: (r=s), (r<s), (r>s);
-* different labels: same cell, each strict-nesting orientation, disjoint cells.
+* same label: \(r=s\), \(r<s\), and \(r>s\);
+* different labels: equal cell, each of the two strict-nesting orientations,
+  and disjoint cells.
 
-The exact activity kernel is correctly derived by inclusion--exclusion with (N=n-2), witness indicators (a,b), physical masses (p,q,u), followed by subtraction of the two one-label activity probabilities. Direct substitution yields the same-cell, nested, and disjoint specializations. No independence of disjoint occupancies is used.
-
-For the same label, the manuscript gives the exact (r<s) integral, uses (P^he=0) for Perron cancellation, separately controls diagonal, off-diagonal, and products of means, and sums all depths with correct (n)-factors. For equal cells, the exact centered kernel and the cell-energy bound control all witness/product pieces.
-
-For strict nesting, both direct-witness and centered-coincidence terms are separated. The weighted Haar calculation is carried out in affine coordinates with (F_A=f_A+\rho_A); all four frozen/oscillation terms are displayed. The descendant square-sum identity and ancestor sum have the required powers of two. The other orientation is derived as an exact algebraic transpose rather than assumed from pointwise symmetry.
-
-For disjoint cells, the matrix (M_{A,B}), bilinear form, row and column sums, Schur norm, profile energy, and depth sums are all explicit. The expansion keeps the multinomial correction (R_0-PQ).
-
-The two scalar critical-depth estimates are correct after writing (s=\lfloor\log_2n\rfloor+k): the first is (O(\log n)), while the second is (O(n)). Shallow, critical, mixed, and deep strips are all represented in the preceding sums.
-
-Finally, ledger (N.31) assigns an (n\log n) coefficient and lower-order remainder to every geometry. Its
-
+For different labels the exact activity kernel is derived by
+inclusion--exclusion:
 \[
-b_m=C_f\bigl(\|e_m\|_2^2+2^{-m}\|e_m\|_1\|e_m\|_2+2^{-m}\|e_m\|_1^2\bigr)
+K=1-(1-a)(1-p)^N-(1-b)(1-q)^N
+ +(1-a)(1-b)(1-p-q+u)^N,
 \]
+and it is centered by the product of the two correct \((N+1)\)-witness
+activity probabilities.  The equal, nested, and disjoint specializations
+follow algebraically.  In particular, disjoint occupancies are treated through
+\((1-p-q)^N\), never as independent binomials.
 
-tends to zero by Lebesgue martingale convergence and $\|e_m\|_1\le\|e_m\|_2$.
+For the same label, the diagonal, shifted product, stopping/activity error, and
+product-of-means correction are all retained.  The shifted Lebesgue comparator
+vanishes by \(P^he=0\), and the BV/profile perturbation is summable in depth.
+
+For equal cells, both direct witnesses and the centered product are contained
+in the exact specialized kernel, and the complete depth sum is bounded.  For
+strict nesting, the direct-witness term is treated separately in both
+orientations.  The centered coincidence term is expanded in affine coordinates
+with frozen density and oscillation terms; the Haar square-sum, descendant sum,
+and ancestor sum are displayed.  Conditional centering eliminates the first
+\(m\) Haar scales and yields the stated \(2^{-m}\) gain.
+
+For disjoint cells, the manuscript writes the actual bilinear form, defines its
+matrix entries, computes row and column sums, invokes Schur only after those
+computations, inserts the cell-energy estimate, and sums all four terms of the
+nonindependent kernel bound over both depths.
+
+The shallow/critical/deep split checks both critical scalar sums and all mixed
+strips.  The geometry ledger assigns an \(n\log n\) coefficient and lower-order
+remainder to every partition element.  Its total coefficient is
+\[
+b_m=C_f\{\|e_m\|_2^2+2^{-m}\|e_m\|_1\|e_m\|_2
+                   +2^{-m}\|e_m\|_1^2\},
+\]
+which tends to zero by dyadic martingale convergence and
+\(\|e_m\|_1\le\|e_m\|_2\).
 
 ### Cutoff removal — **PASS**
 
-For (R_2>R_1), the manuscript expands the variance of the actual difference (W_{R_1,R_2}), so exactly the pairs with both indices in the tail window occur. Restricting each earlier nonnegative scalar majorant to that window produces tails of convergent series. This is a genuine (L^2)-Cauchy proof, not monotone convergence for a signed sum. Absolute mean control uses boundedness of (e_m) and a summable activity tail. Almost-sure finite isolation identifies the (L^2) limit with (M_n(e_m)).
+For \(R_2>R_1\), the variance of the actual difference contains exactly all
+pairs with both indices in the tail window.  Restricting each previously
+displayed nonnegative, summable majorant to that window makes its tail vanish;
+thus the cutoffs are \(L^2\)-Cauchy.  Separately,
+\[
+ \mathbb E|W_{R_1,R_2}|
+ \le n\|e_m\|_\infty\sum_{r>R_1}\min(1,C_fn2^{-r})\to0.
+\]
+This absolute first-moment estimate, together with almost-sure finite isolation,
+identifies the \(L^2\) limit as the stopped sum.  There is no monotone-convergence
+argument for a signed series.
 
-### Stopped variance — **PASS AFTER MINOR REPAIR**
+### Stopped variance — **PASS**
 
-The variance of the full canonical stopped term is obtained separately from the CLT by the (L^2) triangle inequality and the tail bound. The path and endpoint pieces have (O(n)) variances, and their covariances with the canonical term are (O(n\sqrt{\log n})). Subject only to inserting the immediate fixed-window variance calculation in Defect 1, the stated stopped variance follows.
+The tail transfer compares centered \(L^2\) norms, takes \(n\to\infty\) first
+and \(m\to\infty\) second, and combines the tail bound with the already proved
+fixed-window variance asymptotic.  This independently proves
+\(\operatorname {Var}M_{\theta,n}\sim c(\theta)n\log_2n\).  The external-path
+and endpoint variances are \(O(n)\), while their covariance with the canonical
+term is \(O(n\sqrt{\log n})\), so the same leading variance holds for
+\(V_{\theta,n}\).  No variance statement is deduced from a CLT.
 
 ### Stopped CLT — **PASS**
 
-The converging-together difference is explicitly centered:
-
-\[
-M_n(e_m)-\mathbb E_fM_n(e_m).
-\]
-
-Chebyshev is applied first as (n\to\infty), then (m\to\infty). No uncentered tail is substituted. Path and endpoint remainders vanish on the (sqrt{n\log n}) scale, so Slutsky applies.
+The approximation error is exactly
+\(M_n(e_m)-\mathbb E_fM_n(e_m)\), not its uncentered version.  Chebyshev gives
+centered converging together in the required order of limits.  The path and
+endpoint remainders are independently \(O_{L^2}(\sqrt n)\), hence negligible on
+the \(\sqrt{n\log n}\) scale.  Slutsky gives the centered stopped CLT.
 
 ### Adaptive discrepancy — **PASS**
 
-The barred root defect is maintained at local occupancies zero and one. The guard argument respects accepted equality, one-child chains, and produces exactly one inward copy with no boundary toll. For nonuniform profiles, every guard atom has a uniform lower mass, and the inward restriction remains in the enlarged profile family. The moment recursion removes the guard indicator before invoking the unconditional inward iid law, avoiding conditioning bias.
+The root defect and barred root defect are distinguished, with the bar removing
+occupancies 0 and 1.  The finite guard respects equality and all one-child
+chains.  On guard success there is exactly one inward middle-half copy and no
+boundary toll.  The guard is removed before invoking the conditional iid inward
+law, avoiding conditioning bias.  Polynomial bad-event growth times exponential
+guard failure gives uniform moments for every fixed order over the enlarged
+profile family.
 
-The support inclusion compares old and inserted configurations under an old-sample guard; the inserted point and guard event are independent. The bar threshold causes no exception on guard success and is explicitly discussed for sizes zero and one. Hölder plus uniform defect moments yields local stabilization. Along an inserted point's ancestor chain, large occupancies use a proved negative-binomial-moment estimate, sparse occupancies use the fact that the increment vanishes at occupancy zero, and both sides of the critical depth are geometrically summable. Minkowski gives a uniform add-one (L^2) bound and Efron--Stein gives linear variance.
+The add-one support inclusion correctly separates the new point (middle-half
+events) from the old sample (guard events), so the asserted independence is
+legitimate.  It yields a local increment bound decaying in dense cells.  Along
+the ancestor chain, the dense regime uses a binomial negative-moment estimate;
+the sparse regime uses the support event \(K_r\ge1\) and high root-defect
+moments.  The two geometric tails have a uniformly bounded Minkowski sum.
+Replacement is removal plus insertion into the common sample, giving bounded
+squared influence and hence \(\operatorname {Var}\Delta_{\theta,n}=O(n)\) by
+Efron--Stein.
 
 ### Adaptive variance — **PASS**
 
-(operatorname{Var}_f\Delta_{\theta,n}=O_{f,\theta}(n)) is established directly by replacement Efron--Stein, independently of the earlier uniform signed-renewal proof. This direct proof is sufficient for the final theorem and does not assume independence between root defects and descendant discrepancies.
+With \(T=V+\Delta\), the manuscript explicitly uses
+\[
+ |\operatorname {Cov}(V,\Delta)|
+ \le\sqrt{\operatorname {Var}V\operatorname {Var}\Delta}
+ =O(n\sqrt{\log n})=o(n\log n).
+\]
+Thus the adaptive variance has the same leading coefficient as the stopped
+variance.
 
 ### Adaptive CLT — **PASS**
 
-There is no separate nondegenerate CLT for (Delta), nor is one needed. The manuscript proves the precise required statement:
-
-\[
-{\Delta_{\theta,n}-\mathbb E_f\Delta_{\theta,n}\over\sqrt{n\log n}}
-\longrightarrow0
-\quad\text{in }L^2,
-\]
-
-so adding it to the stopped statistic is a valid centered Slutsky transfer.
+The centered discrepancy has \(L^2\) size \(O(\sqrt n)\), so divided by
+\(\sqrt{n\log n}\) it vanishes in \(L^2\).  Centered Slutsky applied to the
+stopped CLT proves the adaptive CLT.  No bound on the uncentered discrepancy is
+incorrectly substituted here.
 
 ### True-variance normalization — **PASS**
 
-From (operatorname{Var}V\sim cn\log n) and (operatorname{Var}\Delta=O(n)), Cauchy--Schwarz gives
+The adaptive variance equivalence is proved before normalization is changed.
+The ratio of the deterministic asymptotic scale to the true standard deviation
+tends to one, so the final use of Slutsky is justified.
 
-\[
-|\operatorname{Cov}(V,\Delta)|
-\le\sqrt{\operatorname{Var}V\operatorname{Var}\Delta}
-=O(n\sqrt{\log n})=o(n\log n).
-\]
+### First moment — **PASS**
 
-Thus (operatorname{Var}T\sim cn\log n). Since (c>0), the ratio of deterministic and true standard deviations tends to one, and Slutsky justifies true-variance normalization.
+The mean is treated separately.  The external path contributes
+\((2/\theta)n\log_2n+O(n)\).  For the canonical signed observable, the proof
+subtracts the cellwise constant density and dominates the absolute integrand by
+\(\|f'\|_\infty2^{-2r}|d_\theta(u)|\); summation over the \(2^r\) cells leaves
+an integrable geometric series.  Tonelli is applied only to that nonnegative
+majorant, not to the signed observable.  Endpoint absolute moments are linear.
+The discrepancy is bounded in expectation by summing the probabilities of
+cells with occupancy at least two, giving \(O(n)\).  These estimates establish
+the stated first moment without relying on the centered CLT or on the variance
+bound.
 
 ## 5. Detailed defects
 
-### Defect 1 — fixed-window variance asymptotic invoked but not stated
+No mathematical defect found.
 
-* **Location:** Theorem “Nonuniform fixed-window theorem,” equation (N.29) and its proof; later invocation in the final paragraph of Theorem “Stopped-energy exhaustion” after equation `tail-centered-identity`.
-* **Issue:** The fixed-window theorem states (operatorname{Var}R_n^{(m)}=O(n)), the bracket mean asymptotic, bracket concentration, fourth moments, and the CLT. The tail theorem subsequently says to use “the fixed-​(m) variance asymptotic,” but no displayed conclusion has stated or derived
-  
-  \[
-  \operatorname{Var}_fM_n(d^{(m)})
-  =\|d^{(m)}\|_2^2n\log_2n+o(n\log n).
-  \]
-  
-  Weak convergence alone cannot supply this, so the omitted calculation should be present under the requested audit standard.
-* **Classification:** **Local.** All inputs are already proved immediately above it.
-* **Smallest repair:** Add the following calculation to Theorem N.29 or its proof. Orthogonality of martingale differences gives
-  
-  \[
-  \operatorname{Var}N_n^{(m)}=\mathbb EQ_n^{(m)}
-  =\|d^{(m)}\|_2^2n\log_2n+O(n).
-  \]
-  
-  Since (M_n^{(m)}=N_n^{(m)}+R_n^{(m)}) and (operatorname{Var}R_n^{(m)}=O(n)),
-  
-  \[
-  |\operatorname{Cov}(N_n^{(m)},R_n^{(m)})|
-  \le O(\sqrt{n\log n})O(\sqrt n)
-  =O(n\sqrt{\log n})=o(n\log n).
-  \]
-  
-  Therefore the required fixed-window variance asymptotic holds. This insertion uses no new lemma or hypothesis.
-
-No other mathematical defect was found.
+I also found no isolated typographical ambiguity that changes a hypothesis,
+normalization, covariance term, power of two, logarithm base, or limiting
+argument in the audited theorem.
 
 ## 6. Circularity and hidden-assumption audit
 
-**Circularity:** None found. The canonical tail variance is proved from finite-cutoff covariance estimates, not from the desired CLT. The stopped variance is proved independently of weak convergence. The adaptive linear variance is proved by stabilization/Efron--Stein and is then used only in the final transfer. The mean proof is independent of the variance proof.
+**Circularity:** none found.  In particular:
 
-**Hidden uniform-input assumptions:** None found in the nonuniform chain.
+* the fixed-window variance is proved from martingale isometry and drift bounds,
+  not from the fixed-window CLT;
+* the full stopped variance is proved from the fixed-window variance and tail
+  exhaustion, not from the full CLT;
+* the adaptive variance is proved from stopped variance and discrepancy
+  variance before true-variance normalization;
+* the first moment has independent absolute estimates; and
+* adaptive stabilization does not assume the desired adaptive variance result.
 
-* Child bits are centered with their physical conditional parameters (q_I), not (1/2).
-* Conditional suffix iid statements are made only after labelled allocations or the relevant cell/occupancy conditioning.
-* Disjoint cell occupancies are treated through multinomial avoidance probabilities, never as independent binomials.
-* Physical masses (p_I) appear in activity and avoidance factors; dyadic lengths enter only through bounds (m_f|I|\le p_I\le M_f|I|).
-* Translation invariance and uniform-within-cell laws are replaced by normalized profiles plus explicit (C^1) oscillation errors.
-* The inward-copy identity is geometric and affine, while the probabilistic law after copying is the corresponding restricted profile, not a uniform law.
+**Hidden uniform-input assumptions:** none found in the nonuniform proof.  The
+audit specifically checked the following possible failure modes.
 
-**First moments and signed limits:** The all-depth mean of (M) is bounded with a nonnegative geometric majorant and Tonelli. The signed Walsh cutoff is removed by absolute mean convergence plus (L^2)-Cauchy control. No use of monotone convergence on a signed observable was found. The first-moment theorem is logically separate from, and unnecessary for, the centered CLT.
+* No \(\operatorname {Bin}(n,1/2)\) split is used for physical nonuniform child
+  allocations; actual masses \(p_I\) and ratios \(q_I\) are used.
+* Fair Rademacher centering is replaced by exact cell-specific Bernoulli
+  centering.
+* Child profiles are neither equated to each other nor to the uniform profile.
+* Suffixes are declared independent only after conditioning on labelled cell
+  allocation, and retain their profile densities.
+* Disjoint occupancies are handled with the multinomial avoidance term
+  \((1-p-q)^N\), not as independent binomials.
+* Translation invariance is not used; profile errors are controlled by physical
+  \(C^1\) oscillation.
+* Physical probability mass is never silently replaced by dyadic length; the
+  two are compared only through the displayed \(m_f,M_f\) bounds.
+
+The earlier uniform sections supply algebraic and deterministic identities
+(the toll, Perron decomposition, resonance criterion, and finite-tree
+decomposition).  Where probability laws change under nonuniform input, the
+manuscript supplies new profile-based proofs rather than importing fair-bit
+claims.
 
 ## 7. Final theorem table
 
 | Claim | Verdict | Reason |
 |---|---|---|
-| Exact root toll and mean (2/\theta) | PASS | Equality, clipping, endpoints, and Kraft identity are handled explicitly. |
-| Perron--Gordin decomposition with (Pd_\theta=0) | PASS | Constructed in finite (L^p), with convergent correction series and exact coboundary. |
-| (c(\theta)>0\iff\theta\ne2/Q) | PASS | Exact Fourier collapse plus the simultaneous odd-chain lemma and Parseval. |
-| Physical-cell profile framework | PASS | Correct normalization, bounds, restrictions, and labelled conditional iid factorization. |
-| External path expectation/variance | PASS | Exact activity formula and centered add-one Efron--Stein proof. |
-| Fixed-window nonuniform CLT | PASS AFTER MINOR REPAIR | Martingale CLT is complete; its immediately implied variance asymptotic should be stated and proved. |
-| Infinite-Walsh centered tail exhaustion | PASS | Finite-cutoff start, exhaustive kernel geometry, explicit Haar/Schur sums, and (b_m\to0). |
-| (R\to\infty) cutoff removal | PASS | Genuine signed (L^2)-Cauchy and absolute-mean argument. |
-| Canonical stopped variance | PASS AFTER MINOR REPAIR | Independent (L^2) argument is valid once the local fixed-window variance line is inserted. |
-| Canonical/stopped centered CLT | PASS | Correct centering and order of limits; lower-order path/endpoint terms handled by Slutsky. |
-| Endpoint variance | PASS | Prefix-free terminal conditioning gives independent suffix profiles and bounded conditional-mean error. |
-| Adaptive discrepancy variance | PASS | Guarded inward copy, uniform moments, support inclusion, ancestor summability, Efron--Stein. |
-| Full adaptive variance | PASS | Mixed covariance is (o(n\log n)) by Cauchy--Schwarz. |
-| Full adaptive CLT | PASS | Centered discrepancy is (o_{L^2}(\sqrt{n\log n})). |
-| True-variance normalization | PASS | Variance equivalence and positivity make the final Slutsky step valid. |
-| Mean asymptotic | PASS | Signed terms have explicit nonnegative dominating majorants; not used for centered CLT. |
+| Exact root toll and mean \(2/\theta\) | VERIFIED | Equality, clipping, singleton, empty, and one-child cases are included in the finite-tree calculation. |
+| Canonical Perron--Gordin decomposition | VERIFIED | Exact inverse-branch identities give \(Pd_\theta=0\) and a finite-\(L^p\) coboundary. |
+| Nonresonance iff \(\theta\ne2/Q\) | VERIFIED | Fourier endpoint collapse and simultaneous odd-chain analysis prove the exact zero set. |
+| Physical profile factorization | VERIFIED | Correct normalized density, mass bounds, child restriction, derivative scaling, and labelled conditional iid laws are proved. |
+| External-path mean and variance | VERIFIED | Exact activity formula gives the mean; add-one stabilization and Efron--Stein give linear variance. |
+| Fixed-window centered CLT | VERIFIED | Exact nonfair centering, bracket convergence, fourth moments, Lindeberg, truncation, and deconditioning are complete. |
+| Fixed-window variance asymptotic | VERIFIED | Martingale isometry, \(O(n)\) drift variance, and explicit covariance control give the Lebesgue \(L^2\) coefficient with \(\log_2\). |
+| Infinite-Walsh centered tail bound | VERIFIED | Finite identity, exhaustive covariance partition, exact activity kernel, Haar estimate, Schur estimate, critical strips, and ledger are present. |
+| Signed \(R\to\infty\) removal | VERIFIED | Tail-window covariance majorants are summable, and absolute mean convergence identifies the stopped sum. |
+| Full canonical variance | VERIFIED | Centered \(L^2\) comparison plus fixed-window variance proves it independently of weak convergence. |
+| Canonical centered CLT | VERIFIED | Centered converging together uses \(n\to\infty\) before \(m\to\infty\). |
+| Endpoint/path remainder control | VERIFIED | Both have variance \(O(n)\), and endpoint conditional means use prefix-free physical cells. |
+| Stopped variance and CLT | VERIFIED | Remainders and all covariances are lower order on the \(n\log n\) scale. |
+| Adaptive discrepancy variance | VERIFIED | Guard/copy stabilization, uniform moments, dense/sparse ancestor sums, and Efron--Stein yield \(O(n)\). |
+| Adaptive variance transfer | VERIFIED | The covariance is explicitly \(O(n\sqrt{\log n})=o(n\log n)\). |
+| Adaptive centered CLT | VERIFIED | The centered discrepancy is negligible in \(L^2\) and Slutsky applies. |
+| True-variance normalization | VERIFIED | It follows from the separately proved variance equivalence. |
+| First-moment asymptotic | VERIFIED | A nonnegative integrable majorant controls the signed canonical mean; all other remainders are \(O(n)\). |
+| Nonuniform resonant theorem | NOT CLAIMED | The manuscript expressly leaves this outside its boundary. |
 
 ## 8. Final disposition
 
-COMPLETE NONUNIFORM NONRESONANT THEORY VERIFIED AFTER MINOR REPAIR.
+COMPLETE NONUNIFORM NONRESONANT THEORY VERIFIED.
